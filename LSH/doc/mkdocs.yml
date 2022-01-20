@@ -1,0 +1,13 @@
+site_name: 考试系统后台文档
+
+theme:
+    name: windmill
+    highlightjs: true
+
+nav:
+    - 首页: index.md
+    - 云服务器相关: server.md
+
+markdown_extensions:
+    - toc:
+        permalink: True
