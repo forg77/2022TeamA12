@@ -26,16 +26,22 @@
 }
 
 .headerContent {
-  height: 60px;
-  padding: 10px;
+  height: 40px;
+  padding: 20px;
   /* margin-top: 25px; */
   margin-left: 30px;
   margin-right: 30px;
 
   font-size: 18px;
-  line-height: 60px;
+  line-height: 40px;
   font-family: Microsoft YaHei;
+
+  
 }
+
+/* .headerContent *{
+  display: inline;
+} */
 
 .card {
   width: 1000px;
