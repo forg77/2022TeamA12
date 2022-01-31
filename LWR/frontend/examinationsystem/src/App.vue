@@ -44,6 +44,8 @@ export default {
 
 
 <style>
+@import './styles/global.css';
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s ease;
@@ -52,32 +54,6 @@ export default {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
-}
-
-.btn {
-  width: 120px;
-  height: 40px;
-  background: #ff3c3c;
-  opacity: 1;
-  border-radius: 5px;
-  border: none;
-
-  font-size: 18px;
-  font-family: Microsoft YaHei;
-  font-weight: 400;
-  line-height: 0px;
-  color: #ffffff;
-
-  transition: background 0.5s, color 0.5s;
-
-  cursor: pointer;
-}
-
-.btn:hover {
-  background: #eeeeee;
-  color: #ff3c3c;
-  border: solid;
-  /* border-color: gray; */
 }
 
 .title {

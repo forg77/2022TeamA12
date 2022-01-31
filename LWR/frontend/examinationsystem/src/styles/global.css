@@ -1,0 +1,32 @@
+.btn {
+    width: 120px;
+    height: 40px;
+    background: #ff3c3c;
+    opacity: 1;
+    border-radius: 5px;
+    border: none;
+    font-size: 18px;
+    font-family: Microsoft YaHei;
+    /* font-weight: 400;
+    line-height: 0px; */
+    color: #ffffff;
+    transition: background 0.5s, color 0.5s;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #eeeeee;
+    color: #ff3c3c;
+    border: solid;
+    /* border-color: gray; */
+}
+
+.inputBox {
+    /* margin: 5px; */
+    height: 40px;
+    width: 133px;
+    background: #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.30196078431372547);
+    box-shadow: 0px -3px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
