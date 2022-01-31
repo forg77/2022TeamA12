@@ -65,10 +65,16 @@ export default {
 .nav {
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  position:fixed;
   box-shadow: 0px 3px 6px rgba(254, 66, 66, 0.72);
   background-color: #ffffff;
   height: 80px;
+  left:0;
+  right: 0;
+  top:0;
+  z-index: 10;
 }
 
 .nav .child {
@@ -102,13 +108,13 @@ export default {
   transition: background-color 0.5s, color 0.5s;
 }
 
-.dropdown {
-  /* position: relative;
-  display: inline-block; */
-}
+/* .dropdown {
+  position: relative;
+  display: inline-block; 
+} */
 .dropdown-content {
   display: block;
-  position: absolute;
+  position: fixed;
   background-color: white;
   width: 120px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
