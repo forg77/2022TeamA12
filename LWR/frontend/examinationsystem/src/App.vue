@@ -1,9 +1,12 @@
 <template>
   <NavBar :items="navs" />
-  <p>当前路径：{{ $route.path }}</p>
+  <!-- <p>当前路径：{{ $route.path }}</p> -->
+  <div class="title">
+    {{$route.name}}
+  </div>
   <router-view v-slot="{ Component }">
     <transition name="fade" mode="out-in">
-        <component :is="Component" />
+      <component :is="Component" />
     </transition>
   </router-view>
 </template>
@@ -51,6 +54,40 @@ export default {
   opacity: 0;
 }
 
+.btn {
+  width: 120px;
+  height: 40px;
+  background: #ff3c3c;
+  opacity: 1;
+  border-radius: 5px;
+  border: none;
+
+  font-size: 18px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  line-height: 0px;
+  color: #ffffff;
+
+  transition: background 0.5s, color 0.5s;
+
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: #eeeeee;
+  color: #ff3c3c;
+  border: solid;
+  /* border-color: gray; */
+}
+
+.title {
+  width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 100px;
+  margin-bottom: 20px;
+}
+
 body {
   margin: 0;
   background-color: #eeeeee;
@@ -60,7 +97,7 @@ body {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  /* text-align: center; */
   color: #2c3e50;
 }
 
