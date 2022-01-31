@@ -1,5 +1,8 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+import { siteTitle } from '../config'
 import Home from '../views/Home.vue'
+
+const postTitle = " - " + siteTitle;
 
 const routes = [
   {
@@ -17,28 +20,43 @@ const routes = [
   },
   {
     path: '/examManage',
-    name: 'ExamManage',
-    component: () => import('../views/ExamManage.vue')
+    name: '考试管理',
+    component: () => import('../views/ExamManage.vue'),
+    meta: {
+      title: "考试管理" + postTitle
+    }
   },
   {
     path: '/addExam',
-    name: 'AddExam',
-    component: () => import('../views/AddExam.vue')
+    name: '添加考试',
+    component: () => import('../views/AddExam.vue'),
+    meta: {
+      title: "添加考试" + postTitle
+    }
   },
   {
     path: '/invigilationManage',
-    name: 'InvigilationManage',
-    component: () => import('../views/InvigilationManage.vue')
+    name: '监考管理',
+    component: () => import('../views/InvigilationManage.vue'),
+    meta: {
+      title: "监考管理" + postTitle
+    }
   },
   {
     path: '/questionsManage',
-    name: 'QuestionsManage',
-    component: () => import('../views/QuestionsManage.vue')
+    name: '题库查询',
+    component: () => import('../views/QuestionsManage.vue'),
+    meta: {
+      title: "题库查询" + postTitle
+    }
   },
   {
     path: '/questionsInput',
-    name: 'QuestionsInput',
-    component: () => import('../views/QuestionsInput.vue')
+    name: '题库录入',
+    component: () => import('../views/QuestionsInput.vue'),
+    meta: {
+      title: "题库录入" + postTitle
+    }
   },
 ]
 
