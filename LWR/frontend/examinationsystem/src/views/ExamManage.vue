@@ -3,8 +3,12 @@
     <Card>
       <template v-slot:headerLeft> 考试列表 </template>
       <template v-slot:headerRight>
-        <SearchBox></SearchBox>
-        <button class="btn" style="margin-left: 30px">搜索考试</button>
+        <table>
+          <tr>
+            <td style="font-size:0"><SearchBox></SearchBox></td>
+            <td><button class="btn" style="margin-left: 30px;">搜索考试</button></td>
+          </tr>
+        </table>
       </template>
       <template v-slot:content>
         <div class="content">
