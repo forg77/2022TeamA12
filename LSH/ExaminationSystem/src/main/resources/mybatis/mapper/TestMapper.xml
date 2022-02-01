@@ -6,4 +6,5 @@
     <select id="getAll" resultType="map">
         SELECT * FROM test;
     </select>
+
 </mapper>
