@@ -30,3 +30,21 @@
     box-shadow: 0px -3px 6px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
 }
+
+.svg-class {
+    width: 1em;
+    height: 1em;
+    fill: currentColor;
+    overflow: hidden;
+}
+
+.aside-svg {
+    font-size: 20px;
+    margin-bottom: -4px;
+    margin-right: 5px;
+}
+
+.Main-svg {
+    font-size: 30px;
+    margin-bottom: -10px;
+}
