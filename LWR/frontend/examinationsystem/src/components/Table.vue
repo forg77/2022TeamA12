@@ -1,24 +1,14 @@
 <template>
   <table class="table" cellspacing="0">
     <tr>
-      <th>标题1</th>
-      <th>标题2</th>
-      <th>标题3</th>
+      <th v-for="column in columns" :key="column.name">
+        {{ column.title }}
+      </th>
     </tr>
-    <tr>
-      <td>a</td>
-      <td>b</td>
-      <td>c</td>
-    </tr>
-    <tr>
-      <td>a</td>
-      <td>b</td>
-      <td>c</td>
-    </tr>
-    <tr>
-      <td>a</td>
-      <td>b</td>
-      <td>c</td>
+    <tr v-for="(item, index) in items" :key="index">
+      <td v-for="column in columns" :key="column.name">
+        {{ item[column.name] }}
+      </td>
     </tr>
   </table>
   <table class="footer">
@@ -27,9 +17,25 @@
       <td style="text-align: center; font-size: 0">
         <table class="page">
           <tr>
-            <td><svg-icon iconName="left" className="arrow"></svg-icon></td>
-            <td><span class="text">1</span></td>
-            <td><svg-icon iconName="right" className="arrow"></svg-icon></td>
+            <td
+              class="active"
+              :class="{ disable: currentPage <= 1 }"
+              @click="gotoPage(currentPage - 1)"
+            >
+              <svg-icon iconName="left" className="arrow"></svg-icon>
+            </td>
+            <td>
+              <span class="text">{{ currentPage }}</span>
+            </td>
+            <td
+              class="active"
+              :class="{
+                disable: currentPage >= getTotalPages(),
+              }"
+              @click="gotoPage(currentPage + 1)"
+            >
+              <svg-icon iconName="right" className="arrow"></svg-icon>
+            </td>
           </tr>
         </table>
       </td>
@@ -45,8 +51,10 @@ export default {
     return {
       items: [],
       totalCount: 0,
-      order: "",
+      order: null,
       desc: false,
+      itemsPerPage: 3,
+      currentPage: 1,
     };
   },
   methods: {
@@ -54,18 +62,39 @@ export default {
       axios({
         url: this.url,
         data: {
-          offset: this.itemsPerPage * this.currentPage,
+          offset: this.itemsPerPage * (this.currentPage - 1),
           max: this.itemsPerPage,
           order: this.order,
           desc: this.desc,
         },
       })
         .then((response) => {
-          console.log(response.data);
+          this.totalCount = response.data.count;
+          this.items = response.data.data;
         })
         .catch(() => {
           alert("请求数据失败！");
         });
+    },
+    getTotalPages() {
+      let totalPages = Math.floor(this.totalCount / this.itemsPerPage);
+      if (this.totalCount % this.itemsPerPage != 0) totalPages++;
+      return totalPages;
+    },
+    gotoPage(page) {
+      let newPage = this.currentPage;
+
+      if (page <= 0) newPage = 1;
+      else {
+        let totalPages = this.getTotalPages();
+        if (page > totalPages) newPage = totalPages;
+        else newPage = page;
+      }
+
+      if (newPage != this.currentPage) {
+        this.currentPage = newPage;
+        this.getItems();
+      }
     },
   },
   watch: {
@@ -79,9 +108,7 @@ export default {
   props: {
     url: { type: String, default: "" },
     //对象格式{title:"title",name:"name",transformer:(data)=>data}
-    column: { type: Array, default: () => [] },
-    itemsPerPage: { type: Number, default: 10 },
-    currentPage: { type: Number, default: 1 },
+    columns: { type: Array, default: () => [] },
   },
 };
 </script>
@@ -136,5 +163,14 @@ export default {
 .page .arrow {
   width: 18px;
   height: 18px;
+}
+
+.page .active {
+  cursor: pointer;
+}
+
+.page .disable {
+  opacity: 0.2;
+  cursor: default;
 }
 </style>
