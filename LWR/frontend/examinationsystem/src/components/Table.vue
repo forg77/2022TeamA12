@@ -1,19 +1,40 @@
 <template>
-  <table class="table" cellspacing="0">
-    <tr>
-      <th v-for="column in columns" :key="column.name">
-        {{ column.title }}
-      </th>
-    </tr>
-    <tr v-for="(item, index) in items" :key="index">
-      <td v-for="column in columns" :key="column.name">
-        {{ item[column.name] }}
-      </td>
-    </tr>
-  </table>
+  <div
+    style="max-height: 1000px; overflow-x: hidden"
+    :style="{ 'overflow-y': overflowY }"
+  >
+    <div :style="{ height: totalHeight + 'px' }">
+      <table class="table" cellspacing="0">
+        <tr>
+          <th v-for="column in columns" :key="column.name">
+            {{ column.title }}
+          </th>
+        </tr>
+        <transition-group name="list-complete">
+          <tr v-for="item in items" :key="item.id" class="list-complete-item">
+            <td
+              v-for="column in columns"
+              :key="column.name"
+              :style="{ height: lineHeight }"
+            >
+              {{ item[column.name] }}
+            </td>
+          </tr>
+        </transition-group>
+      </table>
+    </div>
+  </div>
   <table class="footer">
     <tr>
-      <td style="width: 33%; text-align: right">a</td>
+      <td style="width: 44%; text-align: right">
+        <span class="normal-text">共{{ totalCount }}条</span>
+        <input
+          style="margin: 0 30px; width: 100px"
+          class="inputBox input"
+          type="text"
+          v-model.number="itemsPerPage"
+        />
+      </td>
       <td style="text-align: center; font-size: 0">
         <table class="page">
           <tr>
@@ -39,7 +60,14 @@
           </tr>
         </table>
       </td>
-      <td style="width: 33%">c</td>
+      <td style="width: 44%; text-align: center">
+        <span class="normal-text">前往</span
+        ><input
+          class="inputBox input"
+          type="text"
+          v-model.number="currentPage"
+        /><span class="normal-text">页</span>
+      </td>
     </tr>
   </table>
 </template>
@@ -55,10 +83,18 @@ export default {
       desc: false,
       itemsPerPage: 3,
       currentPage: 1,
+      lineHeight: 60,
+      totalHeight: 60,
+      overflowY: "auto",
+      timeout: null,
     };
   },
   methods: {
     getItems() {
+      let start = new Date();
+      this.overflowY = "hidden";
+      if (this.timeout != null) clearTimeout(this.timeout);
+      this.items = [];
       axios({
         url: this.url,
         data: {
@@ -69,8 +105,29 @@ export default {
         },
       })
         .then((response) => {
-          this.totalCount = response.data.count;
-          this.items = response.data.data;
+          this.totalHeight =
+            (this.lineHeight + 3) * (1 + response.data.data.length);
+          let interval = new Date() - start;
+          if (interval > 800) {
+            this.totalCount = response.data.count;
+            this.items = response.data.data;
+
+            if (this.timeout != null) clearTimeout(this.timeout);
+            this.timeout = setTimeout(() => {
+              this.overflowY = "auto";
+              this.timeout = null;
+            }, 900);
+          } else {
+            setTimeout(() => {
+              this.totalCount = response.data.count;
+              this.items = response.data.data;
+              if (this.timeout != null) clearTimeout(this.timeout);
+              this.timeout = setTimeout(() => {
+                this.overflowY = "auto";
+                this.timeout = null;
+              }, 900);
+            }, 800 - interval);
+          }
         })
         .catch(() => {
           alert("请求数据失败！");
@@ -101,6 +158,33 @@ export default {
     url() {
       this.getItems();
     },
+    currentPage(newValue, oldValue) {
+      if (newValue <= 0) {
+        this.currentPage = 1;
+        return;
+      } else {
+        let totalPages = this.getTotalPages();
+        if (newValue > totalPages) {
+          this.currentPage = totalPages;
+          return;
+        }
+      }
+      if (oldValue != this.currentPage) this.getItems();
+    },
+    itemsPerPage(newValue, oldValue) {
+      if (newValue <= 0) {
+        this.itemsPerPage = 1;
+        return;
+      } else if (newValue > 100) {
+        this.itemsPerPage = 100;
+        return;
+      }
+      if (oldValue != this.itemsPerPage) {
+        this.getItems();
+        let totalPages = this.getTotalPages();
+        if (this.currentPage > totalPages) this.currentPage = totalPages;
+      }
+    },
   },
   created() {
     this.getItems();
@@ -117,12 +201,14 @@ export default {
 <style scoped>
 .table {
   width: 100%;
+  /* height: 800px; */
 }
 
 .table th {
   font-size: 20px;
   text-align: left;
   font-family: Microsoft YaHei;
+  font-weight: 400;
   color: #000000;
 
   border-bottom-style: solid;
@@ -146,6 +232,14 @@ export default {
 .footer {
   width: 100%;
   margin-top: 35px;
+}
+
+.footer .normal-text {
+  font-size: 16px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+
+  opacity: 0.7;
 }
 
 .page {
@@ -172,5 +266,19 @@ export default {
 .page .disable {
   opacity: 0.2;
   cursor: default;
+}
+
+.input {
+  width: 59px;
+  height: 28px;
+  margin: 0 4px;
+  text-align: center;
+
+  font-size: 16px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  line-height: 0px;
+
+  color: #010101b2;
 }
 </style>
