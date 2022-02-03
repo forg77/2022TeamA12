@@ -9,6 +9,8 @@
         </div>
       </template>
     </Card>
+    <exam-card>
+    </exam-card>
   </div>
 </template>
 
@@ -16,12 +18,14 @@
 // @ is an alias to /src
 import HelloWorld from "@/components/HelloWorld.vue";
 import Card from "@/components/Card.vue";
+import ExamCard from "../components/ExamCard.vue";
 
 export default {
   name: "Home",
   components: {
     HelloWorld,
     Card,
+    ExamCard,
   },
 };
 </script>
