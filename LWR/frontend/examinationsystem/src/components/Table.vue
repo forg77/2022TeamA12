@@ -1,6 +1,7 @@
 <template>
   <div
-    style="max-height: 1000px; overflow-x: hidden"
+    id="scroll"
+    style="max-height: 1000px; overflow-x: hidden; min-height: 189px"
     :style="{ 'overflow-y': overflowY }"
   >
     <div :style="{ height: totalHeight + 'px' }">
@@ -22,6 +23,34 @@
           </tr>
         </transition-group>
       </table>
+
+      <div
+        style="text-align: center; width: 100%"
+        :style="{
+          height: (totalHeight < 1000 ? totalHeight : 1000) - 43 + 'px',
+        }"
+      >
+        <table style="width: 100%; height: 100%">
+          <transition name="fade1">
+            <tr v-show="loading">
+              <td><Loading></Loading></td>
+            </tr>
+          </transition>
+          <transition name="fade1">
+            <tr v-show="loadFailed">
+              <td>
+                加载失败<br /><button
+                  class="btn"
+                  style="margin: 20px"
+                  @click="getItems()"
+                >
+                  重新加载
+                </button>
+              </td>
+            </tr>
+          </transition>
+        </table>
+      </div>
     </div>
   </div>
   <table class="footer">
@@ -83,29 +112,52 @@
 
 <script>
 import axios from "axios";
+import Loading from "./Loading.vue";
+
 export default {
+  components: {
+    Loading,
+  },
   data() {
     return {
       items: [],
       totalCount: 0,
       order: null,
       desc: false,
-      itemsPerPage: 3,
+      itemsPerPage: 10,
       currentPage: 1,
       lineHeight: 60,
-      totalHeight: 60,
+      totalHeight: 252,
       overflowY: "auto",
       timeout: null,
+      loading: false,
+      ajaxCancel: null,
+      loadFailed: false,
     };
   },
   methods: {
     getItems() {
+      if (this.ajaxCancel != null) {
+        this.ajaxCancel();
+        this.ajaxCancel = null;
+      }
+      this.loadFailed = false;
+      let scroll = document.getElementById("scroll");
+      scroll.scrollTop = 0;
+
       let start = new Date();
       this.overflowY = "hidden";
       if (this.timeout != null) clearTimeout(this.timeout);
       this.items = [];
+      let loadingTimeout = setTimeout(() => {
+        this.loading = true;
+      }, 900);
+
       axios({
         url: this.url,
+        cancelToken: new axios.CancelToken((c) => {
+          this.ajaxCancel = c;
+        }),
         data: {
           offset: this.itemsPerPage * (this.currentPage - 1),
           max: this.itemsPerPage,
@@ -114,33 +166,60 @@ export default {
         },
       })
         .then((response) => {
+          this.ajaxCancel = null;
           this.totalHeight =
             (this.lineHeight + 3) * (1 + response.data.data.length);
           let interval = new Date() - start;
-          if (interval > 800) {
-            this.totalCount = response.data.count;
-            this.items = response.data.data;
+          // clearTimeout(loadTimeout);
 
-            if (this.timeout != null) clearTimeout(this.timeout);
-            this.timeout = setTimeout(() => {
-              this.overflowY = "auto";
-              this.timeout = null;
-            }, 900);
-          } else {
+          // if (interval > 800) {
+          //   clearTimeout(loadingTimeout);
+          //   this.loading = false;
+          //   setTimeout(() => {
+          //     this.totalCount = response.data.count;
+          //     this.items = response.data.data;
+
+          //     if (this.timeout != null) clearTimeout(this.timeout);
+          //     this.timeout = setTimeout(() => {
+          //       this.overflowY = "auto";
+          //       this.timeout = null;
+          //     }, 900);
+          //   }, 1100);
+          // } else {
+          setTimeout(() => {
+            clearTimeout(loadingTimeout);
+            let waitTime = 0;
+            if (this.loading == true) {
+              this.loading = false;
+              waitTime = 1100;
+            }
             setTimeout(() => {
               this.totalCount = response.data.count;
               this.items = response.data.data;
+
               if (this.timeout != null) clearTimeout(this.timeout);
               this.timeout = setTimeout(() => {
                 this.overflowY = "auto";
                 this.timeout = null;
               }, 900);
-            }, 800 - interval);
-          }
+            }, waitTime);
+          }, 800 - interval);
+          // }
         })
-        .catch(() => {
-          alert("请求数据失败！");
+        .catch((error) => {
+          if (error.response) {
+            // alert("请求数据失败！");
+            let waitTime = 0;
+            if (this.loading == true) {
+              this.loading = false;
+              waitTime = 1100;
+            }
+            setTimeout(() => {
+              this.loadFailed = true;
+            }, waitTime);
+          }
         });
+      this.isAjaxing = true;
     },
     getTotalPages() {
       let totalPages = Math.floor(this.totalCount / this.itemsPerPage);
@@ -153,7 +232,8 @@ export default {
       if (page <= 0) newPage = 1;
       else {
         let totalPages = this.getTotalPages();
-        if (page > totalPages) newPage = totalPages;
+        if (totalPages == 0) newPage = 1;
+        else if (page > totalPages) newPage = totalPages;
         else newPage = page;
       }
 
@@ -168,7 +248,8 @@ export default {
       if (target.value <= 0) target.value = 1;
       else {
         let totalPages = this.getTotalPages();
-        if (target.value > totalPages) target.value = totalPages;
+        if (totalPages == 0) target.value = 1;
+        else if (target.value > totalPages) target.value = totalPages;
       }
       if (target.value != this.currentPage) {
         this.currentPage = target.value;
@@ -182,6 +263,8 @@ export default {
       else if (target.value > 100) target.value = 100;
       if (target.value != this.itemsPerPage) {
         this.itemsPerPage = target.value;
+        let totalPages = this.getTotalPages();
+        if (this.currentPage > totalPages) this.currentPage = totalPages;
         this.getItems();
       }
     },
@@ -226,7 +309,7 @@ export default {
     //   }
     // },
   },
-  created() {
+  mounted() {
     this.getItems();
   },
   props: {
@@ -320,5 +403,18 @@ export default {
   line-height: 0px;
 
   color: #010101b2;
+}
+
+.fade1-enter-active {
+  transition: opacity 1s ease;
+}
+.fade1-leave-active {
+  /* display: none; */
+  transition: opacity 1s ease;
+}
+
+.fade1-enter-from,
+.fade1-leave-to {
+  opacity: 0;
 }
 </style>
