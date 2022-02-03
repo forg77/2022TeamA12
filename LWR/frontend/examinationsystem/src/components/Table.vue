@@ -29,6 +29,7 @@
         :style="{
           height: (totalHeight < 1000 ? totalHeight : 1000) - 43 + 'px',
         }"
+        v-show="loading || loadFailed"
       >
         <table style="width: 100%; height: 100%">
           <transition name="fade1">
