@@ -9,5 +9,6 @@ import java.util.Map;
 @Repository
 @Mapper
 public interface TestMapper {
-    List<Map<String,Object>> getAll();
+    List<Map<String,Object>> getAll(Integer offset, Integer max, String order, Boolean desc);
+    Integer getCount();
 }

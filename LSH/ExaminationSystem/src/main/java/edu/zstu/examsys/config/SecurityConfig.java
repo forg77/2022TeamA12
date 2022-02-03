@@ -16,8 +16,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin()
-                .loginProcessingUrl("/login");
+//        http.formLogin()
+//                .loginProcessingUrl("/login");
         //http.rememberMe().rememberMeParameter()
+        http.authorizeRequests().anyRequest().permitAll();
+        http.csrf().disable();
     }
 }
