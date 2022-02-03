@@ -19,6 +19,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        http.formLogin()
 //                .loginProcessingUrl("/login");
         //http.rememberMe().rememberMeParameter()
-//        http.authorizeRequests().anyRequest().permitAll();
+        http.authorizeRequests().anyRequest().permitAll();
+        http.csrf().disable();
     }
 }

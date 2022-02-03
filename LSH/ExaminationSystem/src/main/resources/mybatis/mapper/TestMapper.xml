@@ -4,7 +4,39 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="edu.zstu.examsys.mapper.TestMapper">
     <select id="getAll" resultType="map">
-        SELECT * FROM test;
+        SELECT
+        *
+        FROM
+        `test`
+        ORDER BY
+        <choose>
+            <when test="order == 'id'">
+                `id`
+            </when>
+            <when test="order == 'a'">
+                `a`
+            </when>
+            <when test="order == 'b'">
+                `b`
+            </when>
+            <when test="order == 'c'">
+                `c`
+            </when>
+            <otherwise>
+                `id`
+            </otherwise>
+        </choose>
+        <if test="desc">
+            DESC
+        </if>
+        <if test="offset != null and max != null">
+            LIMIT #{offset}, #{max}
+        </if>
+        ;
     </select>
-
+    <select id="getCount" resultType="int">
+        SELECT COUNT(1) AS `count`
+        FROM
+        `test`;
+    </select>
 </mapper>
