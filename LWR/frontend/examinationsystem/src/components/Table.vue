@@ -27,13 +27,19 @@
   <table class="footer">
     <tr>
       <td style="width: 44%; text-align: right">
-        <span class="normal-text">共{{ totalCount }}条</span>
+        <span class="normal-text"
+          >共{{ getTotalPages() }}页，共{{ totalCount }}条</span
+        >
+
         <input
-          style="margin: 0 30px; width: 100px"
+          id="setItemsPerPage"
+          style="margin-left: 30px"
           class="inputBox input"
-          type="text"
-          v-model.number="itemsPerPage"
+          type="number"
+          :value="itemsPerPage"
+          @input="onItemsPerPageChanged($event)"
         />
+        <span class="normal-text" style="margin-right: 30px">条/页</span>
       </td>
       <td style="text-align: center; font-size: 0">
         <table class="page">
@@ -63,9 +69,12 @@
       <td style="width: 44%; text-align: center">
         <span class="normal-text">前往</span
         ><input
+          id="setPage"
           class="inputBox input"
-          type="text"
-          v-model.number="currentPage"
+          type="number"
+          @input="onCurrentPageChanged($event)"
+          :value="currentPage"
+          style="-moz-appearance: textfield"
         /><span class="normal-text">页</span>
       </td>
     </tr>
@@ -153,38 +162,69 @@ export default {
         this.getItems();
       }
     },
+    onCurrentPageChanged(event) {
+      let target = event.target;
+
+      if (target.value <= 0) target.value = 1;
+      else {
+        let totalPages = this.getTotalPages();
+        if (target.value > totalPages) target.value = totalPages;
+      }
+      if (target.value != this.currentPage) {
+        this.currentPage = target.value;
+        this.getItems();
+      }
+    },
+    onItemsPerPageChanged(event) {
+      let target = event.target;
+
+      if (target.value <= 0) target.value = 1;
+      else if (target.value > 100) target.value = 100;
+      if (target.value != this.itemsPerPage) {
+        this.itemsPerPage = target.value;
+        this.getItems();
+      }
+    },
   },
   watch: {
     url() {
       this.getItems();
     },
-    currentPage(newValue, oldValue) {
-      if (newValue <= 0) {
-        this.currentPage = 1;
-        return;
-      } else {
-        let totalPages = this.getTotalPages();
-        if (newValue > totalPages) {
-          this.currentPage = totalPages;
-          return;
-        }
-      }
-      if (oldValue != this.currentPage) this.getItems();
+    currentPage(value) {
+      let element = document.getElementById("setPage");
+      element.value = value;
     },
-    itemsPerPage(newValue, oldValue) {
-      if (newValue <= 0) {
-        this.itemsPerPage = 1;
-        return;
-      } else if (newValue > 100) {
-        this.itemsPerPage = 100;
-        return;
-      }
-      if (oldValue != this.itemsPerPage) {
-        this.getItems();
-        let totalPages = this.getTotalPages();
-        if (this.currentPage > totalPages) this.currentPage = totalPages;
-      }
+    itemsPerPage(value) {
+      let element = document.getElementById("setItemsPerPage");
+      element.value = value;
     },
+    // currentPage(newValue, oldValue) {
+    //   if (newValue <= 0) {
+    //     this.currentPage = 1;
+    //     return;
+    //   } else {
+    //     let totalPages = this.getTotalPages();
+    //     if (newValue > totalPages) {
+    //       this.currentPage = totalPages;
+    //       return;
+    //     }
+    //   }
+    //   if (oldValue != this.currentPage) this.getItems();
+    // },
+    // itemsPerPage(newValue, oldValue) {
+    //   if (newValue <= 0) {
+    //     this.itemsPerPage = 1;
+    //     return;
+    //   } else if (newValue > 100) {
+    //     this.itemsPerPage = 100;
+    //     return;
+    //   }
+    //   if (oldValue != this.itemsPerPage) {
+    //     this.getItems();
+    //     let totalPages = this.getTotalPages();
+    //     if (this.currentPage > totalPages) this.currentPage = totalPages;
+    //   }
+    // },
   },
   created() {
     this.getItems();
