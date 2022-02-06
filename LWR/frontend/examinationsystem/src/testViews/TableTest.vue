@@ -14,7 +14,7 @@
       </template>
       <template v-slot:content>
         <div class="content">
-          <Table url="test/test" :columns="columns"></Table>
+          <Table url="test/test" :columns="columns" updateUrl="test/update"></Table>
         </div>
       </template>
     </Card>
@@ -29,7 +29,7 @@ export default {
   data() {
     return {
       columns: [
-        { title: "序号", name: "id" },
+        { title: "序号", name: "id",editable:false },
         { title: "标题1", name: "a" },
         { title: "标题2", name: "b" },
         { title: "标题3", name: "c" },

@@ -6,7 +6,7 @@
   >
     <div :style="{ height: totalHeight + 'px' }">
       <table class="table" cellspacing="0">
-        <tr>
+        <tr class="row">
           <th
             v-for="column in columns"
             :key="column.name"
@@ -18,15 +18,57 @@
               <svg-icon iconName="descending" v-show="desc"></svg-icon>
             </template>
           </th>
+          <th v-if="canEdit"></th>
         </tr>
         <transition-group name="list-complete">
-          <tr v-for="item in items" :key="item.id" class="list-complete-item">
+          <tr
+            v-for="item in items"
+            :key="item.id"
+            class="row list-complete-item"
+          >
             <td
+              class="item"
               v-for="column in columns"
               :key="column.name"
               :style="{ height: lineHeight }"
             >
-              {{ item[column.name] }}
+              <template v-if="editingId != item.id">
+                {{ item[column.name] }}
+              </template>
+              <template v-else>
+                <input
+                  v-if="column.editable!==false"
+                  type="text"
+                  class="inputBox"
+                  v-model="editItems[column.name]"
+                />
+                <template v-else>
+                  {{ item[column.name] }}
+                </template>
+              </template>
+            </td>
+            <td
+              v-if="canEdit"
+              class="item edit"
+              style="width: 60px"
+              :class="{ show: item.id == editingId }"
+            >
+              <table style="width: 100%; text-align: center">
+                <tr>
+                  <template v-if="item.id != editingId">
+                    <td style="cursor: pointer" @click="setEditingId(item)">
+                      <svg-icon iconName="edit"></svg-icon></td
+                  ></template>
+                  <template v-else>
+                    <td style="cursor: pointer" @click="updateItem()">
+                      <svg-icon iconName="correct"></svg-icon>
+                    </td>
+                    <td style="cursor: pointer" @click="setEditingId(-1)">
+                      <svg-icon iconName="wrong"></svg-icon>
+                    </td>
+                  </template>
+                </tr>
+              </table>
             </td>
           </tr>
         </transition-group>
@@ -142,6 +184,10 @@ export default {
       loading: false,
       ajaxCancel: null,
       loadFailed: false,
+
+      canEdit: true,
+      editingId: -1,
+      editItems: {},
     };
   },
   methods: {
@@ -289,6 +335,34 @@ export default {
 
       this.getItems();
     },
+    setEditingId(item) {
+      if (item != -1) {
+        this.editingId = item.id;
+        for (let col of this.columns) {
+          this.editItems[col.name] = item[col.name];
+        }
+      } else this.editingId = -1;
+    },
+    updateItem() {
+      let data = {};
+      data.id = this.editingId;
+      for (let col of this.columns) {
+        data[col.name] = this.editItems[col.name];
+      }
+      axios({
+        url: this.updateUrl,
+        data: data,
+      })
+        .then((response) => {
+          if (response.data["errorCode"] == 0) {
+            this.getItems();
+            this.editingId = -1;
+          } else alert("修改失败！");
+        })
+        .catch(() => {
+          alert("连接失败！");
+        });
+    },
   },
   watch: {
     url() {
@@ -335,7 +409,8 @@ export default {
   },
   props: {
     url: { type: String, default: "" },
-    //对象格式{title:"title",name:"name",transformer:(data)=>data}
+    updateUrl: { type: String, default: "" },
+    //对象格式{title:"title",name:"name",transformer:(data)=>data,editable:true}
     columns: { type: Array, default: () => [] },
   },
 };
@@ -360,10 +435,10 @@ export default {
   border-bottom-width: 1px;
   height: 60px;
 
-  cursor:pointer;
+  cursor: pointer;
 }
 
-.table td {
+.table td.item {
   font-size: 18px;
   font-family: Microsoft YaHei;
   color: #010101;
@@ -375,15 +450,28 @@ export default {
   height: 60px;
 }
 
-.table tr {
+.table tr.row {
   transition: all 0.5s;
 }
 
-.table tr:hover {
+.table tr.row:hover {
   font-size: 21px;
   /* font-weight: bold; */
   transform: translateY(-5px);
   background: #eeeeee;
+}
+
+.table tr.row .edit {
+  color: #00000000;
+  transition: color 0.5s;
+}
+
+.table tr.row:hover .edit {
+  color: #000000ff;
+}
+
+.table tr.row .show {
+  color: #000000ff;
 }
 
 .footer {
