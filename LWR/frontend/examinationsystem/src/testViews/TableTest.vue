@@ -1,13 +1,13 @@
 <template>
   <div>
     <Card>
-      <template v-slot:headerLeft> 题库列表 </template>
+      <template v-slot:headerLeft> 列表 </template>
       <template v-slot:headerRight>
         <table>
           <tr>
             <td style="font-size: 0"><SearchBox placeholder="按标题搜索"></SearchBox></td>
             <td>
-              <button class="btn" style="margin-left: 30px">搜索题库</button>
+              <button class="btn" style="margin-left: 30px">搜索</button>
             </td>
           </tr>
         </table>
@@ -29,7 +29,7 @@ export default {
   data() {
     return {
       columns: [
-        { title: "id", name: "id" },
+        { title: "序号", name: "id" },
         { title: "标题1", name: "a" },
         { title: "标题2", name: "b" },
         { title: "标题3", name: "c" },

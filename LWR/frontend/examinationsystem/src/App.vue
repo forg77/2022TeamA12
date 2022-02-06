@@ -33,6 +33,10 @@ export default {
             { title: "题库录入", link: "/questionsInput" },
           ],
         },
+        {
+          title:"测试",
+          content:[{title:"表格测试",link:"/tableTest"}]
+        }
       ],
     };
   },
