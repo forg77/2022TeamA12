@@ -38,7 +38,12 @@
         </td>
         <td style="text-align: right">
           <div class="headimg">
-            <span>马老师</span>
+            <table>
+              <tr>
+                <td><svg-icon iconName="headimg" className="headimg-icon"></svg-icon></td>
+                <td><span>马老师</span></td>
+              </tr>
+            </table>
           </div>
         </td>
       </tr>
@@ -77,8 +82,14 @@ export default {
 }
 
 .headimg {
-  float: right;
-  margin: 30px;
+  /* float: right; */
+  margin-right: 30px;
+  display: inline-block;
+}
+
+.headimg-icon {
+  display: inline-block;
+  margin-top: 5px;
 }
 
 .nav {
