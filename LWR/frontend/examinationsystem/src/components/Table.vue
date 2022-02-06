@@ -353,6 +353,17 @@ export default {
   height: 60px;
 }
 
+.table tr{
+  transition: all 0.5s;
+}
+
+.table tr:hover{
+  font-size: 21px;
+  /* font-weight: bold; */
+  transform: translateY(-5px);
+  background: #eeeeee;
+}
+
 .footer {
   width: 100%;
   margin-top: 35px;
