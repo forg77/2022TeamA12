@@ -7,8 +7,16 @@
     <div :style="{ height: totalHeight + 'px' }">
       <table class="table" cellspacing="0">
         <tr>
-          <th v-for="column in columns" :key="column.name">
+          <th
+            v-for="column in columns"
+            :key="column.name"
+            @click="setOrderColumn(column.name)"
+          >
             {{ column.title }}
+            <template v-if="column.name == order">
+              <svg-icon iconName="ascending" v-show="!desc"></svg-icon>
+              <svg-icon iconName="descending" v-show="desc"></svg-icon>
+            </template>
           </th>
         </tr>
         <transition-group name="list-complete">
@@ -208,9 +216,11 @@ export default {
           // }
         })
         .catch((error) => {
-          if (error.response) {
+          clearTimeout(loadingTimeout);
+          if (error.response || error.request) {
             // alert("请求数据失败！");
             let waitTime = 0;
+
             if (this.loading == true) {
               this.loading = false;
               waitTime = 1100;
@@ -268,6 +278,16 @@ export default {
         if (this.currentPage > totalPages) this.currentPage = totalPages;
         this.getItems();
       }
+    },
+    setOrderColumn(name) {
+      if (this.order == name) {
+        this.desc = !this.desc;
+      } else {
+        this.order = name;
+        this.desc = false;
+      }
+
+      this.getItems();
     },
   },
   watch: {
@@ -339,6 +359,8 @@ export default {
   border-color: #00000033;
   border-bottom-width: 1px;
   height: 60px;
+
+  cursor:pointer;
 }
 
 .table td {
@@ -353,11 +375,11 @@ export default {
   height: 60px;
 }
 
-.table tr{
+.table tr {
   transition: all 0.5s;
 }
 
-.table tr:hover{
+.table tr:hover {
   font-size: 21px;
   /* font-weight: bold; */
   transform: translateY(-5px);
