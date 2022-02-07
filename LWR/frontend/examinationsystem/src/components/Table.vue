@@ -64,6 +64,7 @@
                   type="text"
                   class="inputBox"
                   v-model="editItems[column.name]"
+                  @click="$event.stopPropagation()"
                 />
                 <template v-else>
                   {{ item[column.name] }}
@@ -418,7 +419,7 @@ export default {
       }
     },
     selectItem(item) {
-      if (!this.canSelect) return;
+      if (!this.canSelect||item.id==-2) return;
       if (item.id in this.selectItems) delete this.selectItems[item.id];
       else {
         if (!this.canMultiSelect) {
