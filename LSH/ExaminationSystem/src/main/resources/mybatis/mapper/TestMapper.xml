@@ -13,13 +13,13 @@
             <when test="order == 'id'">
                 `id`
             </when>
-            <when test="order == 'a'">
+            <when test='order == "a"'>
                 `a`
             </when>
-            <when test="order == 'b'">
+            <when test='order == "b"'>
                 `b`
             </when>
-            <when test="order == 'c'">
+            <when test='order == "c"'>
                 `c`
             </when>
             <otherwise>
@@ -39,4 +39,28 @@
         FROM
         `test`;
     </select>
+    <update id="update">
+        UPDATE
+            `test`
+        SET
+            `a` = #{a},
+            `b` = #{b},
+            `c` = #{c}
+        WHERE `id` = #{id};
+    </update>
+    <insert id="add">
+        INSERT INTO `test` (`a`, `b`, `c`)
+        VALUES
+            (#{a}, #{b}, #{c});
+    </insert>
+    <delete id="delete">
+        DELETE
+        FROM
+            `test`
+        WHERE `id` IN
+        <foreach collection="idArray" item="outputId" open="(" separator="," close=")">
+            #{outputId}
+        </foreach>
+        ;
+    </delete>
 </mapper>

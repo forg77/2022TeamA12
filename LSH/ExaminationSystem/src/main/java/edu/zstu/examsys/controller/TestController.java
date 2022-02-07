@@ -1,6 +1,7 @@
 package edu.zstu.examsys.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import edu.zstu.examsys.mapper.TestMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +30,8 @@ public class TestController {
         String order = body.getString("order");
         Boolean desc = body.getBoolean("desc");
 
+//        System.out.println(requestBody);
+
         Map<String, Object> result = new HashMap<>();
         result.put("count", testMapper.getCount());
         result.put("data", testMapper.getAll(offset, max, order, desc));
@@ -38,6 +42,73 @@ public class TestController {
 //        }
 
 //        res.setStatus(HttpStatus.BAD_REQUEST.value());
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping("/update")
+    public String Update(@RequestBody String requestBody) {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            JSONObject body = JSON.parseObject(requestBody);
+            Integer id = body.getInteger("id");
+            Integer a = body.getInteger("a");
+            String b = body.getString("b");
+            String c = body.getString("c");
+
+            int suc = testMapper.update(id, a, b, c);
+
+            if (suc > 0) {
+                result.put("errorCode", 0);
+            } else {
+                result.put("errorCode", 1);
+            }
+        } catch (Exception e) {
+            result.put("errorCode", 2);
+            return JSON.toJSONString(result);
+        }
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping("/add")
+    public String Add(@RequestBody String requestBody) {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            JSONObject body = JSON.parseObject(requestBody);
+            Integer a = body.getInteger("a");
+            String b = body.getString("b");
+            String c = body.getString("c");
+            int suc = testMapper.add(a, b, c);
+
+            if (suc > 0) {
+                result.put("errorCode", 0);
+            } else {
+                result.put("errorCode", 1);
+            }
+        } catch (Exception e) {
+            result.put("errorCode", 2);
+            return JSON.toJSONString(result);
+        }
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping("/delete")
+    public String Delete(@RequestBody String requestBody) {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            JSONObject body = JSON.parseObject(requestBody);
+            List<Integer> itemsId = JSONObject.parseArray(body.getJSONArray("itemsId").toJSONString(), Integer.class);
+
+            int suc = testMapper.delete(itemsId);
+
+            if (suc > 0) {
+                result.put("errorCode", 0);
+            } else {
+                result.put("errorCode", 1);
+            }
+        } catch (Exception e) {
+            result.put("errorCode", 2);
+            return JSON.toJSONString(result);
+        }
         return JSON.toJSONString(result);
     }
 }
