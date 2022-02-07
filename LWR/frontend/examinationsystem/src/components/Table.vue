@@ -2,6 +2,23 @@
   <button v-if="canAdd" class="btn" @click="setAdding()">
     {{ isAdding ? addString.cancel : addString.add }}
   </button>
+  <button
+    v-if="canDelete"
+    class="btn"
+    @click="deleteItems()"
+    style="width: 150px; margin-left: 20px"
+  >
+    删除所选项{{ selectCount > 0 ? "(" + selectCount + ")" : "" }}
+  </button>
+  <button
+    v-if="canSelect"
+    class="btn"
+    @click="selectItems={}"
+    :disabled="selectCount <= 0"
+    style="margin-left: 20px"
+  >
+    取消选择
+  </button>
   <div
     id="scroll"
     style="max-height: 1000px; overflow-x: hidden; min-height: 189px"
@@ -62,14 +79,14 @@
               <table style="width: 100%; text-align: center">
                 <tr>
                   <template v-if="item.id != editingId">
-                    <td style="cursor: pointer" @click="setEditingId(item)">
+                    <td style="cursor: pointer" @click="setEditingId(item);$event.stopPropagation();">
                       <svg-icon iconName="edit"></svg-icon></td
                   ></template>
                   <template v-else>
-                    <td style="cursor: pointer" @click="updateItem()">
+                    <td style="cursor: pointer" @click="updateItem();$event.stopPropagation();">
                       <svg-icon iconName="correct"></svg-icon>
                     </td>
-                    <td style="cursor: pointer" @click="setEditingId(-1)">
+                    <td style="cursor: pointer" @click="setEditingId(-1);$event.stopPropagation();">
                       <svg-icon iconName="wrong"></svg-icon>
                     </td>
                   </template>
@@ -203,6 +220,8 @@ export default {
       canSelect: true,
       canMultiSelect: true,
       selectItems: {},
+
+      canDelete: true,
     };
   },
   methods: {
@@ -403,10 +422,35 @@ export default {
       if (item.id in this.selectItems) delete this.selectItems[item.id];
       else {
         if (!this.canMultiSelect) {
-          this.selectItems={};
-        } 
+          this.selectItems = {};
+        }
         this.selectItems[item.id] = item;
       }
+    },
+    deleteItems() {
+      let data = { itemsId: [] };
+      for (let id in this.selectItems) {
+        data.itemsId.push(id);
+      }
+      axios({
+        url: this.deleteUrl,
+        data: data,
+      })
+        .then((response) => {
+          if (response.data["errorCode"] == 0) {
+            this.getItems();
+            this.editingId = -1;
+            this.selectItems={};
+          } else alert("删除失败！");
+        })
+        .catch(() => {
+          alert("连接失败！");
+        });
+    },
+  },
+  computed: {
+    selectCount() {
+      return Object.keys(this.selectItems).length;
     },
   },
   watch: {
@@ -456,6 +500,7 @@ export default {
     url: { type: String, default: "" },
     updateUrl: { type: String, default: "" },
     addUrl: { type: String, default: "" },
+    deleteUrl: { type: String, default: "" },
     //对象格式{title:"title",name:"name",transformer:(data)=>data,editable:true}
     columns: { type: Array, default: () => [] },
   },
