@@ -1,4 +1,7 @@
 <template>
+  <button v-if="canAdd" class="btn" @click="setAdding()">
+    {{ isAdding ? addString.cancel : addString.add }}
+  </button>
   <div
     id="scroll"
     style="max-height: 1000px; overflow-x: hidden; min-height: 189px"
@@ -18,7 +21,7 @@
               <svg-icon iconName="descending" v-show="desc"></svg-icon>
             </template>
           </th>
-          <th v-if="canEdit"></th>
+          <th v-if="canEdit" style="cursor: default"></th>
         </tr>
         <transition-group name="list-complete">
           <tr
@@ -35,9 +38,9 @@
               <template v-if="editingId != item.id">
                 {{ item[column.name] }}
               </template>
-              <template v-else>
+              <template v-else-if="item.id != -2 || column.name != 'id'">
                 <input
-                  v-if="column.editable!==false"
+                  v-if="column.editable !== false"
                   type="text"
                   class="inputBox"
                   v-model="editItems[column.name]"
@@ -48,7 +51,7 @@
               </template>
             </td>
             <td
-              v-if="canEdit"
+              v-if="canEdit || isAdding"
               class="item edit"
               style="width: 60px"
               :class="{ show: item.id == editingId }"
@@ -188,14 +191,21 @@ export default {
       canEdit: true,
       editingId: -1,
       editItems: {},
+
+      canAdd: true,
+      isAdding: false,
+      addString: { add: "添加", cancel: "取消" },
+      loadComplete:false
     };
   },
   methods: {
     getItems() {
+      this.loadComplete=false;
       if (this.ajaxCancel != null) {
         this.ajaxCancel();
         this.ajaxCancel = null;
       }
+      this.isAdding = false;
       this.loadFailed = false;
       let scroll = document.getElementById("scroll");
       scroll.scrollTop = 0;
@@ -251,6 +261,7 @@ export default {
             setTimeout(() => {
               this.totalCount = response.data.count;
               this.items = response.data.data;
+              this.loadComplete=true;
 
               if (this.timeout != null) clearTimeout(this.timeout);
               this.timeout = setTimeout(() => {
@@ -336,6 +347,10 @@ export default {
       this.getItems();
     },
     setEditingId(item) {
+      if (this.isAdding) {
+        this.items.shift();
+        this.isAdding = false;
+      }
       if (item != -1) {
         this.editingId = item.id;
         for (let col of this.columns) {
@@ -350,7 +365,7 @@ export default {
         data[col.name] = this.editItems[col.name];
       }
       axios({
-        url: this.updateUrl,
+        url: this.isAdding ? this.addUrl : this.updateUrl,
         data: data,
       })
         .then((response) => {
@@ -362,6 +377,20 @@ export default {
         .catch(() => {
           alert("连接失败！");
         });
+    },
+    setAdding() {
+      if(!this.loadComplete)
+        return;
+      if (!this.isAdding) {
+        this.isAdding = true;
+        this.editingId = -2;
+        this.editItems = {};
+        this.items.unshift({ id: -2 });
+      } else {
+        this.isAdding = false;
+        this.editingId = -1;
+        this.items.shift();
+      }
     },
   },
   watch: {
@@ -410,6 +439,7 @@ export default {
   props: {
     url: { type: String, default: "" },
     updateUrl: { type: String, default: "" },
+    addUrl: { type: String, default: "" },
     //对象格式{title:"title",name:"name",transformer:(data)=>data,editable:true}
     columns: { type: Array, default: () => [] },
   },
@@ -455,10 +485,10 @@ export default {
 }
 
 .table tr.row:hover {
-  font-size: 21px;
+  /* font-size: 21px; */
   /* font-weight: bold; */
   transform: translateY(-5px);
-  background: #eeeeee;
+  background-color: #eeeeee;
 }
 
 .table tr.row .edit {

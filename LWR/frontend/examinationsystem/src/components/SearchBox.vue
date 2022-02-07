@@ -33,7 +33,7 @@ export default {
 
 <style scoped>
 .text {
-  width: calc(100% - 18px);
+  width: calc(100% - 25px);
   height: 100%;
   padding-left: 20px;
 
@@ -51,8 +51,8 @@ export default {
 }
 
 .icon{
-  width:18px;
-  height:18px;
+  width:25px;
+  height:25px;
   margin-right: 10px;
 }
 </style>
