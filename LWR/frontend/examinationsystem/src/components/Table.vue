@@ -28,6 +28,9 @@
             v-for="item in items"
             :key="item.id"
             class="row list-complete-item"
+            :style="{ cursor: canSelect ? 'pointer' : 'default' }"
+            :class="{ select: item.id in selectItems }"
+            @click="selectItem(item)"
           >
             <td
               class="item"
@@ -195,12 +198,16 @@ export default {
       canAdd: true,
       isAdding: false,
       addString: { add: "添加", cancel: "取消" },
-      loadComplete:false
+      loadComplete: false,
+
+      canSelect: true,
+      canMultiSelect: true,
+      selectItems: {},
     };
   },
   methods: {
     getItems() {
-      this.loadComplete=false;
+      this.loadComplete = false;
       if (this.ajaxCancel != null) {
         this.ajaxCancel();
         this.ajaxCancel = null;
@@ -261,7 +268,7 @@ export default {
             setTimeout(() => {
               this.totalCount = response.data.count;
               this.items = response.data.data;
-              this.loadComplete=true;
+              this.loadComplete = true;
 
               if (this.timeout != null) clearTimeout(this.timeout);
               this.timeout = setTimeout(() => {
@@ -379,8 +386,7 @@ export default {
         });
     },
     setAdding() {
-      if(!this.loadComplete)
-        return;
+      if (!this.loadComplete) return;
       if (!this.isAdding) {
         this.isAdding = true;
         this.editingId = -2;
@@ -390,6 +396,16 @@ export default {
         this.isAdding = false;
         this.editingId = -1;
         this.items.shift();
+      }
+    },
+    selectItem(item) {
+      if (!this.canSelect) return;
+      if (item.id in this.selectItems) delete this.selectItems[item.id];
+      else {
+        if (!this.canMultiSelect) {
+          this.selectItems={};
+        } 
+        this.selectItems[item.id] = item;
       }
     },
   },
@@ -494,6 +510,14 @@ export default {
 .table tr.row .edit {
   color: #00000000;
   transition: color 0.5s;
+}
+
+.table tr.select {
+  background-color: #dddddd;
+}
+
+.table tr.select:hover {
+  background-color: #cccccc;
 }
 
 .table tr.row:hover .edit {
