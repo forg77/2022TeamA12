@@ -1,19 +1,46 @@
 <template>
+  <!-- 确认删除对话框 -->
+  <DialogBox v-model:show="showDeleteDialog">
+    <template v-slot:header>确认</template>
+    确定删除所选项吗？
+    <template v-slot:bottom>
+      <button
+        class="btn"
+        @click="
+          deleteItems();
+          showDeleteDialog = false;
+        "
+        style="margin-right: 20px"
+      >
+        确定
+      </button>
+      <button class="btn" @click="showDeleteDialog = false">取消</button>
+    </template>
+  </DialogBox>
+  <!-- 操作失败对话框 -->
+  <DialogBox v-model:show="showFailedDialog">
+    <template v-slot:header>错误</template>
+    {{ failedDialogMessage }}
+    <template v-slot:bottom>
+      <button class="btn" @click="showFailedDialog = false">确定</button>
+    </template>
+  </DialogBox>
   <button v-if="canAdd" class="btn" @click="setAdding()">
     {{ isAdding ? addString.cancel : addString.add }}
   </button>
   <button
     v-if="canDelete"
     class="btn"
-    @click="deleteItems()"
+    @click="showDeleteDialog = true"
     style="width: 150px; margin-left: 20px"
+    :disabled="selectCount <= 0"
   >
     删除所选项{{ selectCount > 0 ? "(" + selectCount + ")" : "" }}
   </button>
   <button
     v-if="canSelect"
     class="btn"
-    @click="selectItems={}"
+    @click="selectItems = {}"
     :disabled="selectCount <= 0"
     style="margin-left: 20px"
   >
@@ -80,14 +107,32 @@
               <table style="width: 100%; text-align: center">
                 <tr>
                   <template v-if="item.id != editingId">
-                    <td style="cursor: pointer" @click="setEditingId(item);$event.stopPropagation();">
+                    <td
+                      style="cursor: pointer"
+                      @click="
+                        setEditingId(item);
+                        $event.stopPropagation();
+                      "
+                    >
                       <svg-icon iconName="edit"></svg-icon></td
                   ></template>
                   <template v-else>
-                    <td style="cursor: pointer" @click="updateItem();$event.stopPropagation();">
+                    <td
+                      style="cursor: pointer"
+                      @click="
+                        updateItem();
+                        $event.stopPropagation();
+                      "
+                    >
                       <svg-icon iconName="correct"></svg-icon>
                     </td>
-                    <td style="cursor: pointer" @click="setEditingId(-1);$event.stopPropagation();">
+                    <td
+                      style="cursor: pointer"
+                      @click="
+                        setEditingId(-1);
+                        $event.stopPropagation();
+                      "
+                    >
                       <svg-icon iconName="wrong"></svg-icon>
                     </td>
                   </template>
@@ -188,10 +233,12 @@
 <script>
 import axios from "axios";
 import Loading from "./Loading.vue";
+import DialogBox from "./DialogBox.vue";
 
 export default {
   components: {
     Loading,
+    DialogBox,
   },
   data() {
     return {
@@ -223,6 +270,10 @@ export default {
       selectItems: {},
 
       canDelete: true,
+
+      showDeleteDialog: false,
+      showFailedDialog: false,
+      failedDialogMessage: "操作失败，请检查输入是否正确",
     };
   },
   methods: {
@@ -399,10 +450,16 @@ export default {
           if (response.data["errorCode"] == 0) {
             this.getItems();
             this.editingId = -1;
-          } else alert("修改失败！");
+          } else {
+            if (!this.isAdding)
+              this.failedDialogMessage = "修改失败，请检查输入是否正确";
+            else this.failedDialogMessage = "添加失败，请检查输入是否正确";
+            this.showFailedDialog = true;
+          }
         })
         .catch(() => {
-          alert("连接失败！");
+          this.failedDialogMessage = "连接失败，请检查网络连接";
+          this.showFailedDialog = true;
         });
     },
     setAdding() {
@@ -419,7 +476,7 @@ export default {
       }
     },
     selectItem(item) {
-      if (!this.canSelect||item.id==-2) return;
+      if (!this.canSelect || item.id == -2) return;
       if (item.id in this.selectItems) delete this.selectItems[item.id];
       else {
         if (!this.canMultiSelect) {
@@ -441,11 +498,15 @@ export default {
           if (response.data["errorCode"] == 0) {
             this.getItems();
             this.editingId = -1;
-            this.selectItems={};
-          } else alert("删除失败！");
+            this.selectItems = {};
+          } else {
+            this.failedDialogMessage = "删除失败";
+            this.showFailedDialog = true;
+          }
         })
         .catch(() => {
-          alert("连接失败！");
+          this.failedDialogMessage = "连接失败，请检查网络连接";
+          this.showFailedDialog = true;
         });
     },
   },
