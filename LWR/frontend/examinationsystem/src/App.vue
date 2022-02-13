@@ -2,7 +2,7 @@
   <NavBar :items="navs" />
   <!-- <p>当前路径：{{ $route.path }}</p> -->
   <div class="title">
-    {{$route.name}}
+    {{ $route.name }}
   </div>
   <router-view v-slot="{ Component }">
     <transition name="fade" mode="out-in">
@@ -34,9 +34,12 @@ export default {
           ],
         },
         {
-          title:"测试",
-          content:[{title:"表格测试",link:"/tableTest"}]
-        }
+          title: "测试",
+          content: [
+            { title: "表格测试", link: "/tableTest" },
+            { title: "对话框测试", link: "/dialogTest" },
+          ],
+        },
       ],
     };
   },
@@ -48,7 +51,7 @@ export default {
 
 
 <style>
-@import './styles/global.css';
+@import "./styles/global.css";
 
 .fade-enter-active,
 .fade-leave-active {

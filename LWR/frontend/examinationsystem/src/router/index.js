@@ -72,6 +72,15 @@ const routes = [{
             title: "表格测试" + postTitle
         }
     },
+    {
+        path: '/dialogTest',
+        name: '对话框测试',
+        component: () =>
+            import ('../testViews/DialogTest.vue'),
+        meta: {
+            title: "对话框测试" + postTitle
+        }
+    },
 ]
 
 const router = createRouter({
