@@ -38,6 +38,7 @@ export default {
           content: [
             { title: "表格测试", link: "/tableTest" },
             { title: "对话框测试", link: "/dialogTest" },
+            { title: "考试测试", link: "/examTest" },
           ],
         },
       ],

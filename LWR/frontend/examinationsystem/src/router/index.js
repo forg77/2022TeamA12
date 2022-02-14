@@ -81,6 +81,15 @@ const routes = [{
             title: "对话框测试" + postTitle
         }
     },
+    {
+        path: '/examTest',
+        name: '考试测试',
+        component: () =>
+            import ('../testViews/ExamTest.vue'),
+        meta: {
+            title: "考试测试" + postTitle
+        }
+    },
 ]
 
 const router = createRouter({
