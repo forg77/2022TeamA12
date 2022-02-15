@@ -1,6 +1,14 @@
 server:
   port: 8082
 
+management:
+  endpoints:
+    web:
+      base-path: /actuator # Actuator 提供的 API 接口的根目录
+      exposure:
+        include: '*'  # 需要开放的端点
+        exclude: # 需要排除的端点
+
 spring:
   datasource:
     username: root
