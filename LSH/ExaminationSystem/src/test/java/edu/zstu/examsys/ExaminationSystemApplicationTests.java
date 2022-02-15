@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
@@ -19,6 +20,13 @@ class ExaminationSystemApplicationTests {
 
     @Test
     void contextLoads() {
+
+    }
+
+    @Test
+    void test() {
+        BCryptPasswordEncoder encoder=new BCryptPasswordEncoder();
+        System.out.println(encoder.encode("123"));
     }
 
 //    @Test
