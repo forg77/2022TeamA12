@@ -40,8 +40,15 @@
           <div class="headimg">
             <table>
               <tr>
-                <td><svg-icon iconName="headimg" className="headimg-icon"></svg-icon></td>
-                <td><span>马老师</span></td>
+                <td>
+                  <svg-icon
+                    iconName="headimg"
+                    className="headimg-icon"
+                  ></svg-icon>
+                </td>
+                <td>
+                  <span>{{ nickname }}</span>
+                </td>
               </tr>
             </table>
           </div>
@@ -53,7 +60,7 @@
 
 <script>
 export default {
-  props: ["items"],
+  props: ["items","nickname"],
   methods: {
     isNavActive(items) {
       let routePath = this.$route.path;
