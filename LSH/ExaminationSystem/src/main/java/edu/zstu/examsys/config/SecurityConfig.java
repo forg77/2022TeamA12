@@ -2,6 +2,7 @@ package edu.zstu.examsys.config;
 
 import com.alibaba.fastjson.JSON;
 import edu.zstu.examsys.filter.AuthenticationFilter;
+import edu.zstu.examsys.pojo.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,6 +14,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -35,10 +39,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //http.rememberMe().rememberMeParameter()
         http.addFilterAt(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .formLogin()
+                .loginPage("/user/needLogin")
                 .loginProcessingUrl("/formLogin");
 
-        http.authorizeRequests().anyRequest().permitAll();
+        http.authorizeRequests()
+                .antMatchers("/user/login", "/user/needLogin").permitAll()
+                .anyRequest().authenticated();
         http.csrf().disable();
+        http.cors();
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("http://localhost:8081");//修改为添加而不是设置，* 最好改为实际的需要，我这是非生产配置，所以粗暴了一点
+        configuration.addAllowedMethod("*");//修改为添加而不是设置
+        configuration.addAllowedHeader("*");//这里很重要，起码需要允许 Access-Control-Allow-Origin
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean
@@ -59,6 +79,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 Map<String, Object> res = new HashMap<>();
                 res.put("errCode", 0);
                 res.put("errMsg", "登录成功");
+                User user = (User) authentication.getPrincipal();
+                Map<String, Object> userData = new HashMap<>();
+                userData.put("id", user.getId());
+                userData.put("username", user.getUsername());
+                userData.put("nickname", user.getNickname());
+                res.put("userData", userData);
                 response.setContentType("application/json;charset=UTF-8");
                 response.getWriter().print(JSON.toJSONString(res));
             }
