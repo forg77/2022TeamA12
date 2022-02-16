@@ -5,7 +5,7 @@
       <template v-slot:headerRight>
         <table>
           <tr>
-            <td style="font-size: 0"><SearchBox></SearchBox></td>
+            <td style="font-size: 0"><SearchBox placeholder="按标题搜索"></SearchBox></td>
             <td>
               <button class="btn" style="margin-left: 30px">搜索题库</button>
             </td>
