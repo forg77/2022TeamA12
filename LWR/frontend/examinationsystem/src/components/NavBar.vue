@@ -1,29 +1,48 @@
 <template>
   <div class="nav">
-    <div class="logo">
-      <span>LOGO-管理员</span>
-    </div>
-
-    <template v-for="nav in items" :key="nav.title">
-      <div class="child">
-        <div class="dropdown">
-          <a :class="{ active: isNavActive(nav) }">{{ nav.title }}</a>
-          <div class="dropdown-content">
-            <template v-for="child in nav.content" :key="child.title">
-              <router-link
-                :to="child.link"
-                :class="{ active: $route.path == child.link }"
-                >{{ child.title }}</router-link
-              >
-            </template>
+    <table cellpadding="0" cellspacing="0" style="width: 100%; height: 100%">
+      <tr>
+        <td>
+          <table cellpadding="0" cellspacing="0" style="height: 100%">
+            <tr>
+              <td>
+                <div class="logo">
+                  <span>LOGO-管理员</span>
+                </div>
+              </td>
+              <template v-for="nav in items" :key="nav.title">
+                <td>
+                  <div class="child">
+                    <div class="dropdown">
+                      <a :class="{ active: isNavActive(nav) }">{{
+                        nav.title
+                      }}</a>
+                      <div class="dropdown-content">
+                        <template
+                          v-for="child in nav.content"
+                          :key="child.title"
+                        >
+                          <router-link
+                            :to="child.link"
+                            :class="{ active: $route.path == child.link }"
+                            >{{ child.title }}</router-link
+                          >
+                        </template>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </template>
+            </tr>
+          </table>
+        </td>
+        <td style="text-align: right">
+          <div class="headimg">
+            <span>马老师</span>
           </div>
-        </div>
-      </div>
-    </template>
-
-    <div class="headimg">
-      <span>马老师</span>
-    </div>
+        </td>
+      </tr>
+    </table>
   </div>
 </template>
 
@@ -67,13 +86,13 @@ export default {
   padding: 0;
   overflow-x: auto;
   overflow-y: hidden;
-  position:fixed;
+  position: fixed;
   box-shadow: 0px 3px 6px rgba(254, 66, 66, 0.72);
   background-color: #ffffff;
   height: 80px;
-  left:0;
+  left: 0;
   right: 0;
-  top:0;
+  top: 0;
   z-index: 10;
 }
 
@@ -97,21 +116,23 @@ export default {
   display: block;
   color: black;
   text-align: center;
-  padding: 30px 16px;
+  height: 80px;
+  line-height: 80px;
+  /* padding: 30px 16px; */
   margin: 0;
   text-decoration: none;
 
   font-family: Microsoft YaHei;
   font-size: 20px;
-  height: calc(100% - 60px);
+  /* height: calc(100% - 60px); */
 
   transition: background-color 0.5s, color 0.5s;
 }
 
-/* .dropdown {
-  position: relative;
-  display: inline-block; 
-} */
+.dropdown {
+  height: 100%;
+  /* line-height: 100%; */
+}
 .dropdown-content {
   display: block;
   position: fixed;

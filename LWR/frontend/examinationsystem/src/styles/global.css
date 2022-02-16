@@ -1,0 +1,115 @@
+.btn {
+    width: 120px;
+    height: 40px;
+    background: #ff3c3c;
+    opacity: 1;
+    border-radius: 5px;
+    border: none;
+    font-size: 18px;
+    font-family: Microsoft YaHei;
+    /* font-weight: 400;
+    line-height: 0px; */
+    color: #ffffff;
+    transition: background 0.5s, color 0.5s;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #eeeeee;
+    color: #ff3c3c;
+    border: solid;
+    /* border-color: gray; */
+}
+
+.inputBox {
+    /* margin: 5px; */
+    height: 40px;
+    width: 133px;
+    background: #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.30196078431372547);
+    box-shadow: 0px -3px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.svg-class {
+    width: 1em;
+    height: 1em;
+    fill: currentColor;
+    overflow: hidden;
+}
+
+.aside-svg {
+    font-size: 20px;
+    margin-bottom: -4px;
+    margin-right: 5px;
+}
+
+.Main-svg {
+    font-size: 30px;
+    margin-bottom: -10px;
+}
+
+.list-item {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.list-enter-active,
+.list-leave-active {
+    transition: all 1s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.list-complete-item {
+    transition: all 0.8s ease;
+    /* display: inline-block; */
+    /* margin-right: 10px; */
+}
+
+.list-complete-enter-from {
+    opacity: 0;
+    transform: translateX(100px);
+}
+
+.list-complete-leave-to {
+    opacity: 0;
+    transform: translateX(100px);
+}
+
+.list-complete-enter-active {
+    /* display: none; */
+    /* position: absolute; */
+}
+
+.list-complete-leave-active {
+    /* display: none; */
+    /* position: absolute; */
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+
+/* 火狐 */
+
+input {
+    -moz-appearance: textfield;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
