@@ -6,6 +6,7 @@ const postTitle = " - " + siteTitle;
 
 const routes = [{
         path: '/login',
+        name: "Login",
         component: () =>
             import ('../views/Login.vue'),
         meta: {
@@ -14,6 +15,7 @@ const routes = [{
     },
     {
         path: '/admin',
+        name: "Admin",
         component: () =>
             import ('../views/MainView.vue'),
         props: {
@@ -58,74 +60,82 @@ const routes = [{
             },
             {
                 path: 'examManage',
-                name: '考试管理',
+                name: 'ExamManage',
                 component: () =>
                     import ('../views/admin/ExamManage.vue'),
                 meta: {
-                    title: "考试管理" + postTitle
+                    title: "考试管理" + postTitle,
+                    pageTitle: "考试管理"
                 }
             },
             {
                 path: 'addExam',
-                name: '添加考试',
+                name: 'AddExam',
                 component: () =>
                     import ('../views/admin/AddExam.vue'),
                 meta: {
-                    title: "添加考试" + postTitle
+                    title: "添加考试" + postTitle,
+                    pageTitle: "添加考试"
                 }
             },
             {
                 path: '/invigilationManage',
-                name: '监考管理',
+                name: 'InvigilationManage',
                 component: () =>
                     import ('../views/admin/InvigilationManage.vue'),
                 meta: {
-                    title: "监考管理" + postTitle
+                    title: "监考管理" + postTitle,
+                    pageTitle: "监考管理"
                 }
             },
             {
                 path: 'questionsManage',
-                name: '题库查询',
+                name: 'QuestionsManage',
                 component: () =>
                     import ('../views/admin/QuestionsManage.vue'),
                 meta: {
-                    title: "题库查询" + postTitle
+                    title: "题库查询" + postTitle,
+                    pageTitle: "题库查询"
                 }
             },
             {
                 path: 'questionsInput',
-                name: '题库录入',
+                name: 'QuestionsInput',
                 component: () =>
                     import ('../views/admin/QuestionsInput.vue'),
                 meta: {
-                    title: "题库录入" + postTitle
+                    title: "题库录入" + postTitle,
+                    pageTitle: "题库录入"
                 }
             },
             {
                 path: 'tableTest',
-                name: '表格测试',
+                name: 'TableTest',
                 component: () =>
                     import ('../testViews/TableTest.vue'),
                 meta: {
-                    title: "表格测试" + postTitle
+                    title: "表格测试" + postTitle,
+                    pageTitle: "表格测试"
                 }
             },
             {
                 path: 'dialogTest',
-                name: '对话框测试',
+                name: 'DialogTest',
                 component: () =>
                     import ('../testViews/DialogTest.vue'),
                 meta: {
-                    title: "对话框测试" + postTitle
+                    title: "对话框测试" + postTitle,
+                    pageTitle: "对话框测试"
                 }
             },
             {
                 path: 'examTest',
-                name: '考试测试',
+                name: 'ExamTest',
                 component: () =>
                     import ('../testViews/ExamTest.vue'),
                 meta: {
-                    title: "考试测试" + postTitle
+                    title: "考试测试" + postTitle,
+                    pageTitle: "考试测试"
                 }
             },
         ]

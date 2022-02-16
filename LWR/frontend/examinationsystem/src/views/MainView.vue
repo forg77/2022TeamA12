@@ -2,7 +2,7 @@
   <NavBar :items="navs" />
   <!-- <p>当前路径：{{ $route.path }}</p> -->
   <div class="title">
-    {{ $route.name }}
+    {{ $route.meta.pageTitle }}
   </div>
   <router-view v-slot="{ Component }">
     <transition name="fade" mode="out-in">
