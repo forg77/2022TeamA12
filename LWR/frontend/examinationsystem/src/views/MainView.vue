@@ -1,5 +1,5 @@
 <template>
-  <NavBar :items="navs" />
+  <NavBar :items="navs" :nickname="nickname" />
   <!-- <p>当前路径：{{ $route.path }}</p> -->
   <div class="title">
     {{ $route.meta.pageTitle }}
@@ -13,8 +13,15 @@
 
 <script>
 import NavBar from "@/components/NavBar.vue";
+import axios from "axios";
+import config from "@/config";
 
 export default {
+  data() {
+    return {
+      nickname: "",
+    };
+  },
   components: {
     NavBar,
   },
@@ -25,6 +32,20 @@ export default {
         return [];
       },
     },
+  },
+  created: async function () {
+    await axios({
+      url: "/user/userInfo",
+    })
+      .then((res) => {
+        if (res.data.errCode != 101) {
+          config.user = res.data;
+          this.nickname = res.data.nickname;
+        } else this.$router.replace("/login");
+      })
+      .catch(() => {
+        this.$router.replace("/login");
+      });
   },
 };
 </script>

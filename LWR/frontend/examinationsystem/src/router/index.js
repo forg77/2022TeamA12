@@ -1,8 +1,8 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import { siteTitle } from '../config'
+import config from '../config'
 import Home from '../views/Home.vue'
 
-const postTitle = " - " + siteTitle;
+const postTitle = " - " + config.siteTitle;
 
 const routes = [{
         path: '/login',
@@ -79,7 +79,7 @@ const routes = [{
                 }
             },
             {
-                path: '/invigilationManage',
+                path: 'invigilationManage',
                 name: 'InvigilationManage',
                 component: () =>
                     import ('../views/admin/InvigilationManage.vue'),
@@ -147,4 +147,21 @@ const router = createRouter({
     routes
 })
 
-export default router
+//配置标题
+router.beforeEach(to => {
+    if (to.meta.title) {
+        document.title = to.meta.title;
+    }
+});
+
+// //配置用户未登录的跳转
+// router.beforeEach((to, from) => {
+//     if (to.name != "Login") {
+//         if (config.user == null) {
+//             return { path: '/login', replace: true };
+//         }
+//     }
+//     return true;
+// });
+
+export default router;
