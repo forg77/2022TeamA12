@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.zstu.examsys.mapper.QuestionMapper">
+    <select id="getBanks" resultType="QuestionBank">
+        SELECT `question_bank`.`id`,
+        `name`,
+        `author`,
+        `nickname` AS `author_name`,
+        `creation_time`,
+        `private` AS `is_private`,
+        (SELECT COUNT(*) FROM `question` WHERE `bank_id` = `id`) AS `count`
+        FROM `question_bank`
+        INNER JOIN `user` ON `user`.`id` = `author`
+        <where>
+            <if test="author != null">
+                AND `author` = #{author}
+            </if>
+        </where>
+        ORDER BY
+        <choose>
+            <when test="con.order == 'id'">
+                `question_bank`.`id`
+            </when>
+            <when test='con.order == "name"'>
+                `name`
+            </when>
+            <when test='con.order == "author"'>
+                `author`
+            </when>
+            <when test='con.order == "authorName"'>
+                `author_name`
+            </when>
+            <when test='con.order == "creationTime"'>
+                `creation_time`
+            </when>
+            <when test='con.order == "isPrivate"'>
+                `is_private`
+            </when>
+            <otherwise>
+                `question_bank`.`id`
+            </otherwise>
+        </choose>
+        <if test="con.desc">
+            DESC
+        </if>
+        <if test="con.offset != null and con.max != null">
+            LIMIT #{offset}, #{max}
+        </if>
+        ;
+    </select>
+</mapper>
