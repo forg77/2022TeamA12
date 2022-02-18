@@ -20,7 +20,7 @@ axios.interceptors.response.use((response) => {
     if (response.config.url != "/user/userInfo") {
         let errCode = response.data && response.data.errCode;
         if (errCode == 101) {
-            router.replace("/login");
+            router.push("/login");
         }
     }
     return response;

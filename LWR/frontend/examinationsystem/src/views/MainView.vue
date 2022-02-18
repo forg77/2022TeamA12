@@ -40,11 +40,11 @@ export default {
       .then((res) => {
         if (res.data.errCode != 101) {
           config.user = res.data;
-          this.nickname = res.data.nickname;
-        } else this.$router.replace("/login");
+          this.nickname = res.data.data.nickname;
+        } else this.$router.push("/login");
       })
       .catch(() => {
-        this.$router.replace("/login");
+        this.$router.push("/login");
       });
   },
 };

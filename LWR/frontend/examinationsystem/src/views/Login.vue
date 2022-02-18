@@ -29,7 +29,7 @@ export default {
       }).then((response) => {
         if (response.data.errCode == 0) {
           config.user = response.data.data;
-          this.$router.replace("/admin");
+          this.$router.push("/admin");
         }
       });
     },
