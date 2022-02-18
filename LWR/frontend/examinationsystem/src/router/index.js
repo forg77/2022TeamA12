@@ -139,6 +139,22 @@ const routes = [{
                 }
             },
         ]
+    },
+    {
+        path: '/teacher',
+        name: "Teacher",
+        component: () =>
+            import ('../views/MainView.vue'),
+        props: {
+            navs: [{
+                title: "题库管理",
+                content: [
+                    { title: "题库查询", link: "/teacher/questionsManage" },
+                    { title: "题库录入", link: "/teacher/questionsInput" },
+                ],
+            }],
+        },
+        children: []
     }
 ]
 

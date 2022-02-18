@@ -25,11 +25,11 @@
       <button class="btn" @click="showFailedDialog = false">确定</button>
     </template>
   </DialogBox>
-  <button v-if="canAdd" class="btn" @click="setAdding()">
+  <button v-if="Boolean(urls.addUrl)" class="btn" @click="setAdding()">
     {{ isAdding ? addString.cancel : addString.add }}
   </button>
   <button
-    v-if="canDelete"
+    v-if="Boolean(urls.deleteUrl)"
     class="btn"
     @click="showDeleteDialog = true"
     style="width: 150px; margin-left: 20px"
@@ -65,7 +65,7 @@
               <svg-icon iconName="descending" v-show="desc"></svg-icon>
             </template>
           </th>
-          <th v-if="canEdit" style="cursor: default"></th>
+          <th v-if="Boolean(urls.updateUrl)" style="cursor: default"></th>
         </tr>
         <transition-group name="list-complete">
           <tr
@@ -99,7 +99,7 @@
               </template>
             </td>
             <td
-              v-if="canEdit || isAdding"
+              v-if="Boolean(urls.updateUrl) || isAdding"
               class="item edit"
               style="width: 60px"
               :class="{ show: item.id == editingId }"
@@ -297,7 +297,7 @@ export default {
       }, 900);
 
       axios({
-        url: this.url,
+        url: this.urls.queryUrl,
         cancelToken: new axios.CancelToken((c) => {
           this.ajaxCancel = c;
         }),
@@ -443,7 +443,7 @@ export default {
         data[col.name] = this.editItems[col.name];
       }
       axios({
-        url: this.isAdding ? this.addUrl : this.updateUrl,
+        url: this.isAdding ? this.urls.addUrl : this.urls.updateUrl,
         data: data,
       })
         .then((response) => {
@@ -491,7 +491,7 @@ export default {
         data.itemsId.push(id);
       }
       axios({
-        url: this.deleteUrl,
+        url: this.urls.deleteUrl,
         data: data,
       })
         .then((response) => {
@@ -527,44 +527,28 @@ export default {
       let element = document.getElementById("setItemsPerPage");
       element.value = value;
     },
-    // currentPage(newValue, oldValue) {
-    //   if (newValue <= 0) {
-    //     this.currentPage = 1;
-    //     return;
-    //   } else {
-    //     let totalPages = this.getTotalPages();
-    //     if (newValue > totalPages) {
-    //       this.currentPage = totalPages;
-    //       return;
-    //     }
-    //   }
-    //   if (oldValue != this.currentPage) this.getItems();
-    // },
-    // itemsPerPage(newValue, oldValue) {
-    //   if (newValue <= 0) {
-    //     this.itemsPerPage = 1;
-    //     return;
-    //   } else if (newValue > 100) {
-    //     this.itemsPerPage = 100;
-    //     return;
-    //   }
-    //   if (oldValue != this.itemsPerPage) {
-    //     this.getItems();
-    //     let totalPages = this.getTotalPages();
-    //     if (this.currentPage > totalPages) this.currentPage = totalPages;
-    //   }
-    // },
   },
   mounted() {
     this.getItems();
   },
   props: {
-    url: { type: String, default: "" },
-    updateUrl: { type: String, default: "" },
-    addUrl: { type: String, default: "" },
-    deleteUrl: { type: String, default: "" },
+    // url: { type: String, default: "" },
+    // updateUrl: { type: String, default: "" },
+    // addUrl: { type: String, default: "" },
+    // deleteUrl: { type: String, default: "" },
     //对象格式{title:"title",name:"name",transformer:(data)=>data,editable:true}
     columns: { type: Array, default: () => [] },
+    urls: {
+      type: Object,
+      default() {
+        return {
+          queryUrl:"",
+          updateUrl:"",
+          addUrl:"",
+          deleteUrl:""
+        };
+      },
+    },
   },
 };
 </script>
