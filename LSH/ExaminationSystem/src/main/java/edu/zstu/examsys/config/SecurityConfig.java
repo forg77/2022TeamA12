@@ -97,7 +97,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new AuthenticationFailureHandler() {
             @Override
             public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-                CommonData data = new CommonData(ErrorCode.LOGIN_FAILED, "登录失败" + exception.getMessage());
+                CommonData data = new CommonData(ErrorCode.LOGIN_FAILED, "登录失败，" + exception.getMessage());
                 response.setContentType("application/json;charset=UTF-8");
                 response.getWriter().print(JSON.toJSONString(data));
             }

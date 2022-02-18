@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import edu.zstu.examsys.mapper.TestMapper;
+import edu.zstu.examsys.pojo.CommonData;
+import edu.zstu.examsys.pojo.ErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,9 +34,11 @@ public class TestController {
 
 //        System.out.println(requestBody);
 
-        Map<String, Object> result = new HashMap<>();
-        result.put("count", testMapper.getCount());
-        result.put("data", testMapper.getAll(offset, max, order, desc));
+        Map<String, Object> data = new HashMap<>();
+        data.put("count", testMapper.getCount());
+        data.put("data", testMapper.getAll(offset, max, order, desc));
+
+        CommonData result = new CommonData(ErrorCode.SUCCESS, "成功", data);
 //        try {
 //            Thread.sleep(2000);
 //        } catch (InterruptedException e) {
