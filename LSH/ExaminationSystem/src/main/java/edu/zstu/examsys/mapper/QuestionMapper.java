@@ -12,4 +12,5 @@ import java.util.Map;
 @Mapper
 public interface QuestionMapper {
     List<QuestionBank> getBanks(Integer author, Condition con);
+    Integer getBanksCount(Integer author);
 }

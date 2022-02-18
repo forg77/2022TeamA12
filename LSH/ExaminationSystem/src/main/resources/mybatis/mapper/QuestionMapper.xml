@@ -46,8 +46,19 @@
             DESC
         </if>
         <if test="con.offset != null and con.max != null">
-            LIMIT #{offset}, #{max}
+            LIMIT #{con.offset}, #{con.max}
         </if>
         ;
+    </select>
+    <select id="getBanksCount" resultType="int">
+        SELECT
+            COUNT(*) AS `count`
+        FROM
+            `question_bank`
+        <where>
+            <if test="author != null">
+                AND `author` = #{author}
+            </if>
+        </where>
     </select>
 </mapper>

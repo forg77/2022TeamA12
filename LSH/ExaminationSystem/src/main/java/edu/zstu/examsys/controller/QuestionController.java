@@ -2,17 +2,20 @@ package edu.zstu.examsys.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import edu.zstu.examsys.pojo.CommonData;
 import edu.zstu.examsys.pojo.Condition;
+import edu.zstu.examsys.pojo.ErrorCode;
 import edu.zstu.examsys.service.QuestionService;
 import edu.zstu.examsys.util.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/question")
@@ -24,12 +27,18 @@ public class QuestionController {
         this.questionService = questionService;
     }
 
-    @GetMapping("/getBanks")
-    public String getBanks(@RequestBody String requestBody) {
+    @PostMapping("/getBanks")
+    public String getBanks(@RequestBody String requestBody, HttpServletResponse res1) {
         JSONObject body = JSON.parseObject(requestBody);
         Condition con = JSONUtils.setCondition(body);
         Integer author = body.getInteger("author");
 
-        return JSON.toJSONString(questionService.getBanks(author, con));
+        Map<String, Object> data = new HashMap<>();
+        data.put("count", questionService.getBanksCount(author));
+        data.put("data", questionService.getBanks(author, con));
+
+        CommonData res = new CommonData(ErrorCode.SUCCESS, "成功", data);
+
+        return JSON.toJSONString(res);
     }
 }

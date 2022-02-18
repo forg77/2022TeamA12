@@ -20,4 +20,8 @@ public class QuestionService {
     public List<QuestionBank> getBanks(Integer author, Condition con) {
         return questionMapper.getBanks(author, con);
     }
+
+    public Integer getBanksCount(Integer author){
+        return questionMapper.getBanksCount(author);
+    }
 }
