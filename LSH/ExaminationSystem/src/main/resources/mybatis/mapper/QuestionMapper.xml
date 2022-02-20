@@ -64,12 +64,12 @@
 
     <select id="getQuestions" resultType="Question">
         SELECT `question`.`id`,
-               `type`,
-               `description`,
-               `bank_id`,
-               `question_bank`.`name` AS `bank_name`
+        `type`,
+        `description`,
+        `bank_id`,
+        `question_bank`.`name` AS `bank_name`
         FROM `question`
-                 INNER JOIN `question_bank` ON `bank_id` = `question_bank`.`id`
+        INNER JOIN `question_bank` ON `bank_id` = `question_bank`.`id`
         <where>
             <if test="bankId != null">
                 AND `bank_id` = #{bankId}
@@ -113,6 +113,45 @@
         <where>
             <if test="author != null">
                 AND `bank_id` = #{bankId}
+            </if>
+        </where>
+    </select>
+
+    <select id="getChoiceQuestions" resultType="ChoiceQuestion">
+        SELECT `question`.*,
+        `choice_question`.`id` AS `choice_id`,
+        `choice`,
+        `answer`
+        FROM `choice_question`
+        INNER JOIN `question` ON `question`.`id` = `question_id`
+        <where>
+            <if test="questionId != null">
+                AND `id` = #{questionId}
+            </if>
+            <if test="bankId != null">
+                AND `bank_id` = #{bankId}
+            </if>
+            <if test="type != null">
+                AND `type` = #{type}
+            </if>
+        </where>
+    </select>
+
+    <select id="getNormalQuestions" resultType="NormalQuestion">
+        SELECT `question`.*,
+        `normal_question`.`id` AS `normal_id`,
+        `answer`
+        FROM `normal_question`
+        INNER JOIN `question` ON `question`.`id` = `question_id`
+        <where>
+            <if test="questionId != null">
+                AND `id` = #{questionId}
+            </if>
+            <if test="bankId != null">
+                AND `bank_id` = #{bankId}
+            </if>
+            <if test="type != null">
+                AND `type` = #{type}
             </if>
         </where>
     </select>

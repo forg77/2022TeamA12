@@ -1,9 +1,7 @@
 package edu.zstu.examsys.service;
 
 import edu.zstu.examsys.mapper.QuestionMapper;
-import edu.zstu.examsys.pojo.Condition;
-import edu.zstu.examsys.pojo.Question;
-import edu.zstu.examsys.pojo.QuestionBank;
+import edu.zstu.examsys.pojo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,5 +30,13 @@ public class QuestionService {
 
     public Integer getQuestionsCount(Integer bankId){
         return questionMapper.getQuestionsCount(bankId);
+    }
+
+    public List<ChoiceQuestion> getChoiceQuestions(Integer questionId, Integer bankId, String type, Condition con){
+        return questionMapper.getChoiceQuestions(questionId, bankId, type, con);
+    }
+
+    public List<NormalQuestion> getNormalQuestions(Integer questionId, Integer bankId, String type, Condition con){
+        return questionMapper.getNormalQuestions(questionId, bankId, type, con);
     }
 }

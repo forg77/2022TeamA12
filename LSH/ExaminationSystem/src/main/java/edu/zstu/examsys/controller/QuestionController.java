@@ -56,4 +56,19 @@ public class QuestionController {
 
         return JSON.toJSONString(res);
     }
+
+    @PostMapping("/getAllQuestions")
+    public String getAllQuestions(@RequestBody String requestBody) {
+        JSONObject body = JSON.parseObject(requestBody);
+        Condition con = JSONUtils.setCondition(body);
+        Integer bankId = body.getInteger("bankId");
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("choice", questionService.getChoiceQuestions(null, bankId, null, con));
+        data.put("normal", questionService.getNormalQuestions(null, bankId, null, con));
+
+        CommonData res = new CommonData(ErrorCode.SUCCESS, "成功", data);
+
+        return JSON.toJSONString(res);
+    }
 }
