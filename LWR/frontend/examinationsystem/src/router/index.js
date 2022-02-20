@@ -154,7 +154,27 @@ const routes = [{
                 ],
             }],
         },
-        children: []
+        children: [{
+                path: 'questionsManage',
+                name: 'teacherQuestionsManage',
+                component: () =>
+                    import ('../views/teacher/QuestionsManage'),
+                meta: {
+                    title: "题库管理" + postTitle,
+                    pageTitle: "题库管理"
+                }
+            },
+            {
+                path: 'questionManage/:bankId',
+                name: 'teacherQuestionManage',
+                component: () =>
+                    import ('../views/teacher/QuestionsManage/QuestionTable.vue'),
+                meta: {
+                    title: "题目管理" + postTitle,
+                    pageTitle: "题目管理"
+                }
+            },
+        ]
     }
 ]
 
