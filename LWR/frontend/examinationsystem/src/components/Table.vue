@@ -38,7 +38,7 @@
     删除所选项{{ selectCount > 0 ? "(" + selectCount + ")" : "" }}
   </button>
   <button
-    v-if="canSelect"
+    v-if="config.canSelect"
     class="btn"
     @click="selectItems = {}"
     :disabled="selectCount <= 0"
@@ -72,9 +72,15 @@
             v-for="item in items"
             :key="item.id"
             class="row list-complete-item"
-            :style="{ cursor: canSelect ? 'pointer' : 'default' }"
+            :style="{
+              cursor:
+                config.canSelect || config.canClick ? 'pointer' : 'default',
+            }"
             :class="{ select: item.id in selectItems }"
-            @click="selectItem(item)"
+            @click="
+              selectItem(item);
+              clickItem(item);
+            "
           >
             <td
               class="item"
@@ -83,7 +89,11 @@
               :style="{ height: lineHeight }"
             >
               <template v-if="editingId != item.id">
-                {{ item[column.name] }}
+                {{
+                  column.transformer
+                    ? column.transformer(item[column.name])
+                    : item[column.name]
+                }}
               </template>
               <template v-else-if="item.id != -2 || column.name != 'id'">
                 <input
@@ -94,7 +104,11 @@
                   @click="$event.stopPropagation()"
                 />
                 <template v-else>
-                  {{ item[column.name] }}
+                  {{
+                    column.transformer
+                      ? column.transformer(item[coflumn.name])
+                      : item[column.name]
+                  }}
                 </template>
               </template>
             </td>
@@ -256,20 +270,18 @@ export default {
       ajaxCancel: null,
       loadFailed: false,
 
-      canEdit: true,
+      // canEdit: true,
       editingId: -1,
       editItems: {},
 
-      canAdd: true,
+      // canAdd: true,
       isAdding: false,
       addString: { add: "添加", cancel: "取消" },
       loadComplete: false,
 
-      canSelect: true,
-      canMultiSelect: true,
       selectItems: {},
 
-      canDelete: true,
+      // canDelete: true,
 
       showDeleteDialog: false,
       showFailedDialog: false,
@@ -294,7 +306,7 @@ export default {
       this.items = [];
       let loadingTimeout = setTimeout(() => {
         this.loading = true;
-      }, 900);
+      }, 1100);
 
       axios({
         url: this.urls.queryUrl,
@@ -311,7 +323,7 @@ export default {
         .then((response) => {
           this.ajaxCancel = null;
           this.totalHeight =
-            (this.lineHeight + 3) * (1 + response.data.data.length);
+            (this.lineHeight + 3) * (1 + response.data.data.data.length);
           let interval = new Date() - start;
           // clearTimeout(loadTimeout);
 
@@ -337,8 +349,8 @@ export default {
               waitTime = 1100;
             }
             setTimeout(() => {
-              this.totalCount = response.data.count;
-              this.items = response.data.data;
+              this.totalCount = response.data.data.count;
+              this.items = response.data.data.data;
               this.loadComplete = true;
 
               if (this.timeout != null) clearTimeout(this.timeout);
@@ -476,7 +488,7 @@ export default {
       }
     },
     selectItem(item) {
-      if (!this.canSelect || item.id == -2) return;
+      if (!this.config.canSelect || item.id == -2) return;
       if (item.id in this.selectItems) delete this.selectItems[item.id];
       else {
         if (!this.canMultiSelect) {
@@ -509,7 +521,12 @@ export default {
           this.showFailedDialog = true;
         });
     },
+    clickItem(item) {
+      if (!this.config.canClick) return;
+      this.$emit("clickItem", item);
+    },
   },
+  emits: ["clickItem"],
   computed: {
     selectCount() {
       return Object.keys(this.selectItems).length;
@@ -542,13 +559,25 @@ export default {
       type: Object,
       default() {
         return {
-          queryUrl:"",
-          updateUrl:"",
-          addUrl:"",
-          deleteUrl:""
+          queryUrl: "",
+          updateUrl: "",
+          addUrl: "",
+          deleteUrl: "",
         };
       },
     },
+    config: {
+      type: Object,
+      default() {
+        return {
+          canSelect: false,
+          canMultiSelect: true,
+          canClick: false,
+        };
+      },
+    },
+    canSelect: { type: Boolean, default: false },
+    canMultiSelect: { type: Boolean, default: true },
   },
 };
 </script>
