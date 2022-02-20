@@ -2,6 +2,7 @@ package edu.zstu.examsys.service;
 
 import edu.zstu.examsys.mapper.QuestionMapper;
 import edu.zstu.examsys.pojo.Condition;
+import edu.zstu.examsys.pojo.Question;
 import edu.zstu.examsys.pojo.QuestionBank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,5 +24,13 @@ public class QuestionService {
 
     public Integer getBanksCount(Integer author){
         return questionMapper.getBanksCount(author);
+    }
+
+    public List<Question> getQuestions(Integer bankId, Condition con){
+        return questionMapper.getQuestions(bankId, con);
+    }
+
+    public Integer getQuestionsCount(Integer bankId){
+        return questionMapper.getQuestionsCount(bankId);
     }
 }

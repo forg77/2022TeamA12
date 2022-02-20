@@ -28,7 +28,7 @@ public class QuestionController {
     }
 
     @PostMapping("/getBanks")
-    public String getBanks(@RequestBody String requestBody, HttpServletResponse res1) {
+    public String getBanks(@RequestBody String requestBody) {
         JSONObject body = JSON.parseObject(requestBody);
         Condition con = JSONUtils.setCondition(body);
         Integer author = body.getInteger("author");
@@ -36,6 +36,21 @@ public class QuestionController {
         Map<String, Object> data = new HashMap<>();
         data.put("count", questionService.getBanksCount(author));
         data.put("data", questionService.getBanks(author, con));
+
+        CommonData res = new CommonData(ErrorCode.SUCCESS, "成功", data);
+
+        return JSON.toJSONString(res);
+    }
+
+    @PostMapping("/getQuestions")
+    public String getQuestions(@RequestBody String requestBody) {
+        JSONObject body = JSON.parseObject(requestBody);
+        Condition con = JSONUtils.setCondition(body);
+        Integer bankId = body.getInteger("bankId");
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("count", questionService.getQuestionsCount(bankId));
+        data.put("data", questionService.getQuestions(bankId, con));
 
         CommonData res = new CommonData(ErrorCode.SUCCESS, "成功", data);
 

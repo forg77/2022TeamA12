@@ -52,12 +52,67 @@
     </select>
     <select id="getBanksCount" resultType="int">
         SELECT
-            COUNT(*) AS `count`
+        COUNT(*) AS `count`
         FROM
-            `question_bank`
+        `question_bank`
         <where>
             <if test="author != null">
                 AND `author` = #{author}
+            </if>
+        </where>
+    </select>
+
+    <select id="getQuestions" resultType="Question">
+        SELECT `question`.`id`,
+               `type`,
+               `description`,
+               `bank_id`,
+               `question_bank`.`name` AS `bank_name`
+        FROM `question`
+                 INNER JOIN `question_bank` ON `bank_id` = `question_bank`.`id`
+        <where>
+            <if test="bankId != null">
+                AND `bank_id` = #{bankId}
+            </if>
+        </where>
+        ORDER BY
+        <choose>
+            <when test="con.order == 'id'">
+                `question`.`id`
+            </when>
+            <when test='con.order == "type"'>
+                `type`
+            </when>
+            <when test='con.order == "description"'>
+                `description`
+            </when>
+            <when test='con.order == "bank_id"'>
+                `bank_id`
+            </when>
+            <when test='con.order == "bank_name"'>
+                `bank_name`
+            </when>
+            <otherwise>
+                `question`.`id`
+            </otherwise>
+        </choose>
+        <if test="con.desc">
+            DESC
+        </if>
+        <if test="con.offset != null and con.max != null">
+            LIMIT #{con.offset}, #{con.max}
+        </if>
+        ;
+    </select>
+
+    <select id="getQuestionsCount" resultType="int">
+        SELECT
+        COUNT(*) AS `count`
+        FROM
+        `question`
+        <where>
+            <if test="author != null">
+                AND `bank_id` = #{bankId}
             </if>
         </where>
     </select>
