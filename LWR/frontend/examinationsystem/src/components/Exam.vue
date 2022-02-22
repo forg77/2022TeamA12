@@ -1,4 +1,27 @@
 <template>
+  <DialogBox v-model:show="showOverDialog">
+    <template v-slot:header>考试已结束</template>
+    <template v-if="'grade' in examPaper">
+      您的分数：{{ examPaper.grade }}/{{ exam.fullMark }}
+      <br />
+      剩余考试次数：{{ exam.repeatTime - examPaper.times }}
+      <button
+        class="btn"
+        @click="
+          joinExam();
+          showOverDialog = false;
+        "
+      >
+        重新考试
+      </button>
+    </template>
+    <template v-else>
+      <button class="btn" @click="getScore()">获取分数</button>
+    </template>
+    <template v-slot:bottom>
+      <button class="btn" @click="showOverDialog = false">确定</button>
+    </template>
+  </DialogBox>
   <table
     class="exam"
     cellspacing="0"
@@ -100,7 +123,14 @@
                   </tr>
                   <tr>
                     <td style="height: 38px; text-align: center">
-                      <button class="btn" style="height: 28px; width: 234px">
+                      <button
+                        class="btn"
+                        style="height: 28px; width: 234px"
+                        @click="
+                          if (!isExamOver) stopExam();
+                          else showOverDialog = true;
+                        "
+                      >
                         结束考试
                       </button>
                     </td>
@@ -213,6 +243,10 @@
                     questions[currentQueType][currentId]
                   "
                 >
+                  ({{
+                    questionScores[currentId] &&
+                    questionScores[currentId].score
+                  }}分)
                   {{
                     currentTitleNumber +
                     "." +
@@ -231,6 +265,7 @@
                         name="choice"
                         :value="index"
                         type="radio"
+                        :disabled="isExamOver"
                         @click="
                           answers[getAnswerType(currentQueType)][currentId] =
                             {};
@@ -262,10 +297,13 @@
                       <input
                         type="text"
                         class="inputBox"
+                        :disabled="isExamOver"
                         v-model="
-                          answers[getAnswerType(currentQueType)][currentId][n-1]
+                          answers[getAnswerType(currentQueType)][currentId][
+                            n - 1
+                          ]
                         "
-                        @change="normalQueChange($event, n-1)"
+                        @change="normalQueChange($event, n - 1)"
                       />
                     </template>
                   </template>
@@ -324,8 +362,12 @@
 <script>
 import axios from "axios";
 import { formatDate } from "@/common.js";
+import DialogBox from "./DialogBox.vue";
 // import config from "@/config.js";
 export default {
+  components: {
+    DialogBox,
+  },
   data() {
     return {
       examId: 1,
@@ -340,6 +382,7 @@ export default {
       exam: {},
       examPaper: {},
       order: {},
+      questionScores: {},
       currentId: 1,
       currentQueType: "choice",
       // config:config
@@ -352,6 +395,8 @@ export default {
       currentTime: new Date(),
       remainingTime: 0,
       correctTimeDiff: 0,
+
+      showOverDialog: false,
     };
   },
   methods: {
@@ -428,6 +473,52 @@ export default {
         }
       });
     },
+    getQuestionScores() {
+      axios({
+        url: "/exam/getQuestionScores",
+        data: {
+          examId: this.examId,
+        },
+      }).then((res) => {
+        let data = res.data.data;
+        for (let score of data) {
+          this.questionScores[score.id] = score;
+        }
+      });
+    },
+    joinExam() {
+      axios({
+        url: "/exam/joinExam",
+        data: {
+          examId: this.examId,
+          examinee: this.user.id,
+        },
+      }).then((res) => {
+        this.initExam();
+      });
+    },
+    stopExam() {
+      axios({
+        url: "/exam/stopExam",
+        data: {
+          examId: this.examId,
+          examinee: this.user.id,
+        },
+      }).then((res) => {
+        this.initExam();
+      });
+    },
+    getScore() {
+      axios({
+        url: "/exam/correctPaper",
+        data: {
+          examId: this.examId,
+          examinee: this.user.id,
+        },
+      }).then((res) => {
+        this.initExam();
+      });
+    },
     getQuestionTypeName(type) {
       if (type == "choice") return "单选题";
       else if (type == "multi_choice") return "多选题";
@@ -490,8 +581,35 @@ export default {
             examId: this.examId,
             answer: JSON.stringify(this.answers[type][queId]),
           },
+          cancelToken: new axios.CancelToken((c) => {
+            this.ajaxCancel = c;
+          }),
         }).then((res) => {});
       }
+    },
+    async initExam() {
+      await this.getQuestions();
+      await this.getExamInfo();
+      this.getExamPaper();
+      this.getAnswers();
+      this.getQuestionScores();
+
+      this.correctTime();
+
+      this.currentTime = new Date() + this.correctTimeDiff;
+      let interval = setInterval(() => {
+        this.currentTime = new Date(
+          new Date().valueOf() + this.correctTimeDiff
+        );
+        this.remainingTime =
+          this.stopTime.valueOf() - this.currentTime.valueOf();
+        // console.log(this.currentTime);
+        if (this.remainingTime <= 0 || this.isExamOver) {
+          this.remainingTime = 0;
+          clearInterval(interval);
+          this.showOverDialog = true;
+        }
+      }, 500);
     },
     async correctTime() {
       let before = new Date();
@@ -513,26 +631,18 @@ export default {
     stopTimeString() {
       return formatDate(this.stopTime);
     },
+    isExamOver() {
+      return this.remainingTime <= 0 || Boolean(this.examPaper.finishTime);
+    },
   },
   async mounted() {
-    await this.getQuestions();
-    await this.getExamInfo();
-    this.getExamPaper();
-    this.getAnswers();
-
-    this.correctTime();
-    setInterval(() => {
-      this.correctTime();
-    }, 60000);
-    this.currentTime = new Date() + this.correctTimeDiff;
-    setInterval(() => {
-      this.currentTime = new Date(new Date().valueOf() + this.correctTimeDiff);
-      this.remainingTime = this.stopTime.valueOf() - this.currentTime.valueOf();
-      // console.log(this.currentTime);
-    }, 500);
     // console.log(this.config);
     // console.log(this.questions.choice, this.questions.completion);
     // console.log(this.config);
+    this.initExam();
+    setInterval(() => {
+      this.correctTime();
+    }, 60000);
   },
 };
 </script>
