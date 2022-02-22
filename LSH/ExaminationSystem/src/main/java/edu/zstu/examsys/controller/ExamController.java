@@ -112,6 +112,66 @@ public class ExamController {
         return JSON.toJSONString(res);
     }
 
+    @PostMapping("/joinExam")
+    public String joinExam(@RequestBody String requestBody) {
+        JSONObject body = JSON.parseObject(requestBody);
+        Integer examId = body.getInteger("examId");
+        Integer examinee = body.getInteger("examinee");
+        Exam exam = examService.getExams(examId, new Condition()).get(0);
+        List<ExamPaper> examPapers = examService.getExamPapers(examId, examinee, new Condition());
+        ExamPaper examPaper;
+        if (examPapers.size() > 0) {
+            examPaper = examPapers.get(0);
+            examPaper.setTimes(examPaper.getTimes() + 1);
+        } else {
+            examPaper = new ExamPaper();
+            examPaper.setTimes(1);
+        }
+
+        CommonData res;
+        if (!isExamOver(exam, examPaper)) {
+            examPaper.setExamId(body.getInteger("examId"));
+            examPaper.setExaminee(body.getInteger("examinee"));
+            examPaper.setOrderJson(body.getString("orderJson"));
+            examPaper.setStartTime(new Date());
+            examPaper.setFinishTime(null);
+            examPaper.setGrade(null);
+
+            if (examPapers.size() > 0) {
+                examService.updateExamPaper(examPaper);
+            } else {
+                examService.addExamPaper(examPaper);
+            }
+            examService.deleteExamAnswers(examPaper.getExamId(), examPaper.getExaminee());
+
+            res = new CommonData(ErrorCode.SUCCESS, "成功");
+        } else {
+            res = new CommonData(ErrorCode.EXAM_GOING, "考试进行中");
+        }
+
+        return JSON.toJSONString(res);
+    }
+
+    @PostMapping("/stopExam")
+    public String stopExam(@RequestBody String requestBody) {
+        JSONObject body = JSON.parseObject(requestBody);
+        Integer examId = body.getInteger("examId");
+        Integer examinee = body.getInteger("examinee");
+        Exam exam = examService.getExams(examId, new Condition()).get(0);
+        ExamPaper examPaper = examService.getExamPapers(examinee, examId, new Condition()).get(0);
+
+        CommonData res;
+        if (!isExamOver(exam, examPaper)) {
+            examPaper.setFinishTime(new Date());
+            examService.updateExamPaper(examPaper);
+            res = new CommonData(ErrorCode.SUCCESS, "成功");
+        } else {
+            res = new CommonData(ErrorCode.EXAM_OVER, "考试已结束");
+        }
+
+        return JSON.toJSONString(res);
+    }
+
     @PostMapping("/correctPaper")
     public String correctPaper(@RequestBody String requestBody) {
         JSONObject body = JSON.parseObject(requestBody);
@@ -139,8 +199,12 @@ public class ExamController {
         float totalScore = 0;
         List<NormalAnswer> normalAnswers = examService.getNormalAnswers(examinee, examId);
         for (NormalAnswer answer : normalAnswers) {
-            totalScore += scores.get(answer.getQuestionId()) * normalCorrect(JSON.parseObject(answer.getAnswer()), correctNormalAnswers.get(answer.getQuestionId()));
+            float score = scores.get(answer.getQuestionId()) * normalCorrect(JSON.parseObject(answer.getAnswer()), correctNormalAnswers.get(answer.getQuestionId()));
+            answer.setScore(score);
+            examService.updateNormalAnswer(answer);
+            totalScore += score;
         }
+        examService.updateGrade(examId, examinee, totalScore);
 
         CommonData res = new CommonData(ErrorCode.SUCCESS, "成功", totalScore);
 
@@ -156,6 +220,11 @@ public class ExamController {
             }
         }
         return (float) correctNum / keys.size();
+    }
+
+    private boolean isExamOver(Exam exam, ExamPaper examPaper) {
+        return examPaper.getFinishTime() != null &&
+                new Date().after(new Date(examPaper.getStartTime().getTime() + exam.getDuration()));
     }
 
 //    @PostMapping("/joinExam")

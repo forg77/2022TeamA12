@@ -9,6 +9,8 @@ public class ExamPaper {
     private String orderJson;
     private Float grade;
     private Date startTime;
+    private Date finishTime;
+    private Integer times;
 
     public Integer getId() {
         return id;
@@ -58,6 +60,22 @@ public class ExamPaper {
         this.startTime = startTime;
     }
 
+    public Date getFinishTime() {
+        return finishTime;
+    }
+
+    public void setFinishTime(Date finishTime) {
+        this.finishTime = finishTime;
+    }
+
+    public Integer getTimes() {
+        return times;
+    }
+
+    public void setTimes(Integer times) {
+        this.times = times;
+    }
+
     @Override
     public String toString() {
         return "ExamPaper{" +
@@ -67,6 +85,8 @@ public class ExamPaper {
                 ", orderJson='" + orderJson + '\'' +
                 ", grade=" + grade +
                 ", startTime=" + startTime +
+                ", finishTime=" + finishTime +
+                ", times=" + times +
                 '}';
     }
 }

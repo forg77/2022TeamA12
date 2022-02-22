@@ -30,4 +30,12 @@ public interface ExamMapper {
     Integer addNormalAnswer(NormalAnswer answer);
 
     List<QuestionScore> getQuestionScores(Integer examId);
+
+    Integer updateGrade(Integer examId, Integer examinee, Float grade);
+
+    Integer addExamPaper(ExamPaper examPaper);
+
+    Integer updateExamPaper(ExamPaper examPaper);
+
+    Integer deleteExamAnswers(Integer examId, Integer examinee);
 }

@@ -103,17 +103,55 @@
         SELECT `exam_answer`.*,
                `normal_answer`.`id` AS `normal_id`,
                `answer`
-        FROM  `normal_answer`
+        FROM `normal_answer`
                  INNER JOIN `exam_answer` ON `exam_answer`.`id` = `answer_id`
         WHERE `examinee` = #{examinee}
           AND `exam_id` = #{examId};
     </select>
 
     <select id="getQuestionScores" resultType="QuestionScore">
-        SELECT
-            *
-        FROM
-            `question_score`
+        SELECT *
+        FROM `question_score`
         WHERE `exam_id` = #{examId};
     </select>
+
+    <update id="updateGrade">
+        UPDATE
+            `exam_paper`
+        SET `grade` = #{grade}
+        WHERE `exam_id` = #{examId}
+          AND `examinee` = #{examinee};
+    </update>
+
+    <insert id="addExamPaper" keyProperty="normalId" useGeneratedKeys="true">
+        INSERT INTO `exam_paper` (`exam_id`,
+                                  `examinee`,
+                                  `order_json`,
+                                  `start_time`,
+                                  `times`)
+        VALUES (#{examId},
+                #{examinee},
+                #{orderJson},
+                #{startTime},
+                #{times});
+    </insert>
+
+    <update id="updateExamPaper">
+        UPDATE
+            `exam_paper`
+        SET `order_json`  = #{orderJson},
+            `grade`       = #{grade},
+            `start_time`  = #{startTime},
+            `finish_time` = #{finishTime},
+            `times` = #{times}
+        WHERE `exam_id` = #{examId}
+          AND `examinee` = #{examinee};
+    </update>
+
+    <delete id="deleteExamAnswers">
+        DELETE
+        FROM `exam_answer`
+        WHERE `exam_id` = #{examId}
+          AND `examinee` = #{examinee};
+    </delete>
 </mapper>

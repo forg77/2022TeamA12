@@ -61,11 +61,37 @@ public class ExamService {
         examMapper.updateNormalAnswer(answer);
     }
 
-    public List<NormalAnswer> getNormalAnswers(Integer examinee, Integer examId){
+    public List<NormalAnswer> getNormalAnswers(Integer examinee, Integer examId) {
         return examMapper.getNormalAnswers(examinee, examId);
     }
 
-    public List<QuestionScore> getQuestionScores(Integer examId){
+    public List<QuestionScore> getQuestionScores(Integer examId) {
         return examMapper.getQuestionScores(examId);
+    }
+
+    public Integer updateGrade(Integer examId, Integer examinee, Float grade) {
+        return examMapper.updateGrade(examId, examinee, grade);
+    }
+
+    public Integer addExamPaper(ExamPaper examPaper) {
+        return examMapper.addExamPaper(examPaper);
+    }
+
+    public Integer updateExamPaper(ExamPaper examPaper) {
+        return examMapper.updateExamPaper(examPaper);
+    }
+
+    public Integer deleteExamAnswers(Integer examId, Integer examinee) {
+        return examMapper.deleteExamAnswers(examId, examinee);
+    }
+
+    @Transactional
+    public void addOrUpdateExamPaper(ExamPaper examPaper) {
+        int count = examMapper.getExamPapersCount(examPaper.getExaminee(), examPaper.getExamId());
+        if (count == 0) {
+            addExamPaper(examPaper);
+        } else {
+            updateExamPaper(examPaper);
+        }
     }
 }

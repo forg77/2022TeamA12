@@ -9,4 +9,7 @@ public class ErrorCode {
     public static final int LOGIN_FAILED = 102;
 
     public static final int INSERT_FAILED = 201;
+
+    public static final int EXAM_OVER = 301;
+    public static final int EXAM_GOING = 301;
 }
