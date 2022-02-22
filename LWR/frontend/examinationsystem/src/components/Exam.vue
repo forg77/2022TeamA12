@@ -50,7 +50,63 @@
           </tr>
           <tr>
             <td>
-              <div class="card" style="width: 262px; height: 506px"></div>
+              <div class="card" style="width: 262px; height: 506px">
+                <table style="width: 100%; height: 100%">
+                  <tr>
+                    <td style="vertical-align: top; padding-top: 10px">
+                      {{ ((serial = 1), (index = {}), undefined) }}
+                      <template v-for="queType in order.part" :key="queType">
+                        <span
+                          style="
+                            margin-left: 14px;
+                            font-weight: bold;
+                            color: black;
+                          "
+                          >{{ getQuestionTypeName(queType) }}：</span
+                        >
+                        <br />
+                        <template v-for="queId in order[queType]" :key="queId">
+                          {{
+                            ((ans = answers[getAnswerType(queType)][queId]),
+                            (isAnswered =
+                              (Boolean(ans) || ans == 0) &&
+                              getObjProCount(ans) != 0),
+                            (index[queId] = serial),
+                            undefined)
+                          }}
+                          <div
+                            class="unanswered"
+                            :class="{
+                              current: queId == currentId,
+                              answered: isAnswered,
+                              'current-answered':
+                                isAnswered && queId == currentId,
+                            }"
+                            style="cursor: pointer"
+                            @click="
+                              currentQueType = queType;
+                              currentId = queId;
+                              this.currentTitleNumber = index[queId];
+                            "
+                          >
+                            <table class="inner">
+                              <td class="inner-number">{{ serial++ }}</td>
+                            </table>
+                          </div>
+                        </template>
+                        <br />
+                      </template>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="height: 38px; text-align: center">
+                      <button class="btn" style="height: 28px; width: 234px">
+                        结束考试
+                      </button>
+                    </td>
+                  </tr>
+                </table>
+              </div>
             </td>
           </tr>
         </table>
@@ -86,7 +142,7 @@
                                     padding-right: 28px;
                                   "
                                 >
-                                  马克思主义基本原理概论
+                                  {{ exam.title }}
                                 </td>
                                 <td
                                   style="
@@ -95,13 +151,14 @@
                                     vertical-align: bottom;
                                   "
                                 >
-                                  马克思主义基本原理概论-2019年上期末考试
+                                  {{ exam.subtitle }}
                                 </td>
                               </tr>
                             </table>
                           </td>
                           <td style="text-align: right; font-size: 21px">
-                            <span style="font-weight: bold">考生：</span>大聪明
+                            <span style="font-weight: bold">考生：</span
+                            >{{ user && user.nickname }}
                           </td>
                         </tr>
                       </table>
@@ -119,21 +176,24 @@
                             题量：<span
                               class="val-text"
                               style="margin-right: 28px"
-                              >50</span
+                              >{{ exam.questionsCount }}</span
                             >
                             满分：<span
                               class="val-text"
                               style="margin-right: 28px"
-                              >100</span
+                              >{{ exam.fullMark }}</span
                             >
-                            截止时间：<span class="val-text"
-                              >2022-01-25 01:30</span
-                            >
+                            截止时间：<span class="val-text">{{
+                              stopTimeString
+                            }}</span>
                           </td>
                           <td style="text-align: right">
-                            倒计时：<span class="val-text">100</span>分钟<span
-                              class="val-text"
-                              >30</span
+                            倒计时：<span class="val-text">{{
+                              Math.floor(remainingTime / 1000 / 60)
+                            }}</span
+                            >分钟<span class="val-text">{{
+                              Math.floor((remainingTime / 1000) % 60)
+                            }}</span
                             >秒
                           </td>
                         </tr>
@@ -146,17 +206,109 @@
           </tr>
           <tr>
             <td>
-              <div class="card" style="width: 100%; height: 426px"></div>
+              <div class="card" style="width: 100%; height: 426px">
+                <template
+                  v-if="
+                    questions[currentQueType] &&
+                    questions[currentQueType][currentId]
+                  "
+                >
+                  {{
+                    currentTitleNumber +
+                    "." +
+                    questions[currentQueType][currentId].description
+                  }}
+                  <br />
+                  <template v-if="currentQueType == 'choice'">
+                    <template
+                      v-for="(choice, index) in questions[currentQueType][
+                        currentId
+                      ].choice"
+                      :key="index"
+                    >
+                      <input
+                        :id="'choice' + index"
+                        name="choice"
+                        :value="index"
+                        type="radio"
+                        @click="
+                          answers[getAnswerType(currentQueType)][currentId] =
+                            {};
+                          answers[getAnswerType(currentQueType)][currentId][
+                            index
+                          ] = true;
+                          commitAnswer(
+                            currentId,
+                            getAnswerType(currentQueType)
+                          );
+                        "
+                        :checked="
+                          answers[getAnswerType(currentQueType)][currentId][
+                            index
+                          ] == true
+                        "
+                      />
+                      <label :for="'choice' + index">{{ choice }}</label>
+                      <br />
+                    </template>
+                  </template>
+                  <template v-else-if="currentQueType == 'completion'">
+                    <template
+                      v-for="n in questions[currentQueType][currentId]
+                        .answersCount"
+                      :key="currentId + '-' + n"
+                    >
+                      ({{ n }})
+                      <input
+                        type="text"
+                        class="inputBox"
+                        v-model="
+                          answers[getAnswerType(currentQueType)][currentId][n-1]
+                        "
+                        @change="normalQueChange($event, n-1)"
+                      />
+                    </template>
+                  </template>
+                </template>
+              </div>
             </td>
           </tr>
           <tr>
             <td>
               <div class="card" style="width: 100%; height: 70px">
-                <table cellpadding="0" cellspacing="0" style="width:100%;height:100%">
+                <table
+                  cellpadding="0"
+                  cellspacing="0"
+                  style="width: 100%; height: 100%"
+                >
                   <tr>
-                    <td>上一题</td>
-                    <td>标记</td>
-                    <td>下一题</td>
+                    <td style="width: 33%; text-align: right">
+                      <!-- <table border="1" style="vertical-align:middle"> -->
+
+                      <span
+                        class="next"
+                        @click="setTitleNumber(currentTitleNumber - 1)"
+                        :class="{ unabled: currentTitleNumber - 1 <= 0 }"
+                      >
+                        <svg-icon className="arrow" iconName="left"></svg-icon>
+                        <span style="vertical-align: middle">上一题</span>
+                        <!-- </table> -->
+                      </span>
+                    </td>
+                    <td style="text-align: center">标记</td>
+                    <td style="width: 33%">
+                      <span
+                        class="next"
+                        @click="setTitleNumber(currentTitleNumber + 1)"
+                        :class="{
+                          unabled:
+                            currentTitleNumber + 1 > titleNumberIndex.length,
+                        }"
+                      >
+                        <span style="vertical-align: middle">下一题</span>
+                        <svg-icon className="arrow" iconName="right"></svg-icon>
+                      </span>
+                    </td>
                   </tr>
                 </table>
               </div>
@@ -167,6 +319,223 @@
     </tr>
   </table>
 </template>
+
+
+<script>
+import axios from "axios";
+import { formatDate } from "@/common.js";
+// import config from "@/config.js";
+export default {
+  data() {
+    return {
+      examId: 1,
+      bankId: 1,
+      questions: {
+        choice: {},
+        multiChoice: {},
+        completion: {},
+        shortAnswer: {},
+      },
+      answers: { normal: {} },
+      exam: {},
+      examPaper: {},
+      order: {},
+      currentId: 1,
+      currentQueType: "choice",
+      // config:config
+      // user: null,
+      titleNumberIndex: [],
+      currentTitleNumber: 1,
+      // mark:{},
+
+      stopTime: new Date(),
+      currentTime: new Date(),
+      remainingTime: 0,
+      correctTimeDiff: 0,
+    };
+  },
+  methods: {
+    async getQuestions() {
+      return axios({
+        url: "question/getAllQuestions",
+        data: {
+          bankId: this.bankId,
+        },
+      }).then((res) => {
+        this.questions = {
+          choice: {},
+          multiChoice: {},
+          completion: {},
+          shortAnswer: {},
+        };
+        this.answers = { normal: {} };
+        for (let question of res.data.data.choice) {
+          question.choice = JSON.parse(question.choice);
+          // console.log(question.choice);
+          this.answers.normal[question.id] = {};
+          if (question.type == "choice")
+            this.questions.choice[question.id] = question;
+          else if (question.type == "multi_choice")
+            this.questions.multiChoice[question.id] = question;
+        }
+        for (let question of res.data.data.normal) {
+          this.answers.normal[question.id] = {};
+          if (question.type == "completion")
+            this.questions.completion[question.id] = question;
+          else if (question.type == "short_answer")
+            this.questions.shortAnswer[question.id] = question;
+        }
+      });
+    },
+    async getExamInfo() {
+      return axios({
+        url: "/exam/getExams",
+        data: {
+          id: this.examId,
+        },
+      }).then((res) => {
+        this.exam = res.data.data.data[0];
+        // console.log(this.exam);
+        this.order = JSON.parse(this.exam.orderJson);
+        this.getTitleNumberIndex();
+      });
+    },
+    getExamPaper() {
+      axios({
+        url: "/exam/getExamPapers",
+        data: {
+          examinee: 1,
+        },
+      }).then((res) => {
+        this.examPaper = res.data.data.data[0];
+        this.stopTime = new Date(this.examPaper.startTime + this.exam.duration);
+        // console.log(this.stopTime);
+        // console.log(this.exam);
+      });
+    },
+    getAnswers() {
+      axios({
+        url: "/exam/getAllAnswers",
+        data: {
+          examinee: 1,
+          examId: this.examId,
+        },
+      }).then((res) => {
+        let data = res.data.data;
+
+        for (let ans of data.normal) {
+          this.answers.normal[ans.questionId] = JSON.parse(ans.answer);
+        }
+      });
+    },
+    getQuestionTypeName(type) {
+      if (type == "choice") return "单选题";
+      else if (type == "multi_choice") return "多选题";
+      else if (type == "completion") return "填空题";
+      else if (type == "short_answer") return "简答题";
+      return "";
+    },
+    getAnswerType(queType) {
+      switch (queType) {
+        case "choice":
+        case "multi_choice":
+        case "completion":
+        case "short_answer":
+          return "normal";
+      }
+      return "";
+    },
+    getTitleNumberIndex() {
+      this.titleNumberIndex = [];
+      for (let type of this.order.part) {
+        for (let queId of this.order[type]) {
+          this.titleNumberIndex.push({ id: queId, type: type });
+        }
+      }
+    },
+    setTitleNumber(number) {
+      if (number <= 0 || number > this.titleNumberIndex.length) return;
+      this.currentId = this.titleNumberIndex[number - 1].id;
+      this.currentQueType = this.titleNumberIndex[number - 1].type;
+      this.currentTitleNumber = number;
+    },
+    normalQueChange(event, n) {
+      let ans =
+        this.answers[this.getAnswerType(this.currentQueType)][this.currentId];
+      let value = event.target.value;
+      if (value == "") {
+        if (ans[n]) delete ans[n];
+      } else {
+        ans[n] = value;
+      }
+      this.commitAnswer(
+        this.currentId,
+        this.getAnswerType(this.currentQueType)
+      );
+    },
+    getObjProCount(obj) {
+      let count = 0;
+      for (let p in obj) {
+        if (obj[p]) count++;
+      }
+      return count;
+    },
+    commitAnswer(queId, type) {
+      if (type == "normal") {
+        axios({
+          url: "/exam/addNormalAnswer",
+          data: {
+            questionId: queId,
+            examinee: this.user.id,
+            examId: this.examId,
+            answer: JSON.stringify(this.answers[type][queId]),
+          },
+        }).then((res) => {});
+      }
+    },
+    async correctTime() {
+      let before = new Date();
+      await axios({
+        url: "/exam/getTime",
+      }).then((res) => {
+        let local = new Date();
+        let delay = local - before;
+        let correctTime = res.data.data + delay;
+        this.correctTimeDiff = correctTime - local;
+        // console.log(this.correctTimeDiff);
+      });
+    },
+  },
+  computed: {
+    user() {
+      return this.$store.state.config.user;
+    },
+    stopTimeString() {
+      return formatDate(this.stopTime);
+    },
+  },
+  async mounted() {
+    await this.getQuestions();
+    await this.getExamInfo();
+    this.getExamPaper();
+    this.getAnswers();
+
+    this.correctTime();
+    setInterval(() => {
+      this.correctTime();
+    }, 60000);
+    this.currentTime = new Date() + this.correctTimeDiff;
+    setInterval(() => {
+      this.currentTime = new Date(new Date().valueOf() + this.correctTimeDiff);
+      this.remainingTime = this.stopTime.valueOf() - this.currentTime.valueOf();
+      // console.log(this.currentTime);
+    }, 500);
+    // console.log(this.config);
+    // console.log(this.questions.choice, this.questions.completion);
+    // console.log(this.config);
+  },
+};
+</script>
 
 <style scoped>
 .exam {
@@ -185,18 +554,23 @@
   font-family: Microsoft YaHei;
 }
 
-.current {
-  border-radius: 50%;
-  width: 31px;
-  height: 31px;
-  border: 2px solid #ff3c3c;
-}
-
 .unanswered {
   width: 31px;
   height: 31px;
   border: 1px solid rgba(255, 60, 60, 0.30196078431372547);
   border-radius: 50%;
+  display: inline-block;
+  margin: 9.5px;
+  /* transition: all 0.3s; */
+}
+
+.current {
+  border-radius: 50%;
+  width: 31px;
+  height: 31px;
+  border: 2px solid #ff3c3c;
+  display: inline-block;
+  margin: 9.5px;
 }
 
 .answered {
@@ -205,6 +579,18 @@
   background: #ff3c3c;
   border: 1px solid rgba(255, 60, 60, 0.30196078431372547);
   border-radius: 50%;
+  display: inline-block;
+  margin: 9.5px;
+}
+
+.current-answered {
+  width: 31px;
+  height: 31px;
+  background: #ff3c3c;
+  border: 2px solid #ff9a9a;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 9.5px;
 }
 
 .marked {
@@ -213,8 +599,48 @@
   background: #ff3c3c;
   border-radius: 50%;
   position: relative;
-  left: 24px;
-  top: 2px;
+  left: 21px;
+  top: 0px;
+  /* margin: 9.5px; */
+}
+
+.next {
+  cursor: pointer;
+  user-select: none;
+}
+
+.unabled {
+  color: gray;
+  cursor: default;
+}
+
+.inner {
+  width: 100%;
+  height: 100%;
+}
+
+.inner-number {
+  font-size: 14px;
+  font-family: Microsoft YaHei;
+  color: #000000;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  vertical-align: middle;
+  display: table-cell;
+}
+
+.answered .inner-number {
+  color: white;
+}
+
+.arrow {
+  width: 30px;
+  height: 30px;
+  vertical-align: middle;
+  /* position: relative;
+  top: 5px; */
+  /* padding-top: 10px; */
 }
 
 .val-text {
