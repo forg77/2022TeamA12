@@ -47,7 +47,7 @@
                   ></svg-icon>
                 </td>
                 <td>
-                  <span>{{ nickname }}</span>
+                  <span>{{ user && user.nickname }}</span>
                 </td>
               </tr>
             </table>
@@ -60,7 +60,7 @@
 
 <script>
 export default {
-  props: ["items","nickname"],
+  props: ["items"],
   methods: {
     isNavActive(items) {
       let routePath = this.$route.path;
@@ -71,6 +71,11 @@ export default {
       return false;
     },
   },
+  computed:{
+    user(){
+      return this.$store.state.config.user;
+    }
+  }
 };
 </script>
 

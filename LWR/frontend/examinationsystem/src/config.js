@@ -29,4 +29,6 @@ axios.interceptors.response.use((response) => {
 //当前登录的用户信息
 const user = null;
 
+// let config=new Proxy( { siteTitle: siteTitle, serverUrl: serverUrl, user: user, loginUrl: loginUrl });
+
 export default { siteTitle: siteTitle, serverUrl: serverUrl, user: user, loginUrl: loginUrl };
