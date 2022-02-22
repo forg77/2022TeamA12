@@ -28,4 +28,6 @@ public interface ExamMapper {
     Integer updateNormalAnswer(NormalAnswer answer);
 
     Integer addNormalAnswer(NormalAnswer answer);
+
+    List<QuestionScore> getQuestionScores(Integer examId);
 }

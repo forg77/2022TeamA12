@@ -64,4 +64,8 @@ public class ExamService {
     public List<NormalAnswer> getNormalAnswers(Integer examinee, Integer examId){
         return examMapper.getNormalAnswers(examinee, examId);
     }
+
+    public List<QuestionScore> getQuestionScores(Integer examId){
+        return examMapper.getQuestionScores(examId);
+    }
 }

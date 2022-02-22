@@ -102,6 +102,16 @@ public class ExamController {
         return JSON.toJSONString(res);
     }
 
+    @PostMapping("/getQuestionScores")
+    public String getQuestionScores(@RequestBody String requestBody) {
+        JSONObject body = JSON.parseObject(requestBody);
+        Integer examId = body.getInteger("examId");
+
+        CommonData res = new CommonData(ErrorCode.SUCCESS, "成功", examService.getQuestionScores(examId));
+
+        return JSON.toJSONString(res);
+    }
+
     @PostMapping("/correctPaper")
     public String correctPaper(@RequestBody String requestBody) {
         JSONObject body = JSON.parseObject(requestBody);
@@ -120,10 +130,16 @@ public class ExamController {
             correctNormalAnswers.put(que.getId(), JSON.parseObject(que.getAnswer()));
         }
 
+        List<QuestionScore> questionScores = examService.getQuestionScores(examId);
+        Map<Integer, Float> scores = new HashMap<>();
+        for (QuestionScore score : questionScores) {
+            scores.put(score.getId(), score.getScore());
+        }
+
         float totalScore = 0;
         List<NormalAnswer> normalAnswers = examService.getNormalAnswers(examinee, examId);
         for (NormalAnswer answer : normalAnswers) {
-            totalScore += normalCorrect(JSON.parseObject(answer.getAnswer()), correctNormalAnswers.get(answer.getQuestionId()));
+            totalScore += scores.get(answer.getQuestionId()) * normalCorrect(JSON.parseObject(answer.getAnswer()), correctNormalAnswers.get(answer.getQuestionId()));
         }
 
         CommonData res = new CommonData(ErrorCode.SUCCESS, "成功", totalScore);
