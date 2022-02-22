@@ -3,6 +3,7 @@ package edu.zstu.examsys.pojo;
 public class NormalQuestion extends Question{
     private Integer normalId;
     private String answer;
+    private Integer answersCount;
 
     public Integer getNormalId() {
         return normalId;
@@ -20,11 +21,20 @@ public class NormalQuestion extends Question{
         this.answer = answer;
     }
 
+    public Integer getAnswersCount() {
+        return answersCount;
+    }
+
+    public void setAnswersCount(Integer answersCount) {
+        this.answersCount = answersCount;
+    }
+
     @Override
     public String toString() {
-        return super.toString() + "\nNormalQuestion{" +
+        return "NormalQuestion{" +
                 "normalId=" + normalId +
                 ", answer='" + answer + '\'' +
+                ", answersCount=" + answersCount +
                 '}';
     }
 }

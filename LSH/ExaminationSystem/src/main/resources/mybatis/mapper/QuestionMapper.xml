@@ -140,7 +140,8 @@
     <select id="getNormalQuestions" resultType="NormalQuestion">
         SELECT `question`.*,
         `normal_question`.`id` AS `normal_id`,
-        `answer`
+        `answer`,
+        JSON_LENGTH(`answer`) AS `answers_count`
         FROM `normal_question`
         INNER JOIN `question` ON `question`.`id` = `question_id`
         <where>
