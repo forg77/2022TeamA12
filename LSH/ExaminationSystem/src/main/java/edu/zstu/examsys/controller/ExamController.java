@@ -129,7 +129,8 @@ public class ExamController {
         }
 
         CommonData res;
-        if (!isExamOver(exam, examPaper)) {
+        if (isExamOver(exam, examPaper)) {
+            System.out.println("A.");
             examPaper.setExamId(body.getInteger("examId"));
             examPaper.setExaminee(body.getInteger("examinee"));
             examPaper.setOrderJson(body.getString("orderJson"));
@@ -223,7 +224,7 @@ public class ExamController {
     }
 
     private boolean isExamOver(Exam exam, ExamPaper examPaper) {
-        return examPaper.getFinishTime() != null &&
+        return examPaper.getFinishTime() != null ||
                 new Date().after(new Date(examPaper.getStartTime().getTime() + exam.getDuration()));
     }
 

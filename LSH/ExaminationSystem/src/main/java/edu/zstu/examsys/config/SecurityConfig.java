@@ -54,7 +54,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("http://localhost:8080");
         configuration.addAllowedOrigin("http://localhost:8081");//修改为添加而不是设置，* 最好改为实际的需要，我这是非生产配置，所以粗暴了一点
+        configuration.addAllowedOrigin("http://139.9.58.231:8081");
         configuration.addAllowedMethod("*");//修改为添加而不是设置
         configuration.addAllowedHeader("*");//这里很重要，起码需要允许 Access-Control-Allow-Origin
         configuration.setAllowCredentials(true);
