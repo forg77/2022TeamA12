@@ -18,9 +18,7 @@ import axios from "axios";
 
 export default {
   data() {
-    return {
-      
-    };
+    return {};
   },
   components: {
     NavBar,
@@ -40,12 +38,18 @@ export default {
       .then((res) => {
         if (res.data.errCode != 101) {
           // this.config.user = res.data.data;
-          this.$store.commit("setUser",res.data.data);
+          this.$store.commit("setUser", res.data.data);
           // this.nickname = res.data.data.nickname;
-        } else this.$router.push("/login");
+          // console.log(this.$route.path);
+        } else {
+          // console.log(this.$route.path);
+          if (this.$route.path != "/login")
+            this.$router.push("/login?path=" + this.$route.path);
+        }
       })
       .catch(() => {
-        this.$router.push("/login");
+        if (this.$route.path != "/login")
+          this.$router.push("/login?path=" + this.$route.path);
       });
   },
 };

@@ -4,11 +4,12 @@
 
 <script>
 import axios from "axios";
-import config from "../config";
+
 export default {
   data() {
     return {
       ajaxCancel: null,
+      jumpPath: null,
     };
   },
   methods: {
@@ -18,7 +19,7 @@ export default {
         this.ajaxCancel = null;
       }
       axios({
-        url: config.loginUrl,
+        url: this.config.loginUrl,
         cancelToken: new axios.CancelToken((c) => {
           this.ajaxCancel = c;
         }),
@@ -28,10 +29,31 @@ export default {
         },
       }).then((response) => {
         if (response.data.errCode == 0) {
-          config.user = response.data.data;
-          this.$router.push("/admin");
+          this.config.user = response.data.data;
+
+          if (this.jumpPath) {
+            this.$router.push(this.jumpPath);
+          } else {
+            let permissions = this.config.user.permission.split(",");
+            if (permissions.indexOf("admin") >= 0) {
+              this.$router.push("/admin");
+            } else if (permissions.indexOf("teacher")) {
+              this.$router.push("/teacher");
+            } else {
+              this.$router.push("/student");
+            }
+          }
         }
       });
+    },
+  },
+  created() {
+    this.jumpPath = this.$route.query.path;
+    // console.log(this.jumpPath);
+  },
+  computed: {
+    config() {
+      return this.$store.state.config;
     },
   },
 };
