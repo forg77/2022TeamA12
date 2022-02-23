@@ -10,6 +10,11 @@
       </template>
     </Card>
     <exam-card>
+      <template v-slot:title>马克思主义基本原理概论</template>
+      <template v-slot:subtitle>马克思主义基本原理概论-2019年上期末考试</template>
+      <template v-slot:time>2020-01-23</template>
+      <template v-slot:limitTime>限时120分钟</template>
+      <template v-slot:score>满分100</template>
     </exam-card>
   </div>
 </template>

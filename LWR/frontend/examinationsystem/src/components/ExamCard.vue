@@ -1,30 +1,30 @@
 <template>
   <div class="card-container">
     <div class="head">
-      <div class="exam-name">马克思主义基本原理概论</div>
+      <div class="exam-name"><slot name="title"></slot></div>
       <div class="button"><span class="btncontent">考试</span></div>
     </div>
 
-    <div class="content">马克思主义基本原理概论-2019年上期末考试</div>
+    <div class="content"><slot name="subtitle"></slot></div>
 
     <table style="width: 428px" class="footer">
       <tbody>
         <td>
           <div class="time">
             <svg-icon iconName="calendar" className="calendar-icon"></svg-icon
-            >&nbsp;2020-01-23
+            >&nbsp;<slot name="time"></slot>
           </div>
         </td>
         <td>
           <div class="limit-time">
             <svg-icon iconName="time" className="time-icon"></svg-icon
-            >&nbsp;限时120分钟
+            >&nbsp;<slot name="limitTime"></slot>
           </div>
         </td>
         <td>
           <div class="score">
             <svg-icon iconName="100" className="100-icon"></svg-icon
-            >&nbsp;满分100
+            >&nbsp;<slot name="score"></slot>
           </div>
         </td>
       </tbody>
@@ -41,7 +41,7 @@
 }
 .card-container {
   width: 470px;
-  height: 250px;
+  height: 220px;
   background: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.10196078431372549);
   box-shadow: 2px -3px 6px rgba(0, 0, 0, 0.1);
@@ -95,13 +95,13 @@
 .time,
 .limit-time,
 .score {
-  width: 89px;
-  height: 21px;
-  font-size: 12px;
+  /* width: 89px;
+  height: 21px; */
+  font-size: 16px;
   font-family: Microsoft YaHei;
-  font-weight: 400;
+  /* font-weight: 400; */
   color: #000000;
   opacity: 0.7;
-  margin: auto;
+  /* margin: auto; */
 }
 </style>
