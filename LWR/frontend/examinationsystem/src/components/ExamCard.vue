@@ -11,19 +11,19 @@
       <tbody>
         <td>
           <div class="time">
-            <svg-icon iconName="calendar" className="calendar-icon"></svg-icon
+            <svg-icon iconName="calendar" className="icon"></svg-icon
             >&nbsp;<slot name="time"></slot>
           </div>
         </td>
         <td>
           <div class="limit-time">
-            <svg-icon iconName="time" className="time-icon"></svg-icon
+            <svg-icon iconName="time" className="icon"></svg-icon
             >&nbsp;<slot name="limitTime"></slot>
           </div>
         </td>
         <td>
           <div class="score">
-            <svg-icon iconName="100" className="100-icon"></svg-icon
+            <svg-icon iconName="100" className="icon"></svg-icon
             >&nbsp;<slot name="score"></slot>
           </div>
         </td>
@@ -47,7 +47,7 @@
   box-shadow: 2px -3px 6px rgba(0, 0, 0, 0.1);
   opacity: 1;
   border-radius: 10px;
-  padding: 40px 20px 0 20px;
+  padding: 40px 39px 0 20px;
   position: relative;
 }
 .exam-name {
@@ -86,11 +86,11 @@
   font-weight: 400;
   color: #000000;
   opacity: 0.7;
-  margin-top: 20px;
+  margin-top: 18px;
 }
 .footer {
   position: absolute;
-  bottom: 20px;
+  bottom: 46px;
 }
 .time,
 .limit-time,
@@ -103,5 +103,14 @@
   color: #000000;
   opacity: 0.7;
   /* margin: auto; */
+  vertical-align: middle;
+}
+
+.icon{
+  width:20px;
+  height:20px;
+  vertical-align: middle;
+  position: relative;
+  bottom: 2px;
 }
 </style>
