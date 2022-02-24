@@ -3,15 +3,16 @@ from models.modeling_glycebert import GlyceBertModel
 from  sklearn.metrics.pairwise import cosine_similarity
 import torch
 import numpy
+from math import e
 CHINESEBERT_PATH = "ChineseBERT-base"
 tokenizer = BertDataset(CHINESEBERT_PATH)
 chinese_bert = GlyceBertModel.from_pretrained(CHINESEBERT_PATH)
 
 sentence1 = '我喜欢猫'
-sentence2 = '我也喜欢猫'
+sentence2 = '我也喜欢'
 sentence3 = '我喜欢狗'#看了vocabulary.txt 发现里面有假名 这个权当是个对照组了
-long_sen1 = '必须从对立中把握同一，在同一中把握对立，要用联系的，发展的，全面的观点，特别是用矛盾的观点看问题。深刻认识矛盾双方的对立和同一两方面的关系，二者是不同性质的关系，但又是基于共同本质的。既看到矛盾双方的对立，又看到统一和转化，只有这样才能真正把握住矛盾，把握住事物的发展。'
-long_sen2 = '当地时间2月17日至18日，乌东居民区遭到乌政府军炮弹攻击。乌东民间武装力量19日发布总动员令，要求男性加入武装部队，进攻可能在几天内打响。'
+long_sen1 = '中国特色社会主义是科学社会主义的基本原则与中国实际相结合的产物，具有鲜明的时代特征和中国特色。中国共产党领导是中国特色社会主义最本质的特征。'
+long_sen2 = '中国特色社会主义道路，是在中国共产党的领导下，立足基本国情，以经济建设为中心，坚持四项基本原则，坚持改革开放，解放和发展社会生产力，建设中国特色社会主义市场经济、社会主义民主政治、社会主义先进文化、社会主义和谐社会、社会主义生态文明，促进人的全面发展，逐步实现全体人民共同富裕，建设富强、民主、文明、和谐、美丽的社会主义现代化强国。中国特色社会主义道路，是党和人民100年奋斗、创造、积累的根本成就，是引领中国进步、增进人民福祉、实现民族复兴的康庄大道。'
 
 def sentence2vec(sentence):
     input_ids, pinyin_ids = tokenizer.tokenize_sentence(sentence)
@@ -36,14 +37,14 @@ if __name__ == '__main__':
 
     #problemID = getProb() #获得题号
     #AnsStr1 , AnsStr2 = getAns(problemID) #用于对照的两个答案
-    AnsStr1 = long_sen1
-    AnsStr2 = long_sen1
+    AnsStr1 = sentence1
+    AnsStr2 = sentence1
     optAnS1 = sentence2vec(AnsStr1).detach().numpy()
     optAnS2 = sentence2vec(AnsStr2).detach().numpy()
     AnsSim1 = cosine_similarity(optAnS1,optAnS2) #对照相似度
 
     #StudentS = getStuAns()
-    StudentS = long_sen2
+    StudentS = sentence2
     optStudentS = sentence2vec(StudentS).detach().numpy()
     StuAnsSim = max(cosine_similarity(optAnS1,optStudentS),cosine_similarity(optAnS2,optStudentS))
     SimDis = AnsSim1 - StuAnsSim
@@ -51,5 +52,5 @@ if __name__ == '__main__':
     if SimDis >= 0.1:
         SimSentiment = 0
     else:
-        SimSentiment = (1.-SimDis)*100.
+        SimSentiment =  1/((1+e**((100*SimDis-5)))) *100.
     print(SimSentiment)
