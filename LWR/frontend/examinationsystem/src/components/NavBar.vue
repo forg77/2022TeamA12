@@ -14,21 +14,32 @@
                 <td>
                   <div class="child">
                     <div class="dropdown">
-                      <a :class="{ active: isNavActive(nav) }">{{
-                        nav.title
-                      }}</a>
-                      <div class="dropdown-content">
-                        <template
-                          v-for="child in nav.content"
-                          :key="child.title"
+                      <template v-if="!nav.link">
+                        <a :class="{ active: isNavActive(nav) }">{{
+                          nav.title
+                        }}</a>
+                      </template>
+                      <template v-else>
+                        <router-link
+                          :to="nav.link"
+                          :class="{ active: isNavActive(nav) }"
+                          >{{ nav.title }}</router-link
                         >
-                          <router-link
-                            :to="child.link"
-                            :class="{ active: $route.path == child.link }"
-                            >{{ child.title }}</router-link
+                      </template>
+                      <template v-if="nav.content">
+                        <div class="dropdown-content">
+                          <template
+                            v-for="child in nav.content"
+                            :key="child.title"
                           >
-                        </template>
-                      </div>
+                            <router-link
+                              :to="child.link"
+                              :class="{ active: $route.path == child.link }"
+                              >{{ child.title }}</router-link
+                            >
+                          </template>
+                        </div>
+                      </template>
                     </div>
                   </div>
                 </td>
@@ -65,17 +76,21 @@ export default {
     isNavActive(items) {
       let routePath = this.$route.path;
       //console.log(items);
-      for (let item of items.content) {
-        if (routePath == item.link) return true;
+      if (items.content && items.content.length > 0) {
+        for (let item of items.content) {
+          if (routePath == item.link) return true;
+        }
+      } else {
+        if (routePath == items.link) return true;
       }
       return false;
     },
   },
-  computed:{
-    user(){
+  computed: {
+    user() {
       return this.$store.state.config.user;
-    }
-  }
+    },
+  },
 };
 </script>
 

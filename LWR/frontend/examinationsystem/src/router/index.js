@@ -46,7 +46,7 @@ const routes = [{
             ],
         },
         children: [{
-                path: '',
+                path: 'home',
                 name: 'Home',
                 component: Home
             },
@@ -183,6 +183,45 @@ const routes = [{
                 meta: {
                     title: "题目管理" + postTitle,
                     pageTitle: "题目管理"
+                }
+            },
+        ]
+    },
+    {
+        path: '/student',
+        name: "Student",
+        component: () =>
+            import ('../views/MainView.vue'),
+        props: {
+            navs: [{
+                    title: "我的考试",
+                    link: "/student/exams",
+                },
+                {
+                    title: "我的成绩",
+                    content: [
+                        { title: "成绩查询", link: "/teacher/questionsManage" },
+                        { title: "知识分析", link: "/teacher/questionsInput" },
+                    ],
+                },
+                {
+                    title: "我的消息",
+                }
+            ],
+        },
+        children: [{
+                path: '',
+                name: 'Home1',
+                component: Home
+            },
+            {
+                path: 'exams',
+                name: 'Exams',
+                component: () =>
+                    import ('../views/student/Exams.vue'),
+                meta: {
+                    title: "我的考试" + postTitle,
+                    pageTitle: "我的考试"
                 }
             },
         ]

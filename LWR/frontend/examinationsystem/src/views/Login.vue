@@ -10,12 +10,12 @@
       <div class="notice">请使用您本人的账号密码登录</div>
 
       <div>
-        <input type="text" class="input" placeholder="请输入账号" />
-        <input type="text" class="input" placeholder="请输入密码" />
+        <input type="text" class="input" placeholder="请输入账号" v-model="username"/>
+        <input type="password" class="input" placeholder="请输入密码" v-model="password"/>
         <div class="forget">忘记密码？</div>
       </div>
       <div>
-        <button class="login-btn">登录</button>
+        <button class="login-btn" @click="login(username,password)">登录</button>
       </div>
     </div>
   </div>
@@ -29,6 +29,9 @@ export default {
     return {
       ajaxCancel: null,
       jumpPath: null,
+
+      username:"admin1",
+      password:"123"
     };
   },
   methods: {
