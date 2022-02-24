@@ -1,5 +1,8 @@
 <template>
-  <div class="card-container">
+  <div class="card-container" :class="[containerClass]">
+    <div class="tag" v-show="tag&&tag!=''">
+      {{tag}}
+    </div>
     <div class="head">
       <div class="exam-name"><slot name="title"></slot></div>
       <div class="button"><span class="btncontent">考试</span></div>
@@ -32,6 +35,18 @@
   </div>
 </template>
 
+<script>
+export default {
+  data() {
+    return {
+
+    }
+  },
+  props:["containerClass","tag"]
+};
+</script>
+
+
 <style scoped>
 .head {
   display: flex;
@@ -49,7 +64,18 @@
   border-radius: 10px;
   padding: 40px 39px 0 20px;
   position: relative;
+  display: inline-block;
+
+  margin: 20px 10px;
+  cursor: pointer;
+
+  transition: transform 0.5s,  box-shadow 0.5s;
 }
+.card-container:hover{
+  transform: scale(1.03);
+   box-shadow: 0px 0px 10px rgba(254, 66, 66, 0.72);
+}
+
 .exam-name {
   width: 264px;
   height: 31px;
@@ -112,5 +138,30 @@
   vertical-align: middle;
   position: relative;
   bottom: 2px;
+}
+
+.tag{
+  position: absolute;
+  /* width: 100px;
+  height:20px; */
+  width: 200px;
+  height:80px;
+  line-height: 80px;
+  text-align: center;
+  font-size:40px;
+  color:#ff3c3c;
+  opacity: 0.5;
+  left:120px;
+  top:80px;
+  border-style: solid;
+  border-color: #ff3c3c;
+  border-width: 3px;
+  transform: rotate(10deg);
+  transition: opacity 0.5s;
+  user-select: none;
+}
+
+.card-container:hover .tag{
+  opacity:0;
 }
 </style>
