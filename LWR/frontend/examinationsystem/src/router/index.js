@@ -206,6 +206,7 @@ const routes = [{
                 },
                 {
                     title: "我的消息",
+                    link: "/student/message"
                 }
             ],
         },
@@ -224,6 +225,16 @@ const routes = [{
                     pageTitle: "我的考试"
                 }
             },
+            {
+              path: 'message',
+              name: 'Massage',
+              component: () =>
+                  import ('../views/student/Message.vue'),
+              meta: {
+                  title: "我的消息" + postTitle,
+                  pageTitle: "我的消息"
+              }
+          }
         ]
     }
 ]
