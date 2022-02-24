@@ -46,9 +46,11 @@
       }}
     </template>
     <template v-slot:bottom>
-      <button class="btn" @click="
-          showJoinDialog = false;
-        " v-if="isExamTimeOut||currentTime >= exam.latestStartTime">
+      <button
+        class="btn"
+        @click="showJoinDialog = false"
+        v-if="isExamTimeOut || currentTime >= exam.latestStartTime"
+      >
         确定
       </button>
       <button
@@ -61,7 +63,6 @@
       >
         加入考试
       </button>
-      
     </template>
   </DialogBox>
   <table
@@ -285,15 +286,18 @@
                     questions[currentQueType][currentId]
                   "
                 >
-                  ({{
-                    questionScores[currentId] &&
-                    questionScores[currentId].score
-                  }}分)
-                  {{
-                    currentTitleNumber +
-                    "." +
-                    questions[currentQueType][currentId].description
-                  }}
+                  <span class="description">
+                    ({{
+                      questionScores[currentId] &&
+                      questionScores[currentId].score
+                    }}分)
+
+                    {{
+                      currentTitleNumber +
+                      "." +
+                      questions[currentQueType][currentId].description
+                    }}
+                  </span>
                   <br />
                   <template v-if="currentQueType == 'choice'">
                     <template
@@ -325,8 +329,10 @@
                           ] == true
                         "
                       />
-                      <label :for="'choice' + index">{{ choice }}</label>
-                      <br />
+                      <label :for="'choice' + index"
+                        ><span class="choice">{{ choice }}</span></label
+                      >
+                      <div style="height: 5px"></div>
                     </template>
                   </template>
                   <template v-else-if="currentQueType == 'completion'">
@@ -338,7 +344,7 @@
                       ({{ n }})
                       <input
                         type="text"
-                        class="inputBox"
+                        class="completion"
                         :disabled="isExamOver"
                         v-model="
                           answers[getAnswerType(currentQueType)][currentId][
@@ -759,12 +765,12 @@ export default {
       this.correctTime();
     }, 60000);
   },
-  props:{
-    examId:{
-      type:Number,
-      default:1
-    }
-  }
+  props: {
+    examId: {
+      type: Number,
+      default: 1,
+    },
+  },
 };
 </script>
 
@@ -878,7 +884,47 @@ export default {
   color: #ff3c3c;
 }
 
-.exam-content{
-  
+.exam-content {
+  padding: 20px;
+}
+
+.description {
+  font-weight: bold;
+  font-size: 18px;
+  display: block;
+  margin-bottom: 0px;
+}
+
+.choice {
+  font-size: 15px;
+  color: #aaaaaa;
+  cursor: pointer;
+}
+
+.completion {
+  height: 30px;
+  width: 200px;
+  border: none;
+  border-bottom: 1px solid rgba(153, 153, 153, 0.616);
+  outline: none;
+}
+input[type="radio"] {
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  padding: 2px;
+  cursor: pointer;
+  vertical-align: center;
+  background: #fff;
+  border: 1px solid #ccc;
+  position: relative;
+}
+
+input[type="radio"]:checked {
+  background-color: rgb(255, 60, 60);
+  border: none;
 }
 </style>
