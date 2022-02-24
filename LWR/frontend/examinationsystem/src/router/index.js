@@ -226,15 +226,25 @@ const routes = [{
                 }
             },
             {
-              path: 'message',
-              name: 'Massage',
-              component: () =>
-                  import ('../views/student/Message.vue'),
-              meta: {
-                  title: "我的消息" + postTitle,
-                  pageTitle: "我的消息"
-              }
-          }
+                path: 'message',
+                name: 'Massage',
+                component: () =>
+                    import ('../views/student/Message.vue'),
+                meta: {
+                    title: "我的消息" + postTitle,
+                    pageTitle: "我的消息"
+                },
+            },
+            {
+                path: 'studentExam/:examId',
+                name: 'StudentExam',
+                component: () =>
+                    import ('../views/student/StudentExam.vue'),
+                meta: {
+                    title: "考试" + postTitle,
+                    pageTitle: "考试"
+                }
+            }
         ]
     }
 ]

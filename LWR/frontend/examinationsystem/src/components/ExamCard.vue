@@ -1,5 +1,5 @@
 <template>
-  <div class="card-container" :class="[containerClass]">
+  <div class="card-container" :class="[containerClass]" @click="this.$emit('click')">
     <div class="tag" v-show="tag&&tag!=''">
       {{tag}}
     </div>
@@ -42,7 +42,8 @@ export default {
 
     }
   },
-  props:["containerClass","tag"]
+  props:["containerClass","tag"],
+  emits:["click"]
 };
 </script>
 

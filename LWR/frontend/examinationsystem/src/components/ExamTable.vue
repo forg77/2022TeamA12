@@ -1,7 +1,7 @@
 <template>
   <div class="table">
     <template v-for="exam in exams" :key="exam.id">
-      <ExamCard :tag="getExamTag(exam)">
+      <ExamCard :tag="getExamTag(exam)" @click="this.$emit('cardClick',exam);">
         <template v-slot:title>{{ exam.title }}</template>
         <template v-slot:subtitle>{{ exam.subtitle }}</template>
         <template v-slot:time>{{
@@ -92,6 +92,7 @@ export default {
       timeNow: new Date(),
     };
   },
+  emits:["cardClick"],
   methods: {
     getExams() {
       if (this.ajaxCancel != null) {

@@ -1,7 +1,8 @@
 <template>
+  <!-- 考试结束对话框 -->
   <DialogBox v-model:show="showOverDialog">
     <template v-slot:header>考试已结束</template>
-    <template v-if="'grade' in examPaper">
+    <template v-if="examPaper && 'grade' in examPaper">
       您的分数：{{ examPaper.grade }}/{{ exam.fullMark }}
       <br />
       剩余考试次数：{{ exam.repeatTime - examPaper.times }}
@@ -20,6 +21,47 @@
     </template>
     <template v-slot:bottom>
       <button class="btn" @click="showOverDialog = false">确定</button>
+    </template>
+  </DialogBox>
+  <!-- 加入考试对话框 -->
+  <DialogBox v-model:show="showJoinDialog">
+    <template v-slot:header>加入考试</template>
+    <template v-if="isExamTimeOut"> 考试已经结束 </template>
+    <template v-else-if="currentTime >= exam.latestStartTime">
+      已错过最晚加入考试的时间
+    </template>
+    <template v-else>
+      考试总分：{{ exam.fullMark }}
+      <br />
+      允许重复次数：{{ exam.repeatTime }}
+      <br />
+      考试时间：{{ Math.floor(exam.duration / 1000 / 60) }}
+      <br />
+      考试类型：{{
+        exam.type == "fixed"
+          ? "固定"
+          : exam.type == "random"
+          ? "随机抽题"
+          : "未知"
+      }}
+    </template>
+    <template v-slot:bottom>
+      <button class="btn" @click="
+          showJoinDialog = false;
+        " v-if="isExamTimeOut||currentTime >= exam.latestStartTime">
+        确定
+      </button>
+      <button
+        v-else
+        class="btn"
+        @click="
+          joinExam();
+          showJoinDialog = false;
+        "
+      >
+        加入考试
+      </button>
+      
     </template>
   </DialogBox>
   <table
@@ -236,7 +278,7 @@
           </tr>
           <tr>
             <td>
-              <div class="card" style="width: 100%; height: 426px">
+              <div class="exam-content card" style="width: 100%; height: 426px">
                 <template
                   v-if="
                     questions[currentQueType] &&
@@ -370,7 +412,7 @@ export default {
   },
   data() {
     return {
-      examId: 1,
+      // examId: 1,
       bankId: 1,
       questions: {
         choice: {},
@@ -397,9 +439,70 @@ export default {
       correctTimeDiff: 0,
 
       showOverDialog: false,
+      showJoinDialog: false,
     };
   },
   methods: {
+    async getAllExamInfo() {
+      return axios({
+        url: "exam/getAllExamInfo",
+        data: {
+          examId: this.examId,
+          examinee: this.user.id,
+        },
+      }).then((res) => {
+        let data = res.data.data;
+
+        //初始化考试信息
+        this.exam = data.exam;
+        this.order = JSON.parse(this.exam.orderJson);
+        this.getTitleNumberIndex();
+
+        //初始化问题信息
+        this.questions = {
+          choice: {},
+          multiChoice: {},
+          completion: {},
+          shortAnswer: {},
+        };
+        this.answers = { normal: {} };
+        for (let question of data.questions.choice) {
+          question.choice = JSON.parse(question.choice);
+          // console.log(question.choice);
+          this.answers.normal[question.id] = {};
+          if (question.type == "choice")
+            this.questions.choice[question.id] = question;
+          else if (question.type == "multi_choice")
+            this.questions.multiChoice[question.id] = question;
+        }
+        for (let question of data.questions.normal) {
+          this.answers.normal[question.id] = {};
+          if (question.type == "completion")
+            this.questions.completion[question.id] = question;
+          else if (question.type == "short_answer")
+            this.questions.shortAnswer[question.id] = question;
+        }
+
+        //初始化试卷信息
+        this.examPaper = data.examPaper;
+        if (!this.examPaper) this.showJoinDialog = true;
+        else {
+          this.stopTime = new Date(
+            this.examPaper.startTime + this.exam.duration
+          );
+        }
+
+        //初始化考生回答信息
+        for (let ans of data.answers.normal) {
+          this.answers.normal[ans.questionId] = JSON.parse(ans.answer);
+        }
+
+        //初始化题目分数信息
+        for (let score of data.questionScores) {
+          this.questionScores[score.id] = score;
+        }
+      });
+    },
     async getQuestions() {
       return axios({
         url: "question/getAllQuestions",
@@ -588,12 +691,14 @@ export default {
       }
     },
     async initExam() {
-      await this.getQuestions();
-      await this.getExamInfo();
-      this.getExamPaper();
-      this.getAnswers();
-      this.getQuestionScores();
+      // await this.getQuestions();
+      // await this.getExamInfo();
+      // this.getExamPaper();
+      // this.getAnswers();
+      // this.getQuestionScores();
+      await this.getAllExamInfo();
 
+      if (!this.examPaper) return;
       this.correctTime();
 
       this.currentTime = new Date() + this.correctTimeDiff;
@@ -634,16 +739,32 @@ export default {
     isExamOver() {
       return this.remainingTime <= 0 || Boolean(this.examPaper.finishTime);
     },
+    isExamTimeOut() {
+      return this.currentTime > this.exam.latestStartTime + this.exam.duration;
+    },
+  },
+  watch: {
+    user() {
+      if (this.user != null) {
+        this.initExam();
+      }
+    },
   },
   async mounted() {
     // console.log(this.config);
     // console.log(this.questions.choice, this.questions.completion);
     // console.log(this.config);
-    this.initExam();
+    if (this.user != null) this.initExam();
     setInterval(() => {
       this.correctTime();
     }, 60000);
   },
+  props:{
+    examId:{
+      type:Number,
+      default:1
+    }
+  }
 };
 </script>
 
@@ -755,5 +876,9 @@ export default {
 
 .val-text {
   color: #ff3c3c;
+}
+
+.exam-content{
+  
 }
 </style>
