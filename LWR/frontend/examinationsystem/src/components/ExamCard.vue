@@ -1,5 +1,8 @@
 <template>
-  <div class="card-container">
+  <div class="card-container" :class="[containerClass]">
+    <div class="tag" v-show="tag&&tag!=''">
+      {{tag}}
+    </div>
     <div class="head">
       <div class="exam-name"><slot name="title"></slot></div>
       <div class="button"><span class="btncontent">考试</span></div>
@@ -11,19 +14,19 @@
       <tbody>
         <td>
           <div class="time">
-            <svg-icon iconName="calendar" className="calendar-icon"></svg-icon
+            <svg-icon iconName="calendar" className="icon"></svg-icon
             >&nbsp;<slot name="time"></slot>
           </div>
         </td>
         <td>
           <div class="limit-time">
-            <svg-icon iconName="time" className="time-icon"></svg-icon
+            <svg-icon iconName="time" className="icon"></svg-icon
             >&nbsp;<slot name="limitTime"></slot>
           </div>
         </td>
         <td>
           <div class="score">
-            <svg-icon iconName="100" className="100-icon"></svg-icon
+            <svg-icon iconName="100" className="icon"></svg-icon
             >&nbsp;<slot name="score"></slot>
           </div>
         </td>
@@ -31,6 +34,18 @@
     </table>
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+
+    }
+  },
+  props:["containerClass","tag"]
+};
+</script>
+
 
 <style scoped>
 .head {
@@ -47,9 +62,20 @@
   box-shadow: 2px -3px 6px rgba(0, 0, 0, 0.1);
   opacity: 1;
   border-radius: 10px;
-  padding: 40px 20px 0 20px;
+  padding: 40px 39px 0 20px;
   position: relative;
+  display: inline-block;
+
+  margin: 20px 10px;
+  cursor: pointer;
+
+  transition: transform 0.5s,  box-shadow 0.5s;
 }
+.card-container:hover{
+  transform: scale(1.03);
+   box-shadow: 0px 0px 10px rgba(254, 66, 66, 0.72);
+}
+
 .exam-name {
   width: 264px;
   height: 31px;
@@ -86,11 +112,11 @@
   font-weight: 400;
   color: #000000;
   opacity: 0.7;
-  margin-top: 20px;
+  margin-top: 18px;
 }
 .footer {
   position: absolute;
-  bottom: 20px;
+  bottom: 46px;
 }
 .time,
 .limit-time,
@@ -103,5 +129,39 @@
   color: #000000;
   opacity: 0.7;
   /* margin: auto; */
+  vertical-align: middle;
+}
+
+.icon{
+  width:20px;
+  height:20px;
+  vertical-align: middle;
+  position: relative;
+  bottom: 2px;
+}
+
+.tag{
+  position: absolute;
+  /* width: 100px;
+  height:20px; */
+  width: 200px;
+  height:80px;
+  line-height: 80px;
+  text-align: center;
+  font-size:40px;
+  color:#ff3c3c;
+  opacity: 0.5;
+  left:120px;
+  top:80px;
+  border-style: solid;
+  border-color: #ff3c3c;
+  border-width: 3px;
+  transform: rotate(10deg);
+  transition: opacity 0.5s;
+  user-select: none;
+}
+
+.card-container:hover .tag{
+  opacity:0;
 }
 </style>

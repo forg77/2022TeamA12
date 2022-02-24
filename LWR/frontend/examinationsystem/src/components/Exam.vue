@@ -671,7 +671,7 @@ export default {
   border-radius: 50%;
   display: inline-block;
   margin: 9.5px;
-  /* transition: all 0.3s; */
+  transition: background 0.3s;
 }
 
 .current {

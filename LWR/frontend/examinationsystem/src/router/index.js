@@ -40,6 +40,7 @@ const routes = [{
                         { title: "表格测试", link: "/admin/tableTest" },
                         { title: "对话框测试", link: "/admin/dialogTest" },
                         { title: "考试测试", link: "/admin/examTest" },
+                        { title: "考试表格测试", link: "/admin/examTableTest" },
                     ],
                 },
             ],
@@ -136,6 +137,16 @@ const routes = [{
                 meta: {
                     title: "考试测试" + postTitle,
                     pageTitle: "考试测试"
+                }
+            },
+            {
+                path: 'examTableTest',
+                name: 'ExamTableTest',
+                component: () =>
+                    import ('../testViews/ExamTableTest.vue'),
+                meta: {
+                    title: "考试表格测试" + postTitle,
+                    pageTitle: "考试表格测试"
                 }
             },
         ]
