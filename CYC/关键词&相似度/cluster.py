@@ -15,7 +15,7 @@ def main_tops(ans_file_path,top_number):
     stopwords = [line.strip() for line in open('stopword.txt',encoding='utf-8').readlines()]
     '''
     按。！？切成句子
-    再消除掉，、（）《》；[数字]
+    再消除掉，”、（）《》；[数字]
     '''
     sentence_cut = ['。', '！', '？']
     lst = 0
@@ -25,8 +25,6 @@ def main_tops(ans_file_path,top_number):
 
     for item in model.key_to_index:
         word_embedding[item] = model[item]
-
-
     for chars in fstr:
         for checks in sentence_cut:
             if chars == checks:
@@ -40,7 +38,7 @@ def main_tops(ans_file_path,top_number):
     word_graph = {}#词间的有向图
     Iposition = {}
     for items in sentence:
-        items = re.sub(r'[，,。！!?？…()（）、《》·:\n ]+', r'', items)
+        items = re.sub(r'[，”,“。！!?？…()（）、《》·:\n ]+', r'', items)
         items = re.sub(r'\[+[0-9]*\]+', r'', items)  # 这个是用来删除索引的
         sentences.append(items)
     wordno = 0
@@ -66,9 +64,6 @@ def main_tops(ans_file_path,top_number):
     for word in words:
         if word in word_graph:
             word_graph[word] = list(set(word_graph[word]))
-
-
-
     wordvecl = []
     worddict = {}
     for word in words:
@@ -180,7 +175,7 @@ def main_tops(ans_file_path,top_number):
     for i in sortk:
         if sdrow[i[1]] not in stopwords:
             top_list.append(sdrow[i[1]])
-            if cnt > top_number:
+            if cnt >= top_number:
                 break
             cnt += 1
     return top_list
