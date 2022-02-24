@@ -20,6 +20,7 @@ import ExamTable from "@/components/ExamTable.vue";
 export default {
   data() {
     return {
+
     }
   },
   components: {

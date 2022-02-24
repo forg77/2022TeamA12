@@ -8,7 +8,7 @@
           formatDate(new Date(exam.earliestStartTime))
         }}</template>
         <template v-slot:limitTime
-          >限时{{ exam.duration / 1000 / 60 }}分钟</template
+          >限时{{ Math.floor(exam.duration / 1000 / 60) }}分钟</template
         >
         <template v-slot:score>满分{{ exam.fullMark }}</template>
       </ExamCard>
@@ -98,6 +98,7 @@ export default {
         this.ajaxCancel();
         this.ajaxCancel = null;
       }
+      this.exams = [];
       axios({
         url: this.examUrl,
         cancelToken: new axios.CancelToken((c) => {
@@ -192,6 +193,7 @@ export default {
 
 <style scoped>
 .table {
+
 }
 .footer {
   width: 100%;
