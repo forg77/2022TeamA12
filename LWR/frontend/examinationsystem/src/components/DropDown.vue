@@ -1,18 +1,30 @@
 <template>
   <div class="container">
-    <select id="sex">
-      <option value="">信息学院</option>
-      <option value="">服装学院</option>
-      <option value="" selected="selected">全部学院</option>
+    <select @change="$emit('change',$event.target.value);">
+      <option v-for="val in values" :key="val.value" :value="val.value" >{{val.text}}</option>
     </select>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    values: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
+  },
+  emits:["change"]
+};
 </script>
 
 <style>
+.container {
+  display: inline-block;
+  vertical-align: middle;
+}
 select {
   width: 133px;
   height: 40px;
@@ -27,9 +39,10 @@ select {
   appearance: none;
   -moz-appearance: none;
   -webkit-appearance: none;
-  background: url("../assets/image/triangle.png") no-repeat 110px
-    transparent;
-  background-size: 10%;
+  background: url("../assets/image/triangle.png") no-repeat 100px transparent;
+  background-size: 15%;
   color: #888888;
+
+  font-size: 18px;
 }
 </style>
