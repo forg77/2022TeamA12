@@ -1,32 +1,34 @@
 <template>
-  <Card>
-    <template v-slot:headerLeft> 消息列表 </template>
-    <template v-slot:content>
-      <div class="content">
-        <div style="height: 20px"></div>
+  <div>
+    <Card>
+      <template v-slot:headerLeft> 消息列表 </template>
+      <template v-slot:content>
+        <div class="content">
+          <div style="height: 20px"></div>
 
-        <div class="box">
-          <div class="img">
-            <div class="image"></div>
-          </div>
-          <div class="MessageContent">
-            <div class="Mtitle">标题</div>
-            <div class="Mcontent">
-              32321321..................................
+          <div class="box">
+            <div class="img">
+              <div class="image"></div>
+            </div>
+            <div class="MessageContent">
+              <div class="Mtitle">标题</div>
+              <div class="Mcontent">
+                32321321..................................
+              </div>
+            </div>
+            <div class="time">
+              <div class="Time">
+                <svg-icon iconName="time" className="icon"></svg-icon>&nbsp;
+                2020-01-23
+              </div>
             </div>
           </div>
-          <div class="time">
-            <div class="Time">
-              <svg-icon iconName="time" className="icon"></svg-icon>&nbsp;
-              2020-01-23
-            </div>
-          </div>
+
+          <div style="height: 1px"></div>
         </div>
-
-        <div style="height: 1px"></div>
-      </div>
-    </template>
-  </Card>
+      </template>
+    </Card>
+  </div>
 </template>
 
 <script>
@@ -40,7 +42,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .box {
   width: 960px;
   height: 90px;

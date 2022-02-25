@@ -200,8 +200,8 @@ const routes = [{
                 {
                     title: "我的成绩",
                     content: [
-                        { title: "成绩查询", link: "/teacher/questionsManage" },
-                        { title: "知识分析", link: "/teacher/questionsInput" },
+                        { title: "成绩查询", link: "/student/message" },
+                        { title: "知识分析", link: "/student/message" },
                     ],
                 },
                 {
