@@ -1,247 +1,249 @@
 <template>
-  <!-- 确认删除对话框 -->
-  <DialogBox v-model:show="showDeleteDialog">
-    <template v-slot:header>确认</template>
-    确定删除所选项吗？
-    <template v-slot:bottom>
-      <button
-        class="btn"
-        @click="
-          deleteItems();
-          showDeleteDialog = false;
-        "
-        style="margin-right: 20px"
-      >
-        确定
-      </button>
-      <button class="btn" @click="showDeleteDialog = false">取消</button>
-    </template>
-  </DialogBox>
-  <!-- 操作失败对话框 -->
-  <DialogBox v-model:show="showFailedDialog">
-    <template v-slot:header>错误</template>
-    {{ failedDialogMessage }}
-    <template v-slot:bottom>
-      <button class="btn" @click="showFailedDialog = false">确定</button>
-    </template>
-  </DialogBox>
-  <button v-if="Boolean(urls.addUrl)" class="btn" @click="setAdding()">
-    {{ isAdding ? addString.cancel : addString.add }}
-  </button>
-  <button
-    v-if="Boolean(urls.deleteUrl)"
-    class="btn"
-    @click="showDeleteDialog = true"
-    style="width: 150px; margin-left: 20px"
-    :disabled="selectCount <= 0"
-  >
-    删除所选项{{ selectCount > 0 ? "(" + selectCount + ")" : "" }}
-  </button>
-  <button
-    v-if="config.canSelect"
-    class="btn"
-    @click="selectItems = {}"
-    :disabled="selectCount <= 0"
-    style="margin-left: 20px"
-  >
-    取消选择
-  </button>
-  <div
-    id="scroll"
-    style="max-height: 1000px; overflow-x: hidden; min-height: 189px"
-    :style="{ 'overflow-y': overflowY }"
-  >
-    <div :style="{ height: totalHeight + 'px' }">
-      <table class="table" cellspacing="0">
-        <tr class="row">
-          <th
-            v-for="column in columns"
-            :key="column.name"
-            @click="setOrderColumn(column.name)"
-          >
-            {{ column.title }}
-            <template v-if="column.name == order">
-              <svg-icon iconName="ascending" v-show="!desc"></svg-icon>
-              <svg-icon iconName="descending" v-show="desc"></svg-icon>
-            </template>
-          </th>
-          <th v-if="Boolean(urls.updateUrl)" style="cursor: default"></th>
-        </tr>
-        <transition-group name="list-complete">
-          <tr
-            v-for="item in items"
-            :key="item.id"
-            class="row list-complete-item"
-            :style="{
-              cursor:
-                config.canSelect || config.canClick ? 'pointer' : 'default',
-            }"
-            :class="{ select: item.id in selectItems }"
-            @click="
-              selectItem(item);
-              clickItem(item);
-            "
-          >
-            <td
-              class="item"
+  <div>
+    <!-- 确认删除对话框 -->
+    <DialogBox v-model:show="showDeleteDialog">
+      <template v-slot:header>确认</template>
+      确定删除所选项吗？
+      <template v-slot:bottom>
+        <button
+          class="btn"
+          @click="
+            deleteItems();
+            showDeleteDialog = false;
+          "
+          style="margin-right: 20px"
+        >
+          确定
+        </button>
+        <button class="btn" @click="showDeleteDialog = false">取消</button>
+      </template>
+    </DialogBox>
+    <!-- 操作失败对话框 -->
+    <DialogBox v-model:show="showFailedDialog">
+      <template v-slot:header>错误</template>
+      {{ failedDialogMessage }}
+      <template v-slot:bottom>
+        <button class="btn" @click="showFailedDialog = false">确定</button>
+      </template>
+    </DialogBox>
+    <button v-if="Boolean(urls.addUrl)" class="btn" @click="setAdding()">
+      {{ isAdding ? addString.cancel : addString.add }}
+    </button>
+    <button
+      v-if="Boolean(urls.deleteUrl)"
+      class="btn"
+      @click="showDeleteDialog = true"
+      style="width: 150px; margin-left: 20px"
+      :disabled="selectCount <= 0"
+    >
+      删除所选项{{ selectCount > 0 ? "(" + selectCount + ")" : "" }}
+    </button>
+    <button
+      v-if="config.canSelect"
+      class="btn"
+      @click="selectItems = {}"
+      :disabled="selectCount <= 0"
+      style="margin-left: 20px"
+    >
+      取消选择
+    </button>
+    <div
+      id="scroll"
+      style="max-height: 1000px; overflow-x: hidden; min-height: 189px"
+      :style="{ 'overflow-y': overflowY }"
+    >
+      <div :style="{ height: totalHeight + 'px' }">
+        <table class="table" cellspacing="0">
+          <tr class="row">
+            <th
               v-for="column in columns"
               :key="column.name"
-              :style="{ height: lineHeight }"
+              @click="setOrderColumn(column.name)"
             >
-              <template v-if="editingId != item.id">
-                {{
-                  column.transformer
-                    ? column.transformer(item[column.name])
-                    : item[column.name]
-                }}
+              {{ column.title }}
+              <template v-if="column.name == order">
+                <svg-icon iconName="ascending" v-show="!desc"></svg-icon>
+                <svg-icon iconName="descending" v-show="desc"></svg-icon>
               </template>
-              <template v-else-if="item.id != -2 || column.name != 'id'">
-                <input
-                  v-if="column.editable !== false"
-                  type="text"
-                  class="inputBox"
-                  v-model="editItems[column.name]"
-                  @click="$event.stopPropagation()"
-                />
-                <template v-else>
+            </th>
+            <th v-if="Boolean(urls.updateUrl)" style="cursor: default"></th>
+          </tr>
+          <transition-group name="list-complete">
+            <tr
+              v-for="item in items"
+              :key="item.id"
+              class="row list-complete-item"
+              :style="{
+                cursor:
+                  config.canSelect || config.canClick ? 'pointer' : 'default',
+              }"
+              :class="{ select: item.id in selectItems }"
+              @click="
+                selectItem(item);
+                clickItem(item);
+              "
+            >
+              <td
+                class="item"
+                v-for="column in columns"
+                :key="column.name"
+                :style="{ height: lineHeight }"
+              >
+                <template v-if="editingId != item.id">
                   {{
                     column.transformer
-                      ? column.transformer(item[coflumn.name])
+                      ? column.transformer(item[column.name])
                       : item[column.name]
                   }}
                 </template>
-              </template>
-            </td>
-            <td
-              v-if="Boolean(urls.updateUrl) || isAdding"
-              class="item edit"
-              style="width: 60px"
-              :class="{ show: item.id == editingId }"
-            >
-              <table style="width: 100%; text-align: center">
-                <tr>
-                  <template v-if="item.id != editingId">
-                    <td
-                      style="cursor: pointer"
-                      @click="
-                        setEditingId(item);
-                        $event.stopPropagation();
-                      "
-                    >
-                      <svg-icon iconName="edit"></svg-icon></td
-                  ></template>
+                <template v-else-if="item.id != -2 || column.name != 'id'">
+                  <input
+                    v-if="column.editable !== false"
+                    type="text"
+                    class="inputBox"
+                    v-model="editItems[column.name]"
+                    @click="$event.stopPropagation()"
+                  />
                   <template v-else>
-                    <td
-                      style="cursor: pointer"
-                      @click="
-                        updateItem();
-                        $event.stopPropagation();
-                      "
-                    >
-                      <svg-icon iconName="correct"></svg-icon>
-                    </td>
-                    <td
-                      style="cursor: pointer"
-                      @click="
-                        setEditingId(-1);
-                        $event.stopPropagation();
-                      "
-                    >
-                      <svg-icon iconName="wrong"></svg-icon>
-                    </td>
+                    {{
+                      column.transformer
+                        ? column.transformer(item[coflumn.name])
+                        : item[column.name]
+                    }}
                   </template>
-                </tr>
-              </table>
-            </td>
-          </tr>
-        </transition-group>
-      </table>
-
-      <div
-        style="text-align: center; width: 100%"
-        :style="{
-          height: (totalHeight < 1000 ? totalHeight : 1000) - 43 + 'px',
-        }"
-        v-show="loading || loadFailed"
-      >
-        <table style="width: 100%; height: 100%">
-          <transition name="fade1">
-            <tr v-show="loading">
-              <td><Loading></Loading></td>
-            </tr>
-          </transition>
-          <transition name="fade1">
-            <tr v-show="loadFailed">
-              <td>
-                加载失败<br /><button
-                  class="btn"
-                  style="margin: 20px"
-                  @click="getItems()"
-                >
-                  重新加载
-                </button>
+                </template>
+              </td>
+              <td
+                v-if="Boolean(urls.updateUrl) || isAdding"
+                class="item edit"
+                style="width: 60px"
+                :class="{ show: item.id == editingId }"
+              >
+                <table style="width: 100%; text-align: center">
+                  <tr>
+                    <template v-if="item.id != editingId">
+                      <td
+                        style="cursor: pointer"
+                        @click="
+                          setEditingId(item);
+                          $event.stopPropagation();
+                        "
+                      >
+                        <svg-icon iconName="edit"></svg-icon></td
+                    ></template>
+                    <template v-else>
+                      <td
+                        style="cursor: pointer"
+                        @click="
+                          updateItem();
+                          $event.stopPropagation();
+                        "
+                      >
+                        <svg-icon iconName="correct"></svg-icon>
+                      </td>
+                      <td
+                        style="cursor: pointer"
+                        @click="
+                          setEditingId(-1);
+                          $event.stopPropagation();
+                        "
+                      >
+                        <svg-icon iconName="wrong"></svg-icon>
+                      </td>
+                    </template>
+                  </tr>
+                </table>
               </td>
             </tr>
-          </transition>
+          </transition-group>
         </table>
+
+        <div
+          style="text-align: center; width: 100%"
+          :style="{
+            height: (totalHeight < 1000 ? totalHeight : 1000) - 43 + 'px',
+          }"
+          v-show="loading || loadFailed"
+        >
+          <table style="width: 100%; height: 100%">
+            <transition name="fade1">
+              <tr v-show="loading">
+                <td><Loading></Loading></td>
+              </tr>
+            </transition>
+            <transition name="fade1">
+              <tr v-show="loadFailed">
+                <td>
+                  加载失败<br /><button
+                    class="btn"
+                    style="margin: 20px"
+                    @click="getItems()"
+                  >
+                    重新加载
+                  </button>
+                </td>
+              </tr>
+            </transition>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
-  <table class="footer">
-    <tr>
-      <td style="width: 44%; text-align: right">
-        <span class="normal-text"
-          >共{{ getTotalPages() }}页，共{{ totalCount }}条</span
-        >
+    <table class="footer">
+      <tr>
+        <td style="width: 44%; text-align: right">
+          <span class="normal-text"
+            >共{{ getTotalPages() }}页，共{{ totalCount }}条</span
+          >
 
-        <input
-          id="setItemsPerPage"
-          style="margin-left: 30px"
-          class="inputBox input"
-          type="number"
-          :value="itemsPerPage"
-          @input="onItemsPerPageChanged($event)"
-        />
-        <span class="normal-text" style="margin-right: 30px">条/页</span>
-      </td>
-      <td style="text-align: center; font-size: 0">
-        <table class="page">
-          <tr>
-            <td
-              class="active"
-              :class="{ disable: currentPage <= 1 }"
-              @click="gotoPage(currentPage - 1)"
-            >
-              <svg-icon iconName="left" className="arrow"></svg-icon>
-            </td>
-            <td>
-              <span class="text">{{ currentPage }}</span>
-            </td>
-            <td
-              class="active"
-              :class="{
-                disable: currentPage >= getTotalPages(),
-              }"
-              @click="gotoPage(currentPage + 1)"
-            >
-              <svg-icon iconName="right" className="arrow"></svg-icon>
-            </td>
-          </tr>
-        </table>
-      </td>
-      <td style="width: 44%; text-align: center">
-        <span class="normal-text">前往</span
-        ><input
-          id="setPage"
-          class="inputBox input"
-          type="number"
-          @input="onCurrentPageChanged($event)"
-          :value="currentPage"
-          style="-moz-appearance: textfield"
-        /><span class="normal-text">页</span>
-      </td>
-    </tr>
-  </table>
+          <input
+            id="setItemsPerPage"
+            style="margin-left: 30px"
+            class="inputBox input"
+            type="number"
+            :value="itemsPerPage"
+            @input="onItemsPerPageChanged($event)"
+          />
+          <span class="normal-text" style="margin-right: 30px">条/页</span>
+        </td>
+        <td style="text-align: center; font-size: 0">
+          <table class="page">
+            <tr>
+              <td
+                class="active"
+                :class="{ disable: currentPage <= 1 }"
+                @click="gotoPage(currentPage - 1)"
+              >
+                <svg-icon iconName="left" className="arrow"></svg-icon>
+              </td>
+              <td>
+                <span class="text">{{ currentPage }}</span>
+              </td>
+              <td
+                class="active"
+                :class="{
+                  disable: currentPage >= getTotalPages(),
+                }"
+                @click="gotoPage(currentPage + 1)"
+              >
+                <svg-icon iconName="right" className="arrow"></svg-icon>
+              </td>
+            </tr>
+          </table>
+        </td>
+        <td style="width: 44%; text-align: center">
+          <span class="normal-text">前往</span
+          ><input
+            id="setPage"
+            class="inputBox input"
+            type="number"
+            @input="onCurrentPageChanged($event)"
+            :value="currentPage"
+            style="-moz-appearance: textfield"
+          /><span class="normal-text">页</span>
+        </td>
+      </tr>
+    </table>
+  </div>
 </template>
 
 <script>
@@ -308,17 +310,22 @@ export default {
         this.loading = true;
       }, 1100);
 
+      let data = {
+        offset: this.itemsPerPage * (this.currentPage - 1),
+        max: this.itemsPerPage,
+        order: this.order,
+        desc: this.desc,
+      };
+      for (let pro in this.extraData) {
+        data[pro] = this.extraData[pro];
+      }
+      
       axios({
         url: this.urls.queryUrl,
         cancelToken: new axios.CancelToken((c) => {
           this.ajaxCancel = c;
         }),
-        data: {
-          offset: this.itemsPerPage * (this.currentPage - 1),
-          max: this.itemsPerPage,
-          order: this.order,
-          desc: this.desc,
-        },
+        data: data,
       })
         .then((response) => {
           this.ajaxCancel = null;
@@ -491,7 +498,7 @@ export default {
       if (!this.config.canSelect || item.id == -2) return;
       if (item.id in this.selectItems) delete this.selectItems[item.id];
       else {
-        if (!this.canMultiSelect) {
+        if (!this.config.canMultiSelect) {
           this.selectItems = {};
         }
         this.selectItems[item.id] = item;
@@ -546,7 +553,8 @@ export default {
     },
   },
   mounted() {
-    this.getItems();
+    if (this.config.getItemsOnCreate || this.config.getItemsOnCreate == null)
+      this.getItems();
   },
   props: {
     // url: { type: String, default: "" },
@@ -573,11 +581,18 @@ export default {
           canSelect: false,
           canMultiSelect: true,
           canClick: false,
+          getItemsOnCreate: true,
         };
       },
     },
-    canSelect: { type: Boolean, default: false },
-    canMultiSelect: { type: Boolean, default: true },
+    extraData: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
+    // canSelect: { type: Boolean, default: false },
+    // canMultiSelect: { type: Boolean, default: true },
   },
 };
 </script>
@@ -699,6 +714,8 @@ export default {
   line-height: 0px;
 
   color: #010101b2;
+
+  border-radius: 5px;
 }
 
 .fade1-enter-active {

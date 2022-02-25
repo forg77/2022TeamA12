@@ -200,7 +200,7 @@ const routes = [{
                 {
                     title: "我的成绩",
                     content: [
-                        { title: "成绩查询", link: "/student/message" },
+                        { title: "成绩查询", link: "/student/gradeQuery" },
                         { title: "知识分析", link: "/student/message" },
                     ],
                 },
@@ -244,7 +244,17 @@ const routes = [{
                     title: "考试" + postTitle,
                     pageTitle: "考试"
                 }
-            }
+            },
+            {
+                path: 'gradeQuery',
+                name: 'GradeQuery',
+                component: () =>
+                    import ('../views/student/GradeQuery.vue'),
+                meta: {
+                    title: "成绩查询" + postTitle,
+                    pageTitle: "成绩查询"
+                },
+            },
         ]
     }
 ]

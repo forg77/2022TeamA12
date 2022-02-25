@@ -266,5 +266,6 @@ export default {
   line-height: 0px;
 
   color: #010101b2;
+  border-radius: 5px;
 }
 </style>
