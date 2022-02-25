@@ -1,4 +1,14 @@
 <template>
+  <!-- 加载 -->
+  <transition name="fade">
+    <div class="loading-back" v-show="isLoading">
+      <div style="width: 100%; height: 100%">
+        <table style="width: 100%; height: 100%; vertical-align: middle">
+          <td style="text-align: center"><Loading></Loading></td>
+        </table>
+      </div>
+    </div>
+  </transition>
   <!-- 考试结束对话框 -->
   <DialogBox v-model:show="showOverDialog">
     <template v-slot:header>考试已结束</template>
@@ -26,7 +36,8 @@
   <!-- 加入考试对话框 -->
   <DialogBox v-model:show="showJoinDialog">
     <template v-slot:header>加入考试</template>
-    <template v-if="isExamTimeOut"> 考试已经结束 </template>
+    <template v-if="isExamNotStarted"> 考试未开始 </template>
+    <template v-else-if="isExamTimeOut"> 考试已经结束 </template>
     <template v-else-if="currentTime >= exam.latestStartTime">
       已错过最晚加入考试的时间
     </template>
@@ -49,7 +60,11 @@
       <button
         class="btn"
         @click="showJoinDialog = false"
-        v-if="isExamTimeOut || currentTime >= exam.latestStartTime"
+        v-if="
+          isExamTimeOut ||
+          currentTime >= exam.latestStartTime ||
+          isExamNotStarted
+        "
       >
         确定
       </button>
@@ -261,13 +276,19 @@
                             }}</span>
                           </td>
                           <td style="text-align: right">
-                            倒计时：<span class="val-text">{{
-                              Math.floor(remainingTime / 1000 / 60)
-                            }}</span
-                            >分钟<span class="val-text">{{
-                              Math.floor((remainingTime / 1000) % 60)
-                            }}</span
-                            >秒
+                            <svg-icon
+                              iconName="sandglass"
+                              className="sandglass"
+                            ></svg-icon>
+                            <span style="vertical-align: middle">
+                              倒计时：<span class="val-text">{{
+                                Math.floor(remainingTime / 1000 / 60)
+                              }}</span
+                              >分钟<span class="val-text">{{
+                                Math.floor((remainingTime / 1000) % 60)
+                              }}</span
+                              >秒
+                            </span>
                           </td>
                         </tr>
                       </table>
@@ -411,10 +432,12 @@
 import axios from "axios";
 import { formatDate } from "@/common.js";
 import DialogBox from "./DialogBox.vue";
+import Loading from "./Loading.vue";
 // import config from "@/config.js";
 export default {
   components: {
     DialogBox,
+    Loading,
   },
   data() {
     return {
@@ -446,10 +469,13 @@ export default {
 
       showOverDialog: false,
       showJoinDialog: false,
+
+      isLoading: false,
     };
   },
   methods: {
     async getAllExamInfo() {
+      this.isLoading = true;
       return axios({
         url: "exam/getAllExamInfo",
         data: {
@@ -461,7 +487,10 @@ export default {
 
         //初始化考试信息
         this.exam = data.exam;
-        this.order = JSON.parse(this.exam.orderJson);
+        if (this.exam.type == "fixed")
+          this.order = JSON.parse(this.exam.orderJson);
+        else if (this.exam.type == "random")
+          this.order = JSON.parse(this.examPaper.orderJson);
         this.getTitleNumberIndex();
 
         //初始化问题信息
@@ -507,6 +536,8 @@ export default {
         for (let score of data.questionScores) {
           this.questionScores[score.id] = score;
         }
+
+        this.isLoading = false;
       });
     },
     async getQuestions() {
@@ -748,6 +779,9 @@ export default {
     isExamTimeOut() {
       return this.currentTime > this.exam.latestStartTime + this.exam.duration;
     },
+    isExamNotStarted() {
+      return this.currentTime < this.exam.earliestStartTime;
+    },
   },
   watch: {
     user() {
@@ -926,5 +960,22 @@ input[type="radio"] {
 input[type="radio"]:checked {
   background-color: rgb(255, 60, 60);
   border: none;
+}
+
+.sandglass {
+  color: #ff3c3c;
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+}
+
+.loading-back {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: #00000033;
+  z-index: 20;
 }
 </style>

@@ -1,7 +1,10 @@
 <template>
   <div class="table">
+    <table style="width: 100%">
+      <td style="text-align: center"><Loading v-show="isLoading"></Loading></td>
+    </table>
     <template v-for="exam in exams" :key="exam.id">
-      <ExamCard :tag="getExamTag(exam)" @click="this.$emit('cardClick',exam);">
+      <ExamCard :tag="getExamTag(exam)" @click="this.$emit('cardClick', exam)">
         <template v-slot:title>{{ exam.title }}</template>
         <template v-slot:subtitle>{{ exam.subtitle }}</template>
         <template v-slot:time>{{
@@ -74,10 +77,11 @@
 
 <script>
 import ExamCard from "./ExamCard.vue";
+import Loading from "./Loading.vue";
 import axios from "axios";
 import { formatDate } from "@/common.js";
 export default {
-  components: { ExamCard },
+  components: { ExamCard, Loading },
   data() {
     return {
       exams: [],
@@ -90,9 +94,11 @@ export default {
 
       formatDate: formatDate,
       timeNow: new Date(),
+
+      isLoading: false,
     };
   },
-  emits:["cardClick"],
+  emits: ["cardClick"],
   methods: {
     getExams() {
       if (this.ajaxCancel != null) {
@@ -100,18 +106,25 @@ export default {
         this.ajaxCancel = null;
       }
       this.exams = [];
+      this.isLoading = true;
+
+      let data = {
+        offset: this.itemsPerPage * (this.currentPage - 1),
+        max: this.itemsPerPage,
+        order: this.order,
+        desc: this.desc,
+      };
+      for (let pro in this.extraData) {
+        data[pro] = this.extraData[pro];
+      }
       axios({
         url: this.examUrl,
         cancelToken: new axios.CancelToken((c) => {
           this.ajaxCancel = c;
         }),
-        data: {
-          offset: this.itemsPerPage * (this.currentPage - 1),
-          max: this.itemsPerPage,
-          order: this.order,
-          desc: this.desc,
-        },
+        data: data,
       }).then((res) => {
+        this.isLoading = false;
         this.exams = res.data.data.data;
         this.totalCount = res.data.data.count;
       });
@@ -168,7 +181,7 @@ export default {
     },
     isExamGoing(exam) {
       return (
-        this.timeNow < new Date(exam.latestStartTime + exam.duration) &&
+        this.timeNow <= new Date(exam.latestStartTime + exam.duration) &&
         this.timeNow >= new Date(exam.earliestStartTime)
       );
     },
@@ -187,6 +200,12 @@ export default {
       type: String,
       default: "",
     },
+    extraData: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
   },
   computed: {},
 };
@@ -194,7 +213,7 @@ export default {
 
 <style scoped>
 .table {
-
+  min-height: 200px;
 }
 .footer {
   width: 100%;
