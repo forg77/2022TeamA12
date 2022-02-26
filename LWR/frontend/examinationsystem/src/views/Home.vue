@@ -9,7 +9,7 @@
         </div>
       </template>
     </Card>
-    <DropDown></DropDown>
+    <Questions></Questions>
   </div>
 </template>
 
@@ -17,13 +17,13 @@
 // @ is an alias to /src
 import HelloWorld from "@/components/HelloWorld.vue";
 import Card from "@/components/Card.vue";
-import DropDown from "@/components/DropDown.vue"
+import Questions from "@/components/Questions.vue"
 export default {
   name: "Home",
   components: {
     HelloWorld,
     Card,
-    DropDown
+    Questions
   },
 };
 </script>
