@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <select @change="$emit('change',$event.target.value);">
+    <select @change="$emit('change',$event.target.value);" :style="{width:width+'px',height:height+'px'}">
       <option v-for="val in values" :key="val.value" :value="val.value" >{{val.text}}</option>
     </select>
   </div>
@@ -15,6 +15,14 @@ export default {
         return [];
       },
     },
+    width:{
+      type:Number,
+      default:133
+    },
+    height:{
+      type:Number,
+      default:40
+    }
   },
   emits:["change"]
 };
@@ -36,10 +44,6 @@ select {
   border-radius: 10px;
   outline: none;
   cursor: pointer;
-  appearance: none;
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  background: url("../assets/image/triangle.png") no-repeat 100px transparent;
   background-size: 15%;
   color: #888888;
 

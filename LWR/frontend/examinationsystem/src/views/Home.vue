@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <Card>
+    <!-- <Card>
       <template v-slot:headerLeft> 标题 </template>
       <template v-slot:content>
         <div class="content">
@@ -8,7 +8,7 @@
           <HelloWorld msg="Welcome to Your Vue.js App" />
         </div>
       </template>
-    </Card>
+    </Card> -->
     <Questions></Questions>
   </div>
 </template>
