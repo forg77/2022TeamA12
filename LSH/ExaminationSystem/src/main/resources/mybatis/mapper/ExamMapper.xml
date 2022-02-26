@@ -13,7 +13,56 @@
             <if test="id != null">
                 AND `id` = #{id}
             </if>
+            <choose>
+                <when test="screen == 'notStarted'">
+                    AND (#{now} &lt; `earliest_start_time`)
+                </when>
+                <when test="screen == 'going'">
+                    AND (#{now} &gt;= `earliest_start_time` AND #{now} &lt;= DATE_ADD(`latest_start_time`,INTERVAL
+                    `duration`*1000 MICROSECOND))
+                </when>
+                <when test="screen == 'over'">
+                    AND (#{now} &gt; DATE_ADD(`latest_start_time`,INTERVAL
+                    `duration`*1000 MICROSECOND))
+                </when>
+            </choose>
+            <if test="search != null">
+                AND (`title` LIKE CONCAT('%',#{search},'%') OR `subtitle` LIKE CONCAT('%',#{search},'%'))
+            </if>
         </where>
+        ORDER BY
+        <choose>
+            <when test="con.order == 'id'">
+                `id`
+            </when>
+            <when test='con.order == "type"'>
+                `type`
+            </when>
+            <when test='con.order == "title"'>
+                `title`
+            </when>
+            <when test='con.order == "subtitle"'>
+                `subtitle`
+            </when>
+            <when test='con.order == "duration"'>
+                `duration`
+            </when>
+            <when test='con.order == "fullMark"'>
+                `full_mark`
+            </when>
+            <when test='con.order == "earliestStartTime"'>
+                `earliest_start_time`
+            </when>
+            <otherwise>
+                `id`
+            </otherwise>
+        </choose>
+        <if test="con.desc">
+            DESC
+        </if>
+        <if test="con.offset != null and con.max != null">
+            LIMIT #{con.offset}, #{con.max}
+        </if>
         ;
     </select>
 
@@ -25,6 +74,22 @@
         <where>
             <if test="id != null">
                 AND `id` = #{id}
+            </if>
+            <choose>
+                <when test="screen == 'notStarted'">
+                    AND (#{now} &lt; `earliest_start_time`)
+                </when>
+                <when test="screen == 'going'">
+                    AND (#{now} &gt;= `earliest_start_time` AND #{now} &lt;= DATE_ADD(`latest_start_time`,INTERVAL
+                    `duration`*1000 MICROSECOND))
+                </when>
+                <when test="screen == 'over'">
+                    AND (#{now} &gt; DATE_ADD(`latest_start_time`,INTERVAL
+                    `duration`*1000 MICROSECOND))
+                </when>
+            </choose>
+            <if test="search != null">
+                AND (`title` LIKE CONCAT('%',#{search},'%') OR `subtitle` LIKE CONCAT('%',#{search},'%'))
             </if>
         </where>
         ;
@@ -123,7 +188,7 @@
           AND `examinee` = #{examinee};
     </update>
 
-    <insert id="addExamPaper" keyProperty="normalId" useGeneratedKeys="true">
+    <insert id="addExamPaper" keyProperty="id" useGeneratedKeys="true">
         INSERT INTO `exam_paper` (`exam_id`,
                                   `examinee`,
                                   `order_json`,
@@ -143,7 +208,7 @@
             `grade`       = #{grade},
             `start_time`  = #{startTime},
             `finish_time` = #{finishTime},
-            `times` = #{times}
+            `times`       = #{times}
         WHERE `exam_id` = #{examId}
           AND `examinee` = #{examinee};
     </update>
@@ -154,4 +219,93 @@
         WHERE `exam_id` = #{examId}
           AND `examinee` = #{examinee};
     </delete>
+
+    <select id="getGradesInfo" resultType="GradeInfo">
+        SELECT `exam_paper`.`id`,
+        `exam_id`,
+        `examinee`,
+        `grade`,
+        `start_time`,
+        `finish_time`,
+        `times`,
+        `title`,
+        `subtitle`,
+        `full_mark`,
+        `duration`,
+        `type`
+        FROM `exam_paper`
+        INNER JOIN `exam` ON `exam_id` = `exam`.`id`
+        <where>
+            <if test="examinee != null">
+                AND `examinee` = #{examinee}
+            </if>
+            <if test="search != null">
+                AND (`title` LIKE CONCAT('%',#{search},'%') OR `subtitle` LIKE CONCAT('%',#{search},'%'))
+            </if>
+        </where>
+        ORDER BY
+        <choose>
+            <when test="con.order == 'id'">
+                `exam_paper`.`id`
+            </when>
+            <when test='con.order == "examId"'>
+                `exam_id`
+            </when>
+            <when test='con.order == "examinee"'>
+                `examinee`
+            </when>
+            <when test='con.order == "grade"'>
+                `grade`
+            </when>
+            <when test='con.order == "startTime"'>
+                `start_time`
+            </when>
+            <when test='con.order == "finishTime"'>
+                `finish_time`
+            </when>
+            <when test='con.order == "times"'>
+                `times`
+            </when>
+            <when test='con.order == "title"'>
+                `title`
+            </when>
+            <when test='con.order == "subtitle"'>
+                `subtitle`
+            </when>
+            <when test='con.order == "fullMark"'>
+                `full_mark`
+            </when>
+            <when test='con.order == "duration"'>
+                `duration`
+            </when>
+            <when test='con.order == "type"'>
+                `type`
+            </when>
+            <otherwise>
+                `exam_paper`.`id`
+            </otherwise>
+        </choose>
+        <if test="con.desc">
+            DESC
+        </if>
+        <if test="con.offset != null and con.max != null">
+            LIMIT #{con.offset}, #{con.max}
+        </if>
+        ;
+    </select>
+
+    <select id="getGradesInfoCount" resultType="int">
+        SELECT COUNT(*)
+        FROM `exam_paper`
+        INNER JOIN `exam` ON `exam_id` = `exam`.`id`
+        <where>
+            <if test="examinee != null">
+                AND `examinee` = #{examinee}
+            </if>
+            <if test="search != null">
+                AND (`title` LIKE CONCAT('%',#{search},'%') OR `subtitle` LIKE CONCAT('%',#{search},'%'))
+            </if>
+        </where>
+        ;
+    </select>
 </mapper>

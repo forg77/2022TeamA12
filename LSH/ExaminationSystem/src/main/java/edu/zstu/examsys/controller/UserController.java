@@ -54,6 +54,7 @@ public class UserController {
         data.put("id", user.getId());
         data.put("username", user.getUsername());
         data.put("nickname", user.getNickname());
+        data.put("permission", user.getPermission());
 
         CommonData res = new CommonData(ErrorCode.SUCCESS, "成功", data);
 

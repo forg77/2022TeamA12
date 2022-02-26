@@ -4,16 +4,18 @@ import edu.zstu.examsys.pojo.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @Mapper
 public interface ExamMapper {
-    List<Exam> getExams(Integer id, Condition condition);
+    List<Exam> getExams(Integer id, String screen, Date now, String search, Condition con);
 
-    Integer getExamsCount(Integer id);
+    Integer getExamsCount(Integer id, String screen, Date now, String search);
 
-    List<ExamPaper> getExamPapers(Integer examinee, Integer examId, Condition condition);
+    List<ExamPaper> getExamPapers(Integer examinee, Integer examId, Condition con);
 
     Integer getExamPapersCount(Integer examinee, Integer examId);
 
@@ -38,4 +40,8 @@ public interface ExamMapper {
     Integer updateExamPaper(ExamPaper examPaper);
 
     Integer deleteExamAnswers(Integer examId, Integer examinee);
+
+    List<GradeInfo> getGradesInfo(Integer examinee, String search, Condition con);
+
+    Integer getGradesInfoCount(Integer examinee);
 }

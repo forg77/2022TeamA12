@@ -85,6 +85,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 userData.put("id", user.getId());
                 userData.put("username", user.getUsername());
                 userData.put("nickname", user.getNickname());
+                userData.put("permission", user.getPermission());
 
                 CommonData data = new CommonData(ErrorCode.SUCCESS, "登录成功", userData);
 

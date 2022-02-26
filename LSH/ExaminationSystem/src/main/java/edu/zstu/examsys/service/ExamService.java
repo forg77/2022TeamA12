@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ExamService {
@@ -18,12 +20,12 @@ public class ExamService {
         this.examMapper = examMapper;
     }
 
-    public List<Exam> getExams(Integer id, Condition condition) {
-        return examMapper.getExams(id, condition);
+    public List<Exam> getExams(Integer id, String screen, String search, Condition condition) {
+        return examMapper.getExams(id, screen, new Date(), search, condition);
     }
 
-    public Integer getExamsCount(Integer id) {
-        return examMapper.getExamsCount(id);
+    public Integer getExamsCount(Integer id, String screen, String search) {
+        return examMapper.getExamsCount(id, screen, new Date(), search);
     }
 
     public List<ExamPaper> getExamPapers(Integer examinee, Integer examId, Condition condition) {
@@ -93,5 +95,13 @@ public class ExamService {
         } else {
             updateExamPaper(examPaper);
         }
+    }
+
+    public List<GradeInfo> getGradesInfo(Integer examinee, String search, Condition con){
+        return examMapper.getGradesInfo(examinee, search, con);
+    }
+
+    public Integer getGradesInfoCount(Integer examinee, String search){
+        return examMapper.getGradesInfoCount(examinee);
     }
 }
