@@ -9,7 +9,7 @@
         </div>
       </template>
     </Card> -->
-    <Questions></Questions>
+    <QuestionEdit :id="5"></QuestionEdit>
   </div>
 </template>
 
@@ -17,13 +17,13 @@
 // @ is an alias to /src
 import HelloWorld from "@/components/HelloWorld.vue";
 import Card from "@/components/Card.vue";
-import Questions from "@/components/Questions.vue"
+import QuestionEdit from "@/components/QuestionEdit"
 export default {
   name: "Home",
   components: {
     HelloWorld,
     Card,
-    Questions
+    QuestionEdit
   },
 };
 </script>

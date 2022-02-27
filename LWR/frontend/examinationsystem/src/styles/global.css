@@ -2,6 +2,26 @@
     box-sizing: border-box;
 }
 
+p {
+    display: inline;
+}
+
+p::after {
+    display: block;
+}
+
+code {
+    display: inline-block;
+    background-color: #f1f1f1;
+    border-radius: 3px;
+    padding: 3px 5px;
+    margin: 0 3px;
+}
+
+code::before {
+    display: block;
+}
+
 .btn {
     width: 120px;
     height: 40px;

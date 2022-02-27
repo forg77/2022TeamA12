@@ -88,6 +88,7 @@
                 v-for="column in columns"
                 :key="column.name"
                 :style="{ height: lineHeight }"
+                 style="max-width:200px;overflow-x:hidden;text-overflow:ellipsis;white-space:nowrap;"
               >
                 <template v-if="editingId != item.id">
                   {{

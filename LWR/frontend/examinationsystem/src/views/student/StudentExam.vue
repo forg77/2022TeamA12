@@ -16,7 +16,7 @@ export default {
     Exam,
   },
   created() {
-    this.examId = this.$route.params.examId;
+    this.examId = Number(this.$route.params.examId);
   },
 };
 </script>

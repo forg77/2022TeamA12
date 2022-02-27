@@ -312,12 +312,11 @@
                       questionScores[currentId] &&
                       questionScores[currentId].score
                     }}分)
-
                     {{
                       currentTitleNumber +
-                      "." +
-                      questions[currentQueType][currentId].description
+                      "."
                     }}
+                    <span v-html="questions[currentQueType][currentId].description"></span>
                   </span>
                   <br />
                   <template v-if="currentQueType == 'choice'">
@@ -351,7 +350,7 @@
                         "
                       />
                       <label :for="'choice' + index"
-                        ><span class="choice">{{ choice }}</span></label
+                        ><span class="choice" v-html="choice"></span></label
                       >
                       <div style="height: 5px"></div>
                     </template>
@@ -534,7 +533,7 @@ export default {
 
         //初始化题目分数信息
         for (let score of data.questionScores) {
-          this.questionScores[score.id] = score;
+          this.questionScores[score.questionId] = score;
         }
 
         this.isLoading = false;
@@ -818,6 +817,7 @@ export default {
   background: #ffffff;
   border-radius: 10px;
   margin: 5px;
+  overflow-y:auto;
 }
 
 .explain-text {

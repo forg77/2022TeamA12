@@ -1,5 +1,22 @@
 <template>
   <div>
+    <transition name="fade">
+      <div
+        class="loading-back"
+        v-show="showQuestionEdit"
+        @click="showQuestionEdit = false"
+      >
+        <div style="width: 100%; height: 100%">
+          <table style="width: 100%; height: 100%; vertical-align: middle">
+            <td>
+              <div @click="$event.stopPropagation()" style="width:fit-content;margin:auto">
+              <QuestionEdit :id="selectId" @save="$refs.table.getItems()"></QuestionEdit>
+              </div>
+            </td>
+          </table>
+        </div>
+      </div>
+    </transition>
     <Card>
       <template v-slot:headerLeft>
         <span
@@ -23,9 +40,11 @@
       <template v-slot:content>
         <div class="content">
           <Table
+            ref="table"
+            @clickItem="clickItem"
             :urls="urls"
             :columns="columns"
-            :config="{ canClick: true }"
+            :config="tableConfig"
           ></Table>
         </div>
       </template>
@@ -37,34 +56,56 @@
 import Card from "@/components/Card.vue";
 import SearchBox from "@/components/SearchBox.vue";
 import Table from "@/components/Table.vue";
+import QuestionEdit from "@/components/QuestionEdit";
 import { formatDate } from "@/common.js";
 export default {
   data() {
     return {
+      showQuestionEdit: false,
+      selectId: null,
       urls: {
         queryUrl: "question/getQuestions",
       },
+      tableConfig: {
+        canSelect: false,
+        canMultiSelect: true,
+        canClick: true,
+        getItemsOnCreate: true,
+      },
       columns: [
-        { title: "题目描述", name: "description" },
+        {
+          title: "题目描述",
+          name: "description",
+          transformer(value) {
+            const regex = /<\/?.+?\/?>/gm;
+            return value.replace(regex, "").replace(/&nbsp;/gi, "");
+          },
+        },
         {
           title: "试题类型",
           name: "type",
           transformer(value) {
             if (value == "choice") return "选择题";
-            else if(value == "multi_choice") return "多选题";
-            else if(value == "completion") return "填空题";
-            else if(value == "short_answer") return "简答题";
+            else if (value == "multi_choice") return "多选题";
+            else if (value == "completion") return "填空题";
+            else if (value == "short_answer") return "简答题";
           },
         },
         { title: "所属题库", name: "bankName" },
       ],
     };
   },
-  methods: {},
+  methods: {
+    clickItem(item) {
+      this.selectId = item.id;
+      this.showQuestionEdit = true;
+    },
+  },
   components: {
     Card,
     SearchBox,
     Table,
+    QuestionEdit,
   },
 };
 </script>
@@ -72,5 +113,15 @@ export default {
 <style scoped>
 .content {
   padding: 20.5px;
+}
+
+.loading-back {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: #00000033;
+  z-index: 20;
 }
 </style>
