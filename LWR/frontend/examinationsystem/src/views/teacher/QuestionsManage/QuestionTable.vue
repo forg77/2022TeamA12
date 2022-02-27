@@ -29,7 +29,7 @@
       <template v-slot:headerLeft>
         <span
           style="color: #ff3c3c; margin-right: 10px; cursor: pointer"
-          @click="$router.back()"
+          @click="$router.replace('/teacher/questionsManage')"
           >返回</span
         >试题列表
         <button class="btn" style="margin-left: 20px" @click="onAddClick()">
