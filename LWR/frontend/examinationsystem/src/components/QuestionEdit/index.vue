@@ -35,6 +35,7 @@
         <!-- <Choice></Choice> -->
         <transition name="fade" mode="out-in">
           <component
+            ref="tag"
             :id="id"
             :bankId="bankId"
             :questionBefore="question"
@@ -107,7 +108,7 @@ export default {
     Choice,
     Completion,
   },
-  emits:["save"],
+  emits: ["save"],
   data() {
     return {
       tag: "Choice",
@@ -154,11 +155,14 @@ export default {
   mounted() {
     if (this.id) this.getInfo();
   },
-  watch:{
-    id(){
-      this.getInfo();
-    }
-  }
+  watch: {
+    id(value) {
+      if (value != null) this.getInfo();
+      else {
+        this.$refs.tag.reset();
+      }
+    },
+  },
 };
 </script>
 
@@ -260,11 +264,11 @@ export default {
 .tag :deep(.anser) {
   padding: 20px;
 }
-.anser-content,
+/* .anser-content,
 .tag :deep(.anser-content) {
-  /* text-align: center; */
-  /* line-height: 248px; */
-}
+  text-align: center;
+  line-height: 248px;
+} */
 .analysis,
 .tag :deep(.analysis) {
   padding: 20px;

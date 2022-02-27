@@ -70,11 +70,14 @@
       <button
         class="btn2"
         style="background-color: #5399f3; color: #fff; border: none"
-        @click="saveQuestion();$emit('save')"
+        @click="
+          saveQuestion();
+          $emit('save');
+        "
       >
         保存该题
       </button>
-      <button @click="question = getInitQuestion()" class="btn2">重置</button>
+      <button @click="reset()" class="btn2">重置</button>
     </div>
   </div>
 </template>
@@ -88,7 +91,7 @@ export default {
     TextEdit,
     Loading,
   },
-  emits:["save"],
+  emits: ["save"],
   data() {
     return {
       question: this.getInitQuestion(),
@@ -142,6 +145,9 @@ export default {
         answer: { 0: true },
       };
     },
+    reset() {
+      this.question = this.getInitQuestion();
+    },
   },
   props: {
     id: {
@@ -163,7 +169,6 @@ export default {
 </script>
 
 <style scoped>
-
 .loading-back {
   position: fixed;
   left: 0;
@@ -171,6 +176,6 @@ export default {
   top: 0;
   bottom: 0;
   background-color: #00000033;
-  z-index: 20;
+  z-index: 30;
 }
 </style>

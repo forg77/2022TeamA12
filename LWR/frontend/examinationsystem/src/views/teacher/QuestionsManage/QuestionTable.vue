@@ -9,8 +9,16 @@
         <div style="width: 100%; height: 100%">
           <table style="width: 100%; height: 100%; vertical-align: middle">
             <td>
-              <div @click="$event.stopPropagation()" style="width:fit-content;margin:auto">
-              <QuestionEdit :id="selectId" @save="$refs.table.getItems()"></QuestionEdit>
+              <div
+                @click="$event.stopPropagation()"
+                style="width: fit-content; margin: auto"
+              >
+                <QuestionEdit
+                  :id="selectId"
+                  :bankId="extraData.bankId"
+                  @save="$refs.table.getItems()"
+                  :key="editKey"
+                ></QuestionEdit>
               </div>
             </td>
           </table>
@@ -24,6 +32,9 @@
           @click="$router.back()"
           >返回</span
         >试题列表
+        <button class="btn" style="margin-left: 20px" @click="onAddClick()">
+          添加试题
+        </button>
       </template>
       <template v-slot:headerRight>
         <table>
@@ -45,6 +56,7 @@
             :urls="urls"
             :columns="columns"
             :config="tableConfig"
+            :extraData="extraData"
           ></Table>
         </div>
       </template>
@@ -63,6 +75,11 @@ export default {
     return {
       showQuestionEdit: false,
       selectId: null,
+      editKey: 0,
+      // bankId: null,
+      extraData: {
+        bankId: null,
+      },
       urls: {
         queryUrl: "question/getQuestions",
       },
@@ -70,7 +87,7 @@ export default {
         canSelect: false,
         canMultiSelect: true,
         canClick: true,
-        getItemsOnCreate: true,
+        getItemsOnCreate: false,
       },
       columns: [
         {
@@ -99,6 +116,12 @@ export default {
     clickItem(item) {
       this.selectId = item.id;
       this.showQuestionEdit = true;
+      this.editKey++;
+    },
+    onAddClick() {
+      this.selectId = null;
+      this.showQuestionEdit = true;
+      this.editKey++;
     },
   },
   components: {
@@ -106,6 +129,10 @@ export default {
     SearchBox,
     Table,
     QuestionEdit,
+  },
+  mounted() {
+    this.extraData.bankId = Number(this.$route.params.bankId);
+    this.$refs.table.getItems();
   },
 };
 </script>
