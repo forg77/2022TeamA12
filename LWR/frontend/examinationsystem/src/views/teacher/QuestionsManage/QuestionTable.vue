@@ -28,7 +28,7 @@
     <Card>
       <template v-slot:headerLeft>
         <span
-          style="color: #ff3c3c; margin-right: 10px; cursor: pointer"
+          style="color: #338AFB; margin-right: 10px; cursor: pointer"
           @click="$router.replace('/teacher/questionsManage')"
           >返回</span
         >试题列表

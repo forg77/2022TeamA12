@@ -90,7 +90,7 @@ export default {
   display: flex;
   width: 64px;
   height: 31px;
-  background: #ff3c3c;
+  background: #338AFB;
   opacity: 1;
   border-radius: 5px;
   align-items: center;
@@ -150,12 +150,12 @@ export default {
   line-height: 80px;
   text-align: center;
   font-size:40px;
-  color:#ff3c3c;
+  color:#338AFB;
   opacity: 0.5;
   left:120px;
   top:80px;
   border-style: solid;
-  border-color: #ff3c3c;
+  border-color: #338AFB;
   border-width: 3px;
   transform: rotate(10deg);
   transition: opacity 0.5s;

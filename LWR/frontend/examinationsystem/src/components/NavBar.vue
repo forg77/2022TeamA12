@@ -103,7 +103,7 @@ export default {
   /* position: relative; */
   /* height: 20px; */
   /* top:10px; */
-  margin: 20px;
+  margin: 15px 20px;
   padding: 10px 0;
   width: 120px;
 }
@@ -125,9 +125,9 @@ export default {
   overflow-x: auto;
   overflow-y: hidden;
   position: fixed;
-  box-shadow: 0px 3px 6px rgba(254, 66, 66, 0.72);
+  box-shadow: 0px 3px 6px rgba(51, 138, 251, 0.72);
   background-color: #ffffff;
-  height: 80px;
+  height: 70px;
   left: 0;
   right: 0;
   top: 0;
@@ -141,12 +141,12 @@ export default {
 }
 
 .nav a:hover {
-  background-color: #ff3c3c;
+  background-color: #338AFB;
   color: white;
 }
 
 .nav a.active {
-  background-color: #ff3c3c;
+  background-color: #338AFB;
   color: white;
 }
 
@@ -154,8 +154,8 @@ export default {
   display: block;
   color: black;
   text-align: center;
-  height: 80px;
-  line-height: 80px;
+  height: 70px;
+  line-height: 70px;
   /* padding: 30px 16px; */
   margin: 0;
   text-decoration: none;
@@ -181,7 +181,7 @@ export default {
   margin: 0;
   border-bottom-style: solid;
   border-bottom-width: 4px;
-  border-bottom-color: #ff3c3c;
+  border-bottom-color: #338AFB;
 
   transform: scaleY(0);
   transform-origin: 0 0;
@@ -197,7 +197,7 @@ export default {
   transition: background-color 0.5s, color 0.5s;
 }
 .dropdown-content .item:hover {
-  background-color: #ff3c3c;
+  background-color: #338AFB;
   color: white;
 } */
 .dropdown:hover .dropdown-content {

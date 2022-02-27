@@ -104,7 +104,7 @@ export default {
   margin-left: auto;
   margin-right: auto;
   border-radius: 20px;
-  box-shadow: 0px 0px 10px rgba(254, 66, 66, 0.72);
+  box-shadow: 0px 0px 10px rgba(51, 138, 251, 0.72);
 }
 
 .cardHeader {

@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <select @change="$emit('change',$event.target.value);" :style="{width:width+'px',height:height+'px'}">
+    <select class="dropdown" @change="$emit('change',$event.target.value);" :style="{width:width+'px',height:height+'px'}">
       <option v-for="val in values" :key="val.value" :value="val.value" >{{val.text}}</option>
     </select>
   </div>
@@ -33,6 +33,7 @@ export default {
   display: inline-block;
   vertical-align: middle;
 }
+
 select {
   width: 133px;
   height: 40px;

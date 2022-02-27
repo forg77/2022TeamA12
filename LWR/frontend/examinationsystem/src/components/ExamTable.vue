@@ -235,7 +235,7 @@ export default {
 .page .text {
   font-size: 16px;
   font-family: Microsoft YaHei;
-  color: #ff3c3c;
+  color: #338AFB;
   opacity: 0.7;
   margin: 0 20px;
 }

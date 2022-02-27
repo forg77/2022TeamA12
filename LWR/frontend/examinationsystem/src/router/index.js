@@ -158,6 +158,11 @@ const routes = [{
             import ('../views/MainView.vue'),
         props: {
             navs: [{
+                title: "考试管理",
+                content: [
+                    { title: "考试管理", link: "/teacher/examManage" },
+                ],
+            }, {
                 title: "题库管理",
                 content: [
                     { title: "题库查询", link: "/teacher/questionsManage" },
@@ -183,6 +188,26 @@ const routes = [{
                 meta: {
                     title: "题目管理" + postTitle,
                     pageTitle: "题目管理"
+                }
+            },
+            {
+                path: 'examManage',
+                name: 'teacherExamManage',
+                component: () =>
+                    import ('../views/teacher/ExamManage.vue'),
+                meta: {
+                    title: "考试管理" + postTitle,
+                    pageTitle: "考试管理"
+                }
+            },
+            {
+                path: 'examEdit/:examId',
+                name: 'teacherExamEdit',
+                component: () =>
+                    import ('../views/teacher/ExamEdit.vue'),
+                meta: {
+                    title: "考试编辑" + postTitle,
+                    pageTitle: "考试编辑"
                 }
             },
         ]

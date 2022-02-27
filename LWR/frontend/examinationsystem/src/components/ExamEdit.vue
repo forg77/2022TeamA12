@@ -91,41 +91,47 @@
         <table cellspacing="0" cellpadding="0">
           <tr>
             <td>
-              <div class="card" style="height: 84px; margin-top: 0">
-                <table
-                  class="explain-text"
-                  style="text-align: center; margin: 0 auto; height: 100%"
-                >
-                  <tr>
-                    <td>
-                      <div
-                        class="current"
-                        style="margin: 0 13px 4px 13px"
-                      ></div>
-                      当前
-                    </td>
-                    <td>
-                      <div
-                        class="unanswered"
-                        style="margin: 0 13px 4px 13px"
-                      ></div>
-                      未答
-                    </td>
-                    <td>
-                      <div
-                        class="answered"
-                        style="margin: 0 13px 4px 13px"
-                      ></div>
-                      已答
-                    </td>
-                    <td>
-                      <div class="unanswered" style="margin: 0 13px 4px 13px">
-                        <div class="marked"></div>
-                      </div>
-                      标记
-                    </td>
-                  </tr>
-                </table>
+              <div
+                class="card"
+                style="
+                  height: 84px;
+                  margin-top: 0;
+                  display: flex;
+                  flex-wrap: wrap;
+                  align-items: center;
+                  padding: 10px;
+                  font-size: 12px;
+                  justify-content: space-between;
+                "
+              >
+                <div>
+                  类型：<DropDown
+                    :width="80"
+                    :height="20"
+                    :values="[
+                      { value: 'fixed', text: '固定题' },
+                      { value: 'random', text: '随机抽题' },
+                    ]"
+                  ></DropDown>
+                </div>
+                <div>
+                  考试结束后计算分数：<DropDown
+                    :width="60"
+                    :height="20"
+                    :values="[
+                      { value: 'true', text: '是' },
+                      { value: 'false', text: '否' },
+                    ]"
+                  ></DropDown>
+                </div>
+                <div>
+                  允许重复次数：<input
+                    type="text"
+                    class="inputBox"
+                    style="width: 50px; height: 20px;text-align:center"
+                    value="1"
+                  />
+                </div>
               </div>
             </td>
           </tr>
@@ -312,11 +318,10 @@
                       questionScores[currentId] &&
                       questionScores[currentId].score
                     }}分)
-                    {{
-                      currentTitleNumber +
-                      "."
-                    }}
-                    <span v-html="questions[currentQueType][currentId].description"></span>
+                    {{ currentTitleNumber + "." }}
+                    <span
+                      v-html="questions[currentQueType][currentId].description"
+                    ></span>
                   </span>
                   <br />
                   <template v-if="currentQueType == 'choice'">
@@ -350,8 +355,8 @@
                         "
                       />
                       <label :for="'choice' + index"
-                        ><span class="choice" v-html="choice"></span></label
-                      >
+                        ><span class="choice" v-html="choice"></span
+                      ></label>
                       <div style="height: 5px"></div>
                     </template>
                   </template>
@@ -432,11 +437,13 @@ import axios from "axios";
 import { formatDate } from "@/common.js";
 import DialogBox from "./DialogBox.vue";
 import Loading from "./Loading.vue";
+import DropDown from "./DropDown.vue";
 // import config from "@/config.js";
 export default {
   components: {
     DialogBox,
     Loading,
+    DropDown,
   },
   data() {
     return {
@@ -817,7 +824,7 @@ export default {
   background: #ffffff;
   border-radius: 10px;
   margin: 5px;
-  overflow-y:auto;
+  overflow-y: auto;
 }
 
 .explain-text {
@@ -977,5 +984,9 @@ input[type="radio"]:checked {
   bottom: 0;
   background-color: #00000033;
   z-index: 20;
+}
+
+.card :deep(.dropdown) {
+  font-size: 12px;
 }
 </style>
