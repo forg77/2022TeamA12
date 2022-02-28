@@ -145,7 +145,15 @@ export default {
         },
       }).then((res) => {
         this.question = res.data.data;
-        this.initQuestion();
+        this.tag = this.question.type;
+        if (this.tag == "choice") {
+          this.tag = "Choice";
+          this.question.choice = JSON.parse(this.question.choice);
+          this.question.answer = JSON.parse(this.question.answer);
+        } else if (this.tag == "completion") {
+          this.tag = "Completion";
+          this.question.answer = JSON.parse(this.question.answer);
+        }
       });
     },
     initQuestion() {
@@ -161,9 +169,9 @@ export default {
         this.question.answer = JSON.parse(this.question.answer);
       }
     },
-    onSaveQuestion(question){
-      this.$emit("save",question);
-    }
+    onSaveQuestion(question) {
+      this.$emit("save", question);
+    },
   },
   mounted() {
     if (this.questionBefore == null && this.id) this.getInfo();
