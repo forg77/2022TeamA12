@@ -62,7 +62,7 @@
         style="background-color: #5399f3; color: #fff; border: none"
         @click="
           saveQuestion();
-          $emit('save');
+          $emit('save',question);
         "
       >
         保存该题

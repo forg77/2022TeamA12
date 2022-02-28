@@ -90,7 +90,7 @@ export default {
   border: 1px solid #ccc;
   //  min-height: 100px;
   // height:200px;
-  width: 800px;
+  width: 760px;
   .w-e-text-container {
     height: 200px !important;
   }

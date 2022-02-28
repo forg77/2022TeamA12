@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="width: 100%; height: 100%">
     <div class="container1">
       <div class="classification">
         <div class="left">
@@ -40,7 +40,7 @@
             :bankId="bankId"
             :questionBefore="question"
             :is="tag"
-            @save="$emit('save')"
+            @save="onSaveQuestion"
           >
           </component>
         </transition>
@@ -129,6 +129,12 @@ export default {
       type: Number,
       default: null,
     },
+    questionBefore: {
+      type: Object,
+      default() {
+        return null;
+      },
+    },
   },
   methods: {
     getInfo() {
@@ -139,21 +145,29 @@ export default {
         },
       }).then((res) => {
         this.question = res.data.data;
-        if (this.question == null) return;
-        this.tag = this.question.type;
-        if (this.tag == "choice") {
-          this.tag = "Choice";
-          this.question.choice = JSON.parse(this.question.choice);
-          this.question.answer = JSON.parse(this.question.answer);
-        } else if (this.tag == "completion") {
-          this.tag = "Completion";
-          this.question.answer = JSON.parse(this.question.answer);
-        }
+        this.initQuestion();
       });
     },
+    initQuestion() {
+      if (this.questionBefore == null) return;
+      this.question = Object.assign({}, this.questionBefore);
+      this.tag = this.question.type;
+      if (this.tag == "choice") {
+        this.tag = "Choice";
+        this.question.choice = JSON.parse(this.question.choice);
+        this.question.answer = JSON.parse(this.question.answer);
+      } else if (this.tag == "completion") {
+        this.tag = "Completion";
+        this.question.answer = JSON.parse(this.question.answer);
+      }
+    },
+    onSaveQuestion(question){
+      this.$emit("save",question);
+    }
   },
   mounted() {
-    if (this.id) this.getInfo();
+    if (this.questionBefore == null && this.id) this.getInfo();
+    this.initQuestion();
   },
   watch: {
     id(value) {
@@ -162,14 +176,19 @@ export default {
         this.$refs.tag.reset();
       }
     },
+    questionBefore() {
+      this.initQuestion();
+    },
   },
 };
 </script>
 
 <style scoped>
 .container1 {
-  width: 1000px;
-  height: 600px;
+  /* width: 1000px;
+  height: 600px; */
+  width: 100%;
+  height: 100%;
   overflow: auto;
   background-color: #fff;
   border: solid 1px rgba(177, 177, 177, 0.466);

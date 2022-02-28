@@ -74,7 +74,7 @@ export default {
 }
 .card-container:hover{
   transform: scale(1.03);
-   box-shadow: 0px 0px 10px rgba(254, 66, 66, 0.72);
+   box-shadow: 0px 0px 10px rgba(51, 138, 251, 0.72);
 }
 
 .exam-name {
