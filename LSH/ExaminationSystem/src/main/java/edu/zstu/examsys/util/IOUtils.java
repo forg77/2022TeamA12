@@ -2,7 +2,7 @@ package edu.zstu.examsys.util;
 
 import java.io.*;
 
-public class IOUtil {
+public class IOUtils {
     public static String readAll(InputStream in) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 

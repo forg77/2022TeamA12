@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.zstu.examsys.mapper.ExamMapper">
+    <select id="getExams" resultType="Exam">
+        SELECT
+        *
+        ,(SELECT COUNT(*) FROM `question` WHERE `question`.`bank_id` = `exam`.`bank_id`) AS `questions_count`
+        FROM
+        `exam`
+        <where>
+            <if test="id != null">
+                AND `id` = #{id}
+            </if>
+            <choose>
+                <when test="screen == 'notStarted'">
+                    AND (#{now} &lt; `earliest_start_time`)
+                </when>
+                <when test="screen == 'going'">
+                    AND (#{now} &gt;= `earliest_start_time` AND #{now} &lt;= DATE_ADD(`latest_start_time`,INTERVAL
+                    `duration`*1000 MICROSECOND))
+                </when>
+                <when test="screen == 'over'">
+                    AND (#{now} &gt; DATE_ADD(`latest_start_time`,INTERVAL
+                    `duration`*1000 MICROSECOND))
+                </when>
+            </choose>
+            <if test="search != null">
+                AND (`title` LIKE CONCAT('%',#{search},'%') OR `subtitle` LIKE CONCAT('%',#{search},'%'))
+            </if>
+        </where>
+        ORDER BY
+        <choose>
+            <when test="con.order == 'id'">
+                `id`
+            </when>
+            <when test='con.order == "type"'>
+                `type`
+            </when>
+            <when test='con.order == "title"'>
+                `title`
+            </when>
+            <when test='con.order == "subtitle"'>
+                `subtitle`
+            </when>
+            <when test='con.order == "duration"'>
+                `duration`
+            </when>
+            <when test='con.order == "fullMark"'>
+                `full_mark`
+            </when>
+            <when test='con.order == "earliestStartTime"'>
+                `earliest_start_time`
+            </when>
+            <otherwise>
+                `id`
+            </otherwise>
+        </choose>
+        <if test="con.desc">
+            DESC
+        </if>
+        <if test="con.offset != null and con.max != null">
+            LIMIT #{con.offset}, #{con.max}
+        </if>
+        ;
+    </select>
+
+    <select id="getExamsCount" resultType="int">
+        SELECT
+        COUNT(*)
+        FROM
+        `exam`
+        <where>
+            <if test="id != null">
+                AND `id` = #{id}
+            </if>
+            <choose>
+                <when test="screen == 'notStarted'">
+                    AND (#{now} &lt; `earliest_start_time`)
+                </when>
+                <when test="screen == 'going'">
+                    AND (#{now} &gt;= `earliest_start_time` AND #{now} &lt;= DATE_ADD(`latest_start_time`,INTERVAL
+                    `duration`*1000 MICROSECOND))
+                </when>
+                <when test="screen == 'over'">
+                    AND (#{now} &gt; DATE_ADD(`latest_start_time`,INTERVAL
+                    `duration`*1000 MICROSECOND))
+                </when>
+            </choose>
+            <if test="search != null">
+                AND (`title` LIKE CONCAT('%',#{search},'%') OR `subtitle` LIKE CONCAT('%',#{search},'%'))
+            </if>
+        </where>
+        ;
+    </select>
+
+    <select id="getExamPapers" resultType="ExamPaper">
+        SELECT
+        *
+        FROM
+        `exam_paper`
+        <where>
+            <if test="examinee != null">
+                AND `examinee` = #{examinee}
+            </if>
+            <if test="examId != null">
+                AND `exam_id` = #{examId}
+            </if>
+        </where>
+        ;
+    </select>
+
+    <select id="getExamPapersCount" resultType="int">
+        SELECT
+        COUNT(*)
+        FROM
+        `exam_paper`
+        <where>
+            <if test="examinee != null">
+                AND `examinee` = #{examinee}
+            </if>
+            <if test="examId != null">
+                AND `exam_id` = #{examId}
+            </if>
+        </where>
+        ;
+    </select>
+
+    <insert id="addExamAnswer" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO `exam_answer` (`exam_id`,
+                                   `examinee`,
+                                   `question_id`)
+        VALUES (#{examId},
+                #{examinee},
+                #{questionId});
+    </insert>
+
+    <insert id="addNormalAnswer" keyProperty="normalId" useGeneratedKeys="true">
+        INSERT INTO `normal_answer` (`answer_id`, `answer`)
+        VALUES (#{id}, #{answer});
+    </insert>
+
+    <select id="getExamAnswer" resultType="ExamAnswer">
+        SELECT *
+        FROM `exam_answer`
+        WHERE `examinee` = #{examinee}
+          AND `exam_id` = #{examId}
+          AND `question_id` = #{questionId};
+    </select>
+
+    <update id="updateExamAnswer">
+        UPDATE
+            `exam_answer`
+        SET `score`     = #{score},
+            `corrector` = #{corrector}
+        WHERE `id` = #{id};
+    </update>
+
+    <update id="updateNormalAnswer">
+        UPDATE
+            `normal_answer`
+        SET `answer` = #{answer}
+        WHERE `answer_id` = #{id};
+    </update>
+
+    <select id="getNormalAnswers" resultType="NormalAnswer">
+        SELECT `exam_answer`.*,
+               `normal_answer`.`id` AS `normal_id`,
+               `answer`
+        FROM `normal_answer`
+                 INNER JOIN `exam_answer` ON `exam_answer`.`id` = `answer_id`
+        WHERE `examinee` = #{examinee}
+          AND `exam_id` = #{examId};
+    </select>
+
+    <select id="getQuestionScores" resultType="QuestionScore">
+        SELECT *
+        FROM `question_score`
+        WHERE `exam_id` = #{examId};
+    </select>
+
+    <update id="updateGrade">
+        UPDATE
+            `exam_paper`
+        SET `grade` = #{grade}
+        WHERE `exam_id` = #{examId}
+          AND `examinee` = #{examinee};
+    </update>
+
+    <insert id="addExamPaper" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO `exam_paper` (`exam_id`,
+                                  `examinee`,
+                                  `order_json`,
+                                  `start_time`,
+                                  `times`)
+        VALUES (#{examId},
+                #{examinee},
+                #{orderJson},
+                #{startTime},
+                #{times});
+    </insert>
+
+    <update id="updateExamPaper">
+        UPDATE
+            `exam_paper`
+        SET `order_json`  = #{orderJson},
+            `grade`       = #{grade},
+            `start_time`  = #{startTime},
+            `finish_time` = #{finishTime},
+            `times`       = #{times}
+        WHERE `exam_id` = #{examId}
+          AND `examinee` = #{examinee};
+    </update>
+
+    <delete id="deleteExamAnswers">
+        DELETE
+        FROM `exam_answer`
+        WHERE `exam_id` = #{examId}
+          AND `examinee` = #{examinee};
+    </delete>
+
+    <select id="getGradesInfo" resultType="GradeInfo">
+        SELECT `exam_paper`.`id`,
+        `exam_id`,
+        `examinee`,
+        `grade`,
+        `start_time`,
+        `finish_time`,
+        `times`,
+        `title`,
+        `subtitle`,
+        `full_mark`,
+        `duration`,
+        `type`
+        FROM `exam_paper`
+        INNER JOIN `exam` ON `exam_id` = `exam`.`id`
+        <where>
+            <if test="examinee != null">
+                AND `examinee` = #{examinee}
+            </if>
+            <if test="search != null">
+                AND (`title` LIKE CONCAT('%',#{search},'%') OR `subtitle` LIKE CONCAT('%',#{search},'%'))
+            </if>
+        </where>
+        ORDER BY
+        <choose>
+            <when test="con.order == 'id'">
+                `exam_paper`.`id`
+            </when>
+            <when test='con.order == "examId"'>
+                `exam_id`
+            </when>
+            <when test='con.order == "examinee"'>
+                `examinee`
+            </when>
+            <when test='con.order == "grade"'>
+                `grade`
+            </when>
+            <when test='con.order == "startTime"'>
+                `start_time`
+            </when>
+            <when test='con.order == "finishTime"'>
+                `finish_time`
+            </when>
+            <when test='con.order == "times"'>
+                `times`
+            </when>
+            <when test='con.order == "title"'>
+                `title`
+            </when>
+            <when test='con.order == "subtitle"'>
+                `subtitle`
+            </when>
+            <when test='con.order == "fullMark"'>
+                `full_mark`
+            </when>
+            <when test='con.order == "duration"'>
+                `duration`
+            </when>
+            <when test='con.order == "type"'>
+                `type`
+            </when>
+            <otherwise>
+                `exam_paper`.`id`
+            </otherwise>
+        </choose>
+        <if test="con.desc">
+            DESC
+        </if>
+        <if test="con.offset != null and con.max != null">
+            LIMIT #{con.offset}, #{con.max}
+        </if>
+        ;
+    </select>
+
+    <select id="getGradesInfoCount" resultType="int">
+        SELECT COUNT(*)
+        FROM `exam_paper`
+        INNER JOIN `exam` ON `exam_id` = `exam`.`id`
+        <where>
+            <if test="examinee != null">
+                AND `examinee` = #{examinee}
+            </if>
+            <if test="search != null">
+                AND (`title` LIKE CONCAT('%',#{search},'%') OR `subtitle` LIKE CONCAT('%',#{search},'%'))
+            </if>
+        </where>
+        ;
+    </select>
+
+    <insert id="addQuestionScore" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `question_score` (`exam_id`,
+                                      `question_id`,
+                                      `score`)
+        VALUES (#{examId},
+                #{questionId},
+                #{score});
+    </insert>
+
+    <update id="updateQuestionScore">
+        UPDATE
+            `question_score`
+        SET `score` = #{score}
+        WHERE `exam_id` = #{examId}
+          AND `question_id` = #{questionId}
+    </update>
+
+    <select id="getQuestionScore" resultType="QuestionScore">
+        SELECT *
+        FROM `question_score`
+        WHERE `exam_id` = #{examId}
+          AND `question_id` = #{questionId}
+    </select>
+
+    <insert id="addExam" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO `exam` (`id`,
+                            `title`,
+                            `subtitle`,
+                            `earliest_start_time`,
+                            `latest_start_time`,
+                            `duration`,
+                            `bank_id`,
+                            `type`,
+                            `select_count_json`,
+                            `order_json`,
+                            `repeat_time`,
+                            `cal_grade_at_once`,
+                            `full_mark`)
+        VALUES (#{id},
+                   #{title},
+                   #{subtitle},
+                   #{earliestStartTime},
+                   #{latestStartTime},
+                   #{duration},
+                   #{bankId},
+                   #{type},
+                   #{selectCountJson},
+                   #{orderJson},
+                   #{repeatTime},
+                   #{calGradeAtOnce},
+                   #{fullMark})
+        ON DUPLICATE KEY UPDATE `title`               = #{title},
+                                `subtitle`            = #{subtitle},
+                                `earliest_start_time` = #{earliestStartTime},
+                                `latest_start_time`   = #{latestStartTime},
+                                `duration`            = #{duration},
+                                `bank_id`             = #{bankId},
+                                `type`                = #{type},
+                                `select_count_json`   = #{selectCountJson},
+                                `order_json`          = #{orderJson},
+                                `repeat_time`         = #{repeatTime},
+                                `cal_grade_at_once`   = #{calGradeAtOnce},
+                                `full_mark`           = #{fullMark}
+    </insert>
+</mapper>

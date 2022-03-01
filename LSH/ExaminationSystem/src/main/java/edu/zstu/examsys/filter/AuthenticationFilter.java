@@ -2,7 +2,7 @@ package edu.zstu.examsys.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import edu.zstu.examsys.util.IOUtil;
+import edu.zstu.examsys.util.IOUtils;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,7 +23,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             String username = null;
             String password = null;
             try {
-                JSONObject body = JSON.parseObject(IOUtil.readAll(request.getReader()));
+                JSONObject body = JSON.parseObject(IOUtils.readAll(request.getReader()));
                 username = body.getString("username");
                 password = body.getString("password");
             } catch (IOException e) {

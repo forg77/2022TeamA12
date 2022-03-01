@@ -2,6 +2,8 @@ package edu.zstu.examsys.config;
 
 import com.alibaba.fastjson.JSON;
 import edu.zstu.examsys.filter.AuthenticationFilter;
+import edu.zstu.examsys.pojo.CommonData;
+import edu.zstu.examsys.pojo.ErrorCode;
 import edu.zstu.examsys.pojo.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -52,7 +54,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("http://localhost:8080");
         configuration.addAllowedOrigin("http://localhost:8081");//修改为添加而不是设置，* 最好改为实际的需要，我这是非生产配置，所以粗暴了一点
+        configuration.addAllowedOrigin("http://139.9.58.231:8081");
         configuration.addAllowedMethod("*");//修改为添加而不是设置
         configuration.addAllowedHeader("*");//这里很重要，起码需要允许 Access-Control-Allow-Origin
         configuration.setAllowCredentials(true);
@@ -76,17 +80,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new AuthenticationSuccessHandler() {
             @Override
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-                Map<String, Object> res = new HashMap<>();
-                res.put("errCode", 0);
-                res.put("errMsg", "登录成功");
                 User user = (User) authentication.getPrincipal();
                 Map<String, Object> userData = new HashMap<>();
                 userData.put("id", user.getId());
                 userData.put("username", user.getUsername());
                 userData.put("nickname", user.getNickname());
-                res.put("userData", userData);
+                userData.put("permission", user.getPermission());
+
+                CommonData data = new CommonData(ErrorCode.SUCCESS, "登录成功", userData);
+
                 response.setContentType("application/json;charset=UTF-8");
-                response.getWriter().print(JSON.toJSONString(res));
+                response.getWriter().print(JSON.toJSONString(data));
             }
         };
     }
@@ -96,11 +100,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new AuthenticationFailureHandler() {
             @Override
             public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-                Map<String, Object> res = new HashMap<>();
-                res.put("errCode", 1);
-                res.put("errMsg", "登录失败，" + exception.getMessage());
+                CommonData data = new CommonData(ErrorCode.LOGIN_FAILED, "登录失败，" + exception.getMessage());
                 response.setContentType("application/json;charset=UTF-8");
-                response.getWriter().print(JSON.toJSONString(res));
+                response.getWriter().print(JSON.toJSONString(data));
             }
         };
     }
