@@ -21,4 +21,26 @@ public interface QuestionMapper {
     List<ChoiceQuestion> getChoiceQuestions(Integer questionId, Integer bankId, String type, Condition con);
 
     List<NormalQuestion> getNormalQuestions(Integer questionId, Integer bankId, String type, Condition con);
+
+    String getQuestionType(Integer id);
+
+    Integer addQuestion(Question question);
+
+    Integer updateQuestion(Question question);
+
+    Integer addChoiceQuestion(ChoiceQuestion question);
+
+    Integer updateChoiceQuestion(ChoiceQuestion question);
+
+    Integer addNormalQuestion(NormalQuestion question);
+
+    Integer updateNormalQuestion(NormalQuestion question);
+
+    Integer deleteChoiceQuestion(Integer id);
+
+    Integer deleteNormalQuestion(Integer id);
+
+    Integer deleteQuestion(Integer id);
+
+    Integer addBank(QuestionBank bank);
 }

@@ -126,7 +126,7 @@
         INNER JOIN `question` ON `question`.`id` = `question_id`
         <where>
             <if test="questionId != null">
-                AND `id` = #{questionId}
+                AND `question`.`id` = #{questionId}
             </if>
             <if test="bankId != null">
                 AND `bank_id` = #{bankId}
@@ -146,7 +146,7 @@
         INNER JOIN `question` ON `question`.`id` = `question_id`
         <where>
             <if test="questionId != null">
-                AND `id` = #{questionId}
+                AND `question`.`id` = #{questionId}
             </if>
             <if test="bankId != null">
                 AND `bank_id` = #{bankId}
@@ -156,4 +156,82 @@
             </if>
         </where>
     </select>
+
+    <select id="getQuestionType" resultType="String">
+        SELECT `type`
+        FROM `question`
+        WHERE `id` = #{id};
+    </select>
+
+    <insert id="addQuestion" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `question` (`id`,
+                                `type`,
+                                `description`,
+                                `bank_id`)
+        VALUES (#{id},
+                #{type},
+                #{description},
+                #{bankId})
+        ON DUPLICATE KEY UPDATE `type`        = #{type},
+                                `description` = #{description};
+    </insert>
+
+    <update id="updateQuestion">
+        UPDATE
+            `question`
+        SET `type`        = #{type},
+            `description` = #{description}
+        WHERE `id` = #{id};
+    </update>
+
+    <insert id="addChoiceQuestion" useGeneratedKeys="true" keyProperty="choiceId">
+        INSERT INTO `choice_question` (`question_id`,
+                                       `choice`,
+                                       `answer`)
+        VALUES (#{id},
+                #{choice},
+                #{answer})
+        ON DUPLICATE KEY UPDATE `choice` = #{choice},
+                                `answer` = #{answer};
+    </insert>
+
+    <update id="updateChoiceQuestion">
+        UPDATE
+            `choice_question`
+        SET `choice` = #{choice},
+            `answer` = #{answer}
+        WHERE `question_id` = #{id};
+    </update>
+
+    <insert id="addNormalQuestion" useGeneratedKeys="true" keyProperty="normalId">
+        INSERT INTO `normal_question` (`question_id`, `answer`)
+        VALUES (#{id}, #{answer})
+        ON DUPLICATE KEY UPDATE `answer` = #{answer};
+    </insert>
+
+    <update id="updateNormalQuestion">
+        UPDATE
+            `normal_question`
+        SET `answer` = #{answer}
+        WHERE `question_id` = #{id};
+    </update>
+
+    <delete id="deleteChoiceQuestion">
+        DELETE
+        FROM `choice_question`
+        WHERE `question_id` = #{id};
+    </delete>
+
+    <delete id="deleteNormalQuestion">
+        DELETE
+        FROM `normal_question`
+        WHERE `question_id` = #{id};
+    </delete>
+
+    <delete id="deleteQuestion">
+        DELETE
+        FROM
+            `question`
+        WHERE `id` = #{id};
+    </delete>
 </mapper>

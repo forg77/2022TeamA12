@@ -308,4 +308,69 @@
         </where>
         ;
     </select>
+
+    <insert id="addQuestionScore" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `question_score` (`exam_id`,
+                                      `question_id`,
+                                      `score`)
+        VALUES (#{examId},
+                #{questionId},
+                #{score});
+    </insert>
+
+    <update id="updateQuestionScore">
+        UPDATE
+            `question_score`
+        SET `score` = #{score}
+        WHERE `exam_id` = #{examId}
+          AND `question_id` = #{questionId}
+    </update>
+
+    <select id="getQuestionScore" resultType="QuestionScore">
+        SELECT *
+        FROM `question_score`
+        WHERE `exam_id` = #{examId}
+          AND `question_id` = #{questionId}
+    </select>
+
+    <insert id="addExam" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO `exam` (`id`,
+                            `title`,
+                            `subtitle`,
+                            `earliest_start_time`,
+                            `latest_start_time`,
+                            `duration`,
+                            `bank_id`,
+                            `type`,
+                            `select_count_json`,
+                            `order_json`,
+                            `repeat_time`,
+                            `cal_grade_at_once`,
+                            `full_mark`)
+        VALUES (#{id},
+                   #{title},
+                   #{subtitle},
+                   #{earliestStartTime},
+                   #{latestStartTime},
+                   #{duration},
+                   #{bankId},
+                   #{type},
+                   #{selectCountJson},
+                   #{orderJson},
+                   #{repeatTime},
+                   #{calGradeAtOnce},
+                   #{fullMark})
+        ON DUPLICATE KEY UPDATE `title`               = #{title},
+                                `subtitle`            = #{subtitle},
+                                `earliest_start_time` = #{earliestStartTime},
+                                `latest_start_time`   = #{latestStartTime},
+                                `duration`            = #{duration},
+                                `bank_id`             = #{bankId},
+                                `type`                = #{type},
+                                `select_count_json`   = #{selectCountJson},
+                                `order_json`          = #{orderJson},
+                                `repeat_time`         = #{repeatTime},
+                                `cal_grade_at_once`   = #{calGradeAtOnce},
+                                `full_mark`           = #{fullMark}
+    </insert>
 </mapper>

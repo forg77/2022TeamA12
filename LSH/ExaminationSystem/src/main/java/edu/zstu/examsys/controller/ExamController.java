@@ -122,11 +122,9 @@ public class ExamController {
         Exam exam = examService.getExams(examId, null, null, new Condition()).get(0);
         if (new Date().compareTo(exam.getEarliestStartTime()) < 0) {
             return JSON.toJSONString(new CommonData(ErrorCode.EXAM_NOT_STARTED, "考试未开始"));
-        }
-        else if (new Date().compareTo(exam.getLatestStartTime()) >= 0) {
+        } else if (new Date().compareTo(exam.getLatestStartTime()) >= 0) {
             return JSON.toJSONString(new CommonData(ErrorCode.EXAM_MISSING_LATEST_TIME, "已错过最晚开始时间"));
-        }
-        else if (isExamTimeOut(exam)) {
+        } else if (isExamTimeOut(exam)) {
             return JSON.toJSONString(new CommonData(ErrorCode.EXAM_TIME_OUT, "考试已过期"));
         }
         List<ExamPaper> examPapers = examService.getExamPapers(examId, examinee, new Condition());
@@ -207,8 +205,10 @@ public class ExamController {
 
             //获取考试所属题库的题目信息
             Map<String, Object> questions = new HashMap<>();
-            questions.put("choice", questionService.getChoiceQuestions(null, exam.getBankId(), null, con));
-            questions.put("normal", questionService.getNormalQuestions(null, exam.getBankId(), null, con));
+            if (exam.getBankId() != null) {
+                questions.put("choice", questionService.getChoiceQuestions(null, exam.getBankId(), null, con));
+                questions.put("normal", questionService.getNormalQuestions(null, exam.getBankId(), null, con));
+            }
 
             //获取考生的试卷信息
             List<ExamPaper> examPapers = examService.getExamPapers(examinee, examId, new Condition());
@@ -259,7 +259,7 @@ public class ExamController {
         List<QuestionScore> questionScores = examService.getQuestionScores(examId);
         Map<Integer, Float> scores = new HashMap<>();
         for (QuestionScore score : questionScores) {
-            scores.put(score.getId(), score.getScore());
+            scores.put(score.getQuestionId(), score.getScore());
         }
 
         float totalScore = 0;
@@ -289,6 +289,47 @@ public class ExamController {
         data.put("data", examService.getGradesInfo(examinee, search, con));
 
         CommonData res = new CommonData(ErrorCode.SUCCESS, "成功", data);
+
+        return JSON.toJSONString(res);
+    }
+
+    @PostMapping("/addQuestionScore")
+    public String addQuestionScore(@RequestBody String requestBody) {
+        JSONObject body = JSON.parseObject(requestBody);
+        Integer questionId = body.getInteger("questionId");
+        Integer examId = body.getInteger("examId");
+        Float score = body.getFloat("score");
+
+        QuestionScore questionScore = examService.getQuestionScore(examId, questionId);
+        if (questionScore == null) {
+            questionScore = new QuestionScore();
+            questionScore.setQuestionId(questionId);
+            questionScore.setExamId(examId);
+            questionScore.setScore(score);
+            examService.addQuestionScore(questionScore);
+        } else {
+            questionScore.setScore(score);
+            examService.updateQuestionScore(questionScore);
+        }
+
+        CommonData res = new CommonData(ErrorCode.SUCCESS, "成功", questionScore.getId());
+
+
+        return JSON.toJSONString(res);
+    }
+
+    @PostMapping("/addExam")
+    public String addExam(@RequestBody String requestBody) {
+        JSONObject body = JSON.parseObject(requestBody);
+        Exam exam = body.toJavaObject(Exam.class);
+        Integer suc = examService.addExam(exam);
+
+        CommonData res;
+        if (suc > 0) {
+            res = new CommonData(ErrorCode.SUCCESS, "成功", exam.getId());
+        }else{
+            res = new CommonData(ErrorCode.INSERT_FAILED, "插入失败");
+        }
 
         return JSON.toJSONString(res);
     }

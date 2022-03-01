@@ -44,4 +44,12 @@ public interface ExamMapper {
     List<GradeInfo> getGradesInfo(Integer examinee, String search, Condition con);
 
     Integer getGradesInfoCount(Integer examinee);
+
+    Integer addQuestionScore(QuestionScore score);
+
+    Integer updateQuestionScore(QuestionScore score);
+
+    QuestionScore getQuestionScore(Integer examId,Integer questionId);
+
+    Integer addExam(Exam exam);
 }

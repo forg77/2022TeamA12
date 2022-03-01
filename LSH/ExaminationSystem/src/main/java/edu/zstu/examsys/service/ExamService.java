@@ -104,4 +104,20 @@ public class ExamService {
     public Integer getGradesInfoCount(Integer examinee, String search){
         return examMapper.getGradesInfoCount(examinee);
     }
+
+    public Integer addQuestionScore(QuestionScore score){
+        return examMapper.addQuestionScore(score);
+    }
+
+    public Integer updateQuestionScore(QuestionScore score){
+        return examMapper.updateQuestionScore(score);
+    }
+
+    public QuestionScore getQuestionScore(Integer examId,Integer questionId){
+        return examMapper.getQuestionScore(examId, questionId);
+    }
+
+    public Integer addExam(Exam exam){
+        return examMapper.addExam(exam);
+    }
 }
