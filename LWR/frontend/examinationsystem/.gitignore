@@ -21,3 +21,5 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+ExaminationSystem-0.0.1-SNAPSHOT.jar

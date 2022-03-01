@@ -1,9 +1,9 @@
 <template>
-  <div class="inputBox" style="width: 200px; display: inline-block">
+  <div class="inputBox" style="width: 200px; display: inline-block;vertical-align:middle">
     <table style="width: 100%; height: 100%">
       <tr>
         <td>
-          <input class="text" type="text" :placeholder="placeholder" />
+          <input @input="$emit('update:text', $event.target.value)" class="text" type="text" :placeholder="placeholder" />
         </td>
         <td>
           <svg-icon iconName="search" className="icon"></svg-icon>
@@ -21,11 +21,16 @@ export default {
   data() {
     return {};
   },
+  emits:["update:text"],
   props: {
     placeholder: {
       type: String,
       default: "搜索",
     },
+    text:{
+      type: String,
+      default: "",
+    }
   },
 };
 </script>

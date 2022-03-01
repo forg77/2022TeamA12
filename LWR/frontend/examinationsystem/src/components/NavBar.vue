@@ -14,21 +14,32 @@
                 <td>
                   <div class="child">
                     <div class="dropdown">
-                      <a :class="{ active: isNavActive(nav) }">{{
-                        nav.title
-                      }}</a>
-                      <div class="dropdown-content">
-                        <template
-                          v-for="child in nav.content"
-                          :key="child.title"
+                      <template v-if="!nav.link">
+                        <a :class="{ active: isNavActive(nav) }">{{
+                          nav.title
+                        }}</a>
+                      </template>
+                      <template v-else>
+                        <router-link
+                          :to="nav.link"
+                          :class="{ active: isNavActive(nav) }"
+                          >{{ nav.title }}</router-link
                         >
-                          <router-link
-                            :to="child.link"
-                            :class="{ active: $route.path == child.link }"
-                            >{{ child.title }}</router-link
+                      </template>
+                      <template v-if="nav.content">
+                        <div class="dropdown-content">
+                          <template
+                            v-for="child in nav.content"
+                            :key="child.title"
                           >
-                        </template>
-                      </div>
+                            <router-link
+                              :to="child.link"
+                              :class="{ active: $route.path == child.link }"
+                              >{{ child.title }}</router-link
+                            >
+                          </template>
+                        </div>
+                      </template>
                     </div>
                   </div>
                 </td>
@@ -47,7 +58,7 @@
                   ></svg-icon>
                 </td>
                 <td>
-                  <span>{{ nickname }}</span>
+                  <span>{{ user && user.nickname }}</span>
                 </td>
               </tr>
             </table>
@@ -60,15 +71,24 @@
 
 <script>
 export default {
-  props: ["items","nickname"],
+  props: ["items"],
   methods: {
     isNavActive(items) {
       let routePath = this.$route.path;
       //console.log(items);
-      for (let item of items.content) {
-        if (routePath == item.link) return true;
+      if (items.content && items.content.length > 0) {
+        for (let item of items.content) {
+          if (routePath == item.link) return true;
+        }
+      } else {
+        if (routePath == items.link) return true;
       }
       return false;
+    },
+  },
+  computed: {
+    user() {
+      return this.$store.state.config.user;
     },
   },
 };
@@ -83,7 +103,7 @@ export default {
   /* position: relative; */
   /* height: 20px; */
   /* top:10px; */
-  margin: 20px;
+  margin: 15px 20px;
   padding: 10px 0;
   width: 120px;
 }
@@ -105,9 +125,9 @@ export default {
   overflow-x: auto;
   overflow-y: hidden;
   position: fixed;
-  box-shadow: 0px 3px 6px rgba(254, 66, 66, 0.72);
+  box-shadow: 0px 3px 6px rgba(51, 138, 251, 0.72);
   background-color: #ffffff;
-  height: 80px;
+  height: 70px;
   left: 0;
   right: 0;
   top: 0;
@@ -121,12 +141,12 @@ export default {
 }
 
 .nav a:hover {
-  background-color: #ff3c3c;
+  background-color: #338AFB;
   color: white;
 }
 
 .nav a.active {
-  background-color: #ff3c3c;
+  background-color: #338AFB;
   color: white;
 }
 
@@ -134,8 +154,8 @@ export default {
   display: block;
   color: black;
   text-align: center;
-  height: 80px;
-  line-height: 80px;
+  height: 70px;
+  line-height: 70px;
   /* padding: 30px 16px; */
   margin: 0;
   text-decoration: none;
@@ -161,7 +181,7 @@ export default {
   margin: 0;
   border-bottom-style: solid;
   border-bottom-width: 4px;
-  border-bottom-color: #ff3c3c;
+  border-bottom-color: #338AFB;
 
   transform: scaleY(0);
   transform-origin: 0 0;
@@ -177,7 +197,7 @@ export default {
   transition: background-color 0.5s, color 0.5s;
 }
 .dropdown-content .item:hover {
-  background-color: #ff3c3c;
+  background-color: #338AFB;
   color: white;
 } */
 .dropdown:hover .dropdown-content {

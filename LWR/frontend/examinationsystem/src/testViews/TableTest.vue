@@ -14,7 +14,7 @@
       </template>
       <template v-slot:content>
         <div class="content">
-          <Table url="test/test" :columns="columns" updateUrl="test/update" addUrl="test/add" deleteUrl="test/delete"></Table>
+          <Table :urls="urls" :columns="columns"></Table>
         </div>
       </template>
     </Card>
@@ -28,6 +28,12 @@ import Table from "@/components/Table.vue";
 export default {
   data() {
     return {
+      urls:{
+        queryUrl:"test/test",
+        updateUrl:"test/update",
+        addUrl:"test/add",
+        deleteUrl:"test/delete"
+      },
       columns: [
         { title: "序号", name: "id",editable:false },
         { title: "标题1", name: "a" },

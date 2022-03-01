@@ -1,5 +1,4 @@
 <template>
-  <!-- 加载 -->
   <transition name="fade">
     <div class="loading-back" v-show="isLoading">
       <div style="width: 100%; height: 100%">
@@ -9,8 +8,7 @@
       </div>
     </div>
   </transition>
-  <!-- 考试结束对话框 -->
-  <DialogBox v-model:show="showOverDialog">
+  <!-- <DialogBox v-model:show="showOverDialog">
     <template v-slot:header>考试已结束</template>
     <template v-if="examPaper && 'grade' in examPaper">
       您的分数：{{ examPaper.grade }}/{{ exam.fullMark }}
@@ -33,7 +31,6 @@
       <button class="btn" @click="showOverDialog = false">确定</button>
     </template>
   </DialogBox>
-  <!-- 加入考试对话框 -->
   <DialogBox v-model:show="showJoinDialog">
     <template v-slot:header>加入考试</template>
     <template v-if="isExamNotStarted"> 考试未开始 </template>
@@ -79,7 +76,7 @@
         加入考试
       </button>
     </template>
-  </DialogBox>
+  </DialogBox> -->
   <table
     class="exam"
     cellspacing="0"
@@ -91,41 +88,49 @@
         <table cellspacing="0" cellpadding="0">
           <tr>
             <td>
-              <div class="card" style="height: 84px; margin-top: 0">
-                <table
-                  class="explain-text"
-                  style="text-align: center; margin: 0 auto; height: 100%"
-                >
-                  <tr>
-                    <td>
-                      <div
-                        class="current"
-                        style="margin: 0 13px 4px 13px"
-                      ></div>
-                      当前
-                    </td>
-                    <td>
-                      <div
-                        class="unanswered"
-                        style="margin: 0 13px 4px 13px"
-                      ></div>
-                      未答
-                    </td>
-                    <td>
-                      <div
-                        class="answered"
-                        style="margin: 0 13px 4px 13px"
-                      ></div>
-                      已答
-                    </td>
-                    <td>
-                      <div class="unanswered" style="margin: 0 13px 4px 13px">
-                        <div class="marked"></div>
-                      </div>
-                      标记
-                    </td>
-                  </tr>
-                </table>
+              <div
+                class="card"
+                style="
+                  height: 84px;
+                  margin-top: 0;
+                  display: flex;
+                  flex-wrap: wrap;
+                  align-items: center;
+                  padding: 10px;
+                  font-size: 12px;
+                  justify-content: space-between;
+                "
+              >
+                <div>
+                  类型：<DropDown
+                    :width="93"
+                    :height="20"
+                    :values="[
+                      { value: 'fixed', text: '固定题' },
+                      { value: 'random', text: '随机抽题' },
+                    ]"
+                    @change="onTypeChange"
+                  ></DropDown>
+                </div>
+                <div>
+                  考试结束后计算分数：<DropDown
+                    :width="60"
+                    :height="20"
+                    :values="[
+                      { value: 'true', text: '是' },
+                      { value: 'false', text: '否' },
+                    ]"
+                    @change="onCalAtOnceChange"
+                  ></DropDown>
+                </div>
+                <div>
+                  允许重复次数：<input
+                    type="text"
+                    class="inputBox"
+                    style="width: 50px; height: 20px; text-align: center"
+                    v-model="exam.repeatTime"
+                  />
+                </div>
               </div>
             </td>
           </tr>
@@ -144,6 +149,15 @@
                             color: black;
                           "
                           >{{ getQuestionTypeName(queType) }}：</span
+                        >
+                        <span
+                          class="order"
+                          style="margin-left: 20px"
+                          @click="subPartOrder(queType)"
+                          >上移</span
+                        >
+                        <span class="order" @click="addPartOrder(queType)"
+                          >下移</span
                         >
                         <br />
                         <template v-for="queId in order[queType]" :key="queId">
@@ -183,13 +197,20 @@
                     <td style="height: 38px; text-align: center">
                       <button
                         class="btn"
+                        style="height: 28px; width: 234px; margin-bottom: 10px"
+                        @click="addQuestion()"
+                      >
+                        添加题目
+                      </button>
+                      <button
+                        class="btn"
                         style="height: 28px; width: 234px"
                         @click="
-                          if (!isExamOver) stopExam();
-                          else showOverDialog = true;
+                          commitExam();
+                          $router.replace('/teacher/examManage');
                         "
                       >
-                        结束考试
+                        结束编辑
                       </button>
                     </td>
                   </tr>
@@ -230,7 +251,13 @@
                                     padding-right: 28px;
                                   "
                                 >
-                                  {{ exam.title }}
+                                  <!-- {{ exam.title }} -->
+                                  <input
+                                    placeholder="标题"
+                                    style="font-size: 21px; font-weight: bold"
+                                    class="input"
+                                    v-model="exam.title"
+                                  />
                                 </td>
                                 <td
                                   style="
@@ -239,14 +266,26 @@
                                     vertical-align: bottom;
                                   "
                                 >
-                                  {{ exam.subtitle }}
+                                  <!-- {{ exam.subtitle }} -->
+                                  <input
+                                    placeholder="全名"
+                                    style="font-size: 14px; font-weight: bold"
+                                    class="input"
+                                    v-model="exam.subtitle"
+                                  />
                                 </td>
                               </tr>
                             </table>
                           </td>
                           <td style="text-align: right; font-size: 21px">
-                            <span style="font-weight: bold">考生：</span
-                            >{{ user && user.nickname }}
+                            <button
+                              class="btn"
+                              style="width: 44px; height: 21px; font-size: 11px"
+                            >
+                              预览
+                            </button>
+                            <!-- <span style="font-weight: bold">考生：</span> -->
+                            <!-- {{ user && user.nickname }} -->
                           </td>
                         </tr>
                       </table>
@@ -264,16 +303,33 @@
                             题量：<span
                               class="val-text"
                               style="margin-right: 28px"
-                              >{{ exam.questionsCount }}</span
+                              >{{ titleNumberIndex.length }}</span
                             >
                             满分：<span
                               class="val-text"
                               style="margin-right: 28px"
-                              >{{ exam.fullMark }}</span
+                              >{{ fullMark }}</span
                             >
-                            截止时间：<span class="val-text">{{
+                            最早开始时间：
+                            <input
+                              style="height: 18px; width: 126px"
+                              placeholder="xxxx-xx-xx xx:xx:xx"
+                              class="input"
+                              v-model="exam.earliestStartTime"
+                            />
+                            <!-- <span class="val-text">{{
                               stopTimeString
-                            }}</span>
+                            }}</span> -->
+                            最晚开始时间：
+                            <input
+                              style="height: 18px; width: 126px"
+                              placeholder="xxxx-xx-xx xx:xx:xx"
+                              class="input"
+                              v-model="exam.latestStartTime"
+                            />
+                            <!-- <span class="val-text">{{
+                              stopTimeString
+                            }}</span> -->
                           </td>
                           <td style="text-align: right">
                             <svg-icon
@@ -281,13 +337,35 @@
                               className="sandglass"
                             ></svg-icon>
                             <span style="vertical-align: middle">
-                              倒计时：<span class="val-text">{{
+                              考试时间：
+                              <!-- <span class="val-text">{{
                                 Math.floor(remainingTime / 1000 / 60)
-                              }}</span
-                              >分钟<span class="val-text">{{
+                              }}</span> -->
+                              <input
+                                id="minute"
+                                style="
+                                  height: 18px;
+                                  width: 35px;
+                                  text-align: center;
+                                "
+                                class="input"
+                                @change="calDuration()"
+                              />
+                              分钟
+                              <!-- <span class="val-text">{{
                                 Math.floor((remainingTime / 1000) % 60)
-                              }}</span
-                              >秒
+                              }}</span> -->
+                              <input
+                                id="second"
+                                style="
+                                  height: 18px;
+                                  width: 35px;
+                                  text-align: center;
+                                "
+                                class="input"
+                                @change="calDuration()"
+                              />
+                              秒
                             </span>
                           </td>
                         </tr>
@@ -301,81 +379,37 @@
           <tr>
             <td>
               <div class="exam-content card" style="width: 100%; height: 426px">
-                <template
-                  v-if="
-                    questions[currentQueType] &&
-                    questions[currentQueType][currentId]
-                  "
-                >
-                  <span class="description">
-                    ({{
-                      questionScores[currentId] &&
-                      questionScores[currentId].score
-                    }}分)
-                    {{
-                      currentTitleNumber +
-                      "."
-                    }}
-                    <span v-html="questions[currentQueType][currentId].description"></span>
-                  </span>
-                  <br />
-                  <template v-if="currentQueType == 'choice'">
-                    <template
-                      v-for="(choice, index) in questions[currentQueType][
-                        currentId
-                      ].choice"
-                      :key="index"
+                <div v-if="this.order.part && this.order.part.length > 0">
+                  <div style="width: 100%; height: 40px">
+                    第{{ currentTitleNumber }}题 分数：<input
+                      style="height: 25px; width: 40px; text-align: center"
+                      class="input"
+                      v-model.number="score"
+                    />
+                    <span
+                      class="order"
+                      style="margin-left: 20px"
+                      @click="subCurrentOrder()"
+                      >上移</span
                     >
-                      <input
-                        :id="'choice' + index"
-                        name="choice"
-                        :value="index"
-                        type="radio"
-                        :disabled="isExamOver"
-                        @click="
-                          answers[getAnswerType(currentQueType)][currentId] =
-                            {};
-                          answers[getAnswerType(currentQueType)][currentId][
-                            index
-                          ] = true;
-                          commitAnswer(
-                            currentId,
-                            getAnswerType(currentQueType)
-                          );
-                        "
-                        :checked="
-                          answers[getAnswerType(currentQueType)][currentId][
-                            index
-                          ] == true
-                        "
-                      />
-                      <label :for="'choice' + index"
-                        ><span class="choice" v-html="choice"></span></label
-                      >
-                      <div style="height: 5px"></div>
-                    </template>
-                  </template>
-                  <template v-else-if="currentQueType == 'completion'">
-                    <template
-                      v-for="n in questions[currentQueType][currentId]
-                        .answersCount"
-                      :key="currentId + '-' + n"
+                    <span class="order" @click="addCurrentOrder()">下移</span>
+                    <span
+                      class="order"
+                      style="margin-left: 10px"
+                      @click="deleteQuestion()"
+                      >删除题目</span
                     >
-                      ({{ n }})
-                      <input
-                        type="text"
-                        class="completion"
-                        :disabled="isExamOver"
-                        v-model="
-                          answers[getAnswerType(currentQueType)][currentId][
-                            n - 1
-                          ]
-                        "
-                        @change="normalQueChange($event, n - 1)"
-                      />
-                    </template>
-                  </template>
-                </template>
+                  </div>
+                  <div style="width: 100%">
+                    <QuestionEdit
+                      :questionBefore="questions[currentQueType][currentId]"
+                      @save="saveQuestionScore"
+                    ></QuestionEdit>
+                  </div>
+                </div>
+                <div v-else style="width:100%;height:100%">
+                  请在左侧创建题目
+                </div>
               </div>
             </td>
           </tr>
@@ -432,11 +466,15 @@ import axios from "axios";
 import { formatDate } from "@/common.js";
 import DialogBox from "./DialogBox.vue";
 import Loading from "./Loading.vue";
+import DropDown from "./DropDown.vue";
+import QuestionEdit from "./QuestionEdit";
 // import config from "@/config.js";
 export default {
   components: {
     DialogBox,
     Loading,
+    DropDown,
+    QuestionEdit,
   },
   data() {
     return {
@@ -452,13 +490,14 @@ export default {
       exam: {},
       examPaper: {},
       order: {},
+      score: 0,
       questionScores: {},
       currentId: 1,
       currentQueType: "choice",
       // config:config
       // user: null,
       titleNumberIndex: [],
-      currentTitleNumber: 1,
+      currentTitleNumber: 0,
       // mark:{},
 
       stopTime: new Date(),
@@ -486,11 +525,29 @@ export default {
 
         //初始化考试信息
         this.exam = data.exam;
-        if (this.exam.type == "fixed")
-          this.order = JSON.parse(this.exam.orderJson);
-        else if (this.exam.type == "random")
-          this.order = JSON.parse(this.examPaper.orderJson);
+        //转换日期格式
+        this.exam.earliestStartTime = formatDate(
+          new Date(this.exam.earliestStartTime)
+        );
+        this.exam.latestStartTime = formatDate(
+          new Date(this.exam.latestStartTime)
+        );
+        //转换duration
+        let minute = document.getElementById("minute");
+        let second = document.getElementById("second");
+        minute.value = Math.floor(this.exam.duration / 1000 / 60);
+        second.value = Math.floor((this.exam.duration / 1000) % 60);
+        //初始化题目顺序
+        // if (this.exam.type == "fixed")
+        this.order = JSON.parse(this.exam.orderJson);
+        // else if (this.exam.type == "random")
+        //   this.order = JSON.parse(this.examPaper.orderJson);
         this.getTitleNumberIndex();
+        if (this.titleNumberIndex[0]) {
+          this.currentTitleNumber = 1;
+          this.currentQueTyp = this.titleNumberIndex[0].type;
+          this.currentId = this.titleNumberIndex[0].id;
+        }
 
         //初始化问题信息
         this.questions = {
@@ -502,6 +559,7 @@ export default {
         this.answers = { normal: {} };
         for (let question of data.questions.choice) {
           question.choice = JSON.parse(question.choice);
+          question.answer = JSON.parse(question.answer);
           // console.log(question.choice);
           this.answers.normal[question.id] = {};
           if (question.type == "choice")
@@ -510,6 +568,7 @@ export default {
             this.questions.multiChoice[question.id] = question;
         }
         for (let question of data.questions.normal) {
+          question.answer = JSON.parse(question.answer);
           this.answers.normal[question.id] = {};
           if (question.type == "completion")
             this.questions.completion[question.id] = question;
@@ -527,9 +586,9 @@ export default {
         }
 
         //初始化考生回答信息
-        for (let ans of data.answers.normal) {
-          this.answers.normal[ans.questionId] = JSON.parse(ans.answer);
-        }
+        // for (let ans of data.answers.normal) {
+        //   this.answers.normal[ans.questionId] = JSON.parse(ans.answer);
+        // }
 
         //初始化题目分数信息
         for (let score of data.questionScores) {
@@ -539,91 +598,51 @@ export default {
         this.isLoading = false;
       });
     },
-    async getQuestions() {
-      return axios({
-        url: "question/getAllQuestions",
-        data: {
-          bankId: this.bankId,
-        },
-      }).then((res) => {
-        this.questions = {
-          choice: {},
-          multiChoice: {},
-          completion: {},
-          shortAnswer: {},
-        };
-        this.answers = { normal: {} };
-        for (let question of res.data.data.choice) {
-          question.choice = JSON.parse(question.choice);
-          // console.log(question.choice);
-          this.answers.normal[question.id] = {};
-          if (question.type == "choice")
-            this.questions.choice[question.id] = question;
-          else if (question.type == "multi_choice")
-            this.questions.multiChoice[question.id] = question;
-        }
-        for (let question of res.data.data.normal) {
-          this.answers.normal[question.id] = {};
-          if (question.type == "completion")
-            this.questions.completion[question.id] = question;
-          else if (question.type == "short_answer")
-            this.questions.shortAnswer[question.id] = question;
-        }
-      });
+    calDuration() {
+      let minute = Number(document.getElementById("minute").value);
+      let second = Number(document.getElementById("second").value);
+      this.exam.duration = (second + minute * 60) * 1000;
     },
-    async getExamInfo() {
-      return axios({
-        url: "/exam/getExams",
-        data: {
-          id: this.examId,
-        },
-      }).then((res) => {
-        this.exam = res.data.data.data[0];
-        // console.log(this.exam);
-        this.order = JSON.parse(this.exam.orderJson);
-        this.getTitleNumberIndex();
-      });
-    },
-    getExamPaper() {
-      axios({
-        url: "/exam/getExamPapers",
-        data: {
-          examinee: 1,
-        },
-      }).then((res) => {
-        this.examPaper = res.data.data.data[0];
-        this.stopTime = new Date(this.examPaper.startTime + this.exam.duration);
-        // console.log(this.stopTime);
-        // console.log(this.exam);
-      });
-    },
-    getAnswers() {
-      axios({
-        url: "/exam/getAllAnswers",
-        data: {
-          examinee: 1,
-          examId: this.examId,
-        },
-      }).then((res) => {
-        let data = res.data.data;
+    saveQuestionScore(question) {
+      let score = this.score;
 
-        for (let ans of data.normal) {
-          this.answers.normal[ans.questionId] = JSON.parse(ans.answer);
+      let before = this.questions[this.currentQueType][this.currentId];
+      if (before.type != question.type) {
+        let index = this.order[this.currentQueType].indexOf(before.id);
+        this.order[this.currentQueType].splice(index, 1);
+        if (this.order[this.currentQueType].length == 0) {
+          this.order.part.splice(this.order.part.indexOf(this.currentQueType));
         }
-      });
-    },
-    getQuestionScores() {
+
+        this.order[question.type].push(before.id);
+        if (this.order[question.type].length == 1) {
+          this.order.part.push(question.type);
+        }
+        this.currentQueType = question.type;
+        this.getTitleNumberIndex();
+      }
+
+      this.questions[this.currentQueType][this.currentId] = question;
+
       axios({
-        url: "/exam/getQuestionScores",
+        url: "exam/addQuestionScore",
         data: {
+          questionId: question.id,
           examId: this.examId,
+          score: this.score,
         },
-      }).then((res) => {
-        let data = res.data.data;
-        for (let score of data) {
-          this.questionScores[score.id] = score;
-        }
-      });
+      })
+        .then((res) => {
+          if (res.data.errCode != 0) {
+            alert("修改失败");
+          } else {
+            this.questionScores[question.id].score = score;
+            if (before.type != question.type) this.commitExam();
+          }
+        })
+        .catch(() => {
+          alert("修改失败");
+        });
     },
     joinExam() {
       axios({
@@ -723,7 +742,7 @@ export default {
           cancelToken: new axios.CancelToken((c) => {
             this.ajaxCancel = c;
           }),
-        }).then((res) => {});
+        });
       }
     },
     async initExam() {
@@ -764,6 +783,192 @@ export default {
         // console.log(this.correctTimeDiff);
       });
     },
+    addCurrentOrder() {
+      let titleNumber = this.currentTitleNumber - 1;
+      if (
+        titleNumber >= this.titleNumberIndex.length - 1 ||
+        this.titleNumberIndex[titleNumber].type !=
+          this.titleNumberIndex[titleNumber + 1].type
+      )
+        return;
+      let temp = this.titleNumberIndex[titleNumber + 1];
+      this.titleNumberIndex[titleNumber + 1] =
+        this.titleNumberIndex[titleNumber];
+      this.titleNumberIndex[titleNumber] = temp;
+
+      let index = this.order[this.currentQueType].indexOf(this.currentId);
+      temp = this.order[this.currentQueType][index + 1];
+      this.order[this.currentQueType][index + 1] =
+        this.order[this.currentQueType][index];
+      this.order[this.currentQueType][index] = temp;
+
+      this.currentTitleNumber++;
+    },
+    subCurrentOrder() {
+      let titleNumber = this.currentTitleNumber - 1;
+      if (
+        titleNumber <= 0 ||
+        this.titleNumberIndex[titleNumber].type !=
+          this.titleNumberIndex[titleNumber - 1].type
+      )
+        return;
+      let temp = this.titleNumberIndex[titleNumber - 1];
+      this.titleNumberIndex[titleNumber - 1] =
+        this.titleNumberIndex[titleNumber];
+      this.titleNumberIndex[titleNumber] = temp;
+
+      let index = this.order[this.currentQueType].indexOf(this.currentId);
+      temp = this.order[this.currentQueType][index - 1];
+      this.order[this.currentQueType][index - 1] =
+        this.order[this.currentQueType][index];
+      this.order[this.currentQueType][index] = temp;
+
+      this.currentTitleNumber--;
+    },
+    addPartOrder(part) {
+      let index = this.order.part.indexOf(part);
+      if (index >= this.order.part.length - 1) return;
+      let temp = this.order.part[index + 1];
+      this.order.part[index + 1] = this.order.part[index];
+      this.order.part[index] = temp;
+      this.getTitleNumberIndex();
+      this.currentTitleNumber =
+        this.titleNumberIndex.findIndex((value) => {
+          return value.id == this.currentId;
+        }) + 1;
+    },
+    subPartOrder(part) {
+      let index = this.order.part.indexOf(part);
+      if (index <= 0) return;
+      let temp = this.order.part[index - 1];
+      this.order.part[index - 1] = this.order.part[index];
+      this.order.part[index] = temp;
+      this.getTitleNumberIndex();
+      this.currentTitleNumber =
+        this.titleNumberIndex.findIndex((value) => {
+          return value.id == this.currentId;
+        }) + 1;
+    },
+    commitExam() {
+      let data = Object.assign({}, this.exam);
+      data.earliestStartTime = new Date(data.earliestStartTime);
+      data.latestStartTime = new Date(data.latestStartTime);
+      data.orderJson = JSON.stringify(this.order);
+      data.fullMark = this.fullMark;
+
+      // console.log(data);
+
+      axios({
+        url: "exam/addExam",
+        data: data,
+      })
+        .then((res) => {
+          if (res.data.errCode != 0) alert("保存失败");
+        })
+        .catch(() => {
+          alert("保存失败");
+        });
+    },
+    onTypeChange(value) {
+      this.exam.type = value;
+    },
+    onCalAtOnceChange(value) {
+      this.calGradeAtOnce = value == "true";
+    },
+    addQuestion() {
+      let question = {
+        description: "",
+        type: "choice",
+        choice: JSON.stringify(["", "", "", ""]),
+        answer: JSON.stringify({ 0: true }),
+        bankId: this.exam.bankId,
+      };
+      axios({
+        url: "question/addQuestion",
+        data: question,
+      })
+        .then((res) => {
+          if (res.data.errCode == 0) {
+            question.id = res.data.data;
+            question.choice = JSON.parse(question.choice);
+            question.answer = JSON.parse(question.answer);
+            this.questions["choice"][question.id] = question;
+            if (!this.order["choice"]) this.order["choice"] = [];
+            this.order["choice"].push(question.id);
+            if (this.order.part.length == 0) this.order.part.push("choice");
+
+            this.questionScores[question.id] = {};
+            this.questionScores[question.id].score = 2;
+            this.getTitleNumberIndex();
+            this.commitExam();
+            this.currentTitleNumber =
+              this.titleNumberIndex.findIndex((val) => val.id == question.id) +
+              1;
+            this.currentQueType = "choice";
+            this.currentId = question.id;
+
+            axios({
+              url: "exam/addQuestionScore",
+              data: {
+                questionId: question.id,
+                examId: this.examId,
+                score: this.questionScores[question.id].score,
+              },
+            })
+              .then((res) => {
+                if (res.data.errCode != 0) {
+                  alert("修改失败");
+                }
+              })
+              .catch(() => {
+                alert("修改失败");
+              });
+          } else {
+            alert("添加失败");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          alert("添加失败");
+        });
+    },
+    deleteQuestion() {
+      let id = this.currentId;
+      let type = this.currentQueType;
+      axios({
+        url: "question/deleteQuestion",
+        data: {
+          id: id,
+        },
+      })
+        .then((res) => {
+          if (res.data.errCode != 0) {
+            alert("删除失败");
+          } else {
+            delete this.questions[type][id];
+            delete this.questionScores[id];
+            this.order[type].splice(this.order[type].indexOf(id), 1);
+            if (this.order[type].length == 0) {
+              this.order.part.splice(this.order.part.indexOf(type), 1);
+            }
+            let index = this.titleNumberIndex.findIndex((val) => val.id == id);
+            this.titleNumberIndex.splice(index, 1);
+            if (index >= this.titleNumberIndex.length)
+              index = this.titleNumberIndex.length - 1;
+            if (index >= 0) {
+              this.currentId = this.titleNumberIndex[index].id;
+              this.currentQueType = this.titleNumberIndex[index].type;
+              this.titleNumber = index + 1;
+            }
+
+            this.commitExam();
+            // this.getTitleNumberIndex();
+          }
+        })
+        .catch(() => {
+          alert("删除失败");
+        });
+    },
   },
   computed: {
     user() {
@@ -781,12 +986,24 @@ export default {
     isExamNotStarted() {
       return this.currentTime < this.exam.earliestStartTime;
     },
+    fullMark() {
+      let fullMark = 0;
+      for (let id in this.questionScores) {
+        fullMark += this.questionScores[id].score;
+      }
+      return fullMark;
+    },
   },
   watch: {
     user() {
       if (this.user != null) {
         this.initExam();
       }
+    },
+    currentTitleNumber(val) {
+      this.score =
+        this.questionScores[this.currentId] &&
+        this.questionScores[this.currentId].score;
     },
   },
   async mounted() {
@@ -817,7 +1034,7 @@ export default {
   background: #ffffff;
   border-radius: 10px;
   margin: 5px;
-  overflow-y:auto;
+  overflow-y: auto;
 }
 
 .explain-text {
@@ -839,7 +1056,7 @@ export default {
   border-radius: 50%;
   width: 31px;
   height: 31px;
-  border: 2px solid #338AFB;
+  border: 2px solid #338afb;
   display: inline-block;
   margin: 9.5px;
 }
@@ -847,7 +1064,7 @@ export default {
 .answered {
   width: 31px;
   height: 31px;
-  background: #338AFB;
+  background: #338afb;
   border: 1px solid rgba(51, 138, 251, 0.30196078431372547);
   border-radius: 50%;
   display: inline-block;
@@ -857,7 +1074,7 @@ export default {
 .current-answered {
   width: 31px;
   height: 31px;
-  background: #338AFB;
+  background: #338afb;
   border: 2px solid #60a2f8;
   border-radius: 50%;
   display: inline-block;
@@ -867,7 +1084,7 @@ export default {
 .marked {
   width: 7px;
   height: 7px;
-  background: #338AFB;
+  background: #338afb;
   border-radius: 50%;
   position: relative;
   left: 21px;
@@ -915,7 +1132,7 @@ export default {
 }
 
 .val-text {
-  color: #338AFB;
+  color: #338afb;
 }
 
 .exam-content {
@@ -963,7 +1180,7 @@ input[type="radio"]:checked {
 }
 
 .sandglass {
-  color: #338AFB;
+  color: #338afb;
   width: 20px;
   height: 20px;
   vertical-align: middle;
@@ -977,5 +1194,23 @@ input[type="radio"]:checked {
   bottom: 0;
   background-color: #00000033;
   z-index: 20;
+}
+
+.card :deep(.dropdown) {
+  font-size: 12px;
+}
+
+.input {
+  width: 237px;
+  height: 28px;
+  background: #e6e6e6;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.order {
+  color: #338afb;
+  margin: 0 10px;
+  cursor: pointer;
 }
 </style>
