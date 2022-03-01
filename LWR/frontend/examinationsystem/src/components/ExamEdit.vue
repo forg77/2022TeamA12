@@ -1,5 +1,4 @@
 <template>
-  <!-- 加载 -->
   <transition name="fade">
     <div class="loading-back" v-show="isLoading">
       <div style="width: 100%; height: 100%">
@@ -9,8 +8,7 @@
       </div>
     </div>
   </transition>
-  <!-- 考试结束对话框 -->
-  <DialogBox v-model:show="showOverDialog">
+  <!-- <DialogBox v-model:show="showOverDialog">
     <template v-slot:header>考试已结束</template>
     <template v-if="examPaper && 'grade' in examPaper">
       您的分数：{{ examPaper.grade }}/{{ exam.fullMark }}
@@ -33,7 +31,6 @@
       <button class="btn" @click="showOverDialog = false">确定</button>
     </template>
   </DialogBox>
-  <!-- 加入考试对话框 -->
   <DialogBox v-model:show="showJoinDialog">
     <template v-slot:header>加入考试</template>
     <template v-if="isExamNotStarted"> 考试未开始 </template>
@@ -79,7 +76,7 @@
         加入考试
       </button>
     </template>
-  </DialogBox>
+  </DialogBox> -->
   <table
     class="exam"
     cellspacing="0"
@@ -112,6 +109,7 @@
                       { value: 'fixed', text: '固定题' },
                       { value: 'random', text: '随机抽题' },
                     ]"
+                    @change="onTypeChange"
                   ></DropDown>
                 </div>
                 <div>
@@ -122,6 +120,7 @@
                       { value: 'true', text: '是' },
                       { value: 'false', text: '否' },
                     ]"
+                    @change="onCalAtOnceChange"
                   ></DropDown>
                 </div>
                 <div>
@@ -129,7 +128,7 @@
                     type="text"
                     class="inputBox"
                     style="width: 50px; height: 20px; text-align: center"
-                    value="1"
+                    v-model="exam.repeatTime"
                   />
                 </div>
               </div>
@@ -150,6 +149,15 @@
                             color: black;
                           "
                           >{{ getQuestionTypeName(queType) }}：</span
+                        >
+                        <span
+                          class="order"
+                          style="margin-left: 20px"
+                          @click="subPartOrder(queType)"
+                          >上移</span
+                        >
+                        <span class="order" @click="addPartOrder(queType)"
+                          >下移</span
                         >
                         <br />
                         <template v-for="queId in order[queType]" :key="queId">
@@ -189,10 +197,17 @@
                     <td style="height: 38px; text-align: center">
                       <button
                         class="btn"
+                        style="height: 28px; width: 234px; margin-bottom: 10px"
+                        @click="addQuestion()"
+                      >
+                        添加题目
+                      </button>
+                      <button
+                        class="btn"
                         style="height: 28px; width: 234px"
                         @click="
-                          if (!isExamOver) stopExam();
-                          else showOverDialog = true;
+                          commitExam();
+                          $router.replace('/teacher/examManage');
                         "
                       >
                         结束编辑
@@ -288,7 +303,7 @@
                             题量：<span
                               class="val-text"
                               style="margin-right: 28px"
-                              >{{ exam.questionsCount }}</span
+                              >{{ titleNumberIndex.length }}</span
                             >
                             满分：<span
                               class="val-text"
@@ -364,18 +379,36 @@
           <tr>
             <td>
               <div class="exam-content card" style="width: 100%; height: 426px">
-                <div style="width: 100%; height: 40px">
-                  第{{ currentTitleNumber }}题 分数：<input
-                    style="height: 25px; width: 40px; text-align: center"
-                    class="input"
-                    v-model.number="score"
-                  />
+                <div v-if="this.order.part && this.order.part.length > 0">
+                  <div style="width: 100%; height: 40px">
+                    第{{ currentTitleNumber }}题 分数：<input
+                      style="height: 25px; width: 40px; text-align: center"
+                      class="input"
+                      v-model.number="score"
+                    />
+                    <span
+                      class="order"
+                      style="margin-left: 20px"
+                      @click="subCurrentOrder()"
+                      >上移</span
+                    >
+                    <span class="order" @click="addCurrentOrder()">下移</span>
+                    <span
+                      class="order"
+                      style="margin-left: 10px"
+                      @click="deleteQuestion()"
+                      >删除题目</span
+                    >
+                  </div>
+                  <div style="width: 100%">
+                    <QuestionEdit
+                      :questionBefore="questions[currentQueType][currentId]"
+                      @save="saveQuestionScore"
+                    ></QuestionEdit>
+                  </div>
                 </div>
-                <div style="width: 100%">
-                  <QuestionEdit
-                    :questionBefore="questions[currentQueType][currentId]"
-                    @save="saveQuestionScore"
-                  ></QuestionEdit>
+                <div v-else style="width:100%;height:100%">
+                  请在左侧创建题目
                 </div>
               </div>
             </td>
@@ -505,10 +538,10 @@ export default {
         minute.value = Math.floor(this.exam.duration / 1000 / 60);
         second.value = Math.floor((this.exam.duration / 1000) % 60);
         //初始化题目顺序
-        if (this.exam.type == "fixed")
-          this.order = JSON.parse(this.exam.orderJson);
-        else if (this.exam.type == "random")
-          this.order = JSON.parse(this.examPaper.orderJson);
+        // if (this.exam.type == "fixed")
+        this.order = JSON.parse(this.exam.orderJson);
+        // else if (this.exam.type == "random")
+        //   this.order = JSON.parse(this.examPaper.orderJson);
         this.getTitleNumberIndex();
         if (this.titleNumberIndex[0]) {
           this.currentTitleNumber = 1;
@@ -525,7 +558,8 @@ export default {
         };
         this.answers = { normal: {} };
         for (let question of data.questions.choice) {
-          // question.choice = JSON.parse(question.choice);
+          question.choice = JSON.parse(question.choice);
+          question.answer = JSON.parse(question.answer);
           // console.log(question.choice);
           this.answers.normal[question.id] = {};
           if (question.type == "choice")
@@ -534,6 +568,7 @@ export default {
             this.questions.multiChoice[question.id] = question;
         }
         for (let question of data.questions.normal) {
+          question.answer = JSON.parse(question.answer);
           this.answers.normal[question.id] = {};
           if (question.type == "completion")
             this.questions.completion[question.id] = question;
@@ -566,10 +601,29 @@ export default {
     calDuration() {
       let minute = Number(document.getElementById("minute").value);
       let second = Number(document.getElementById("second").value);
-      this.exam.duration = second * minute * 60 * 1000;
+      this.exam.duration = (second + minute * 60) * 1000;
     },
     saveQuestionScore(question) {
       let score = this.score;
+
+      let before = this.questions[this.currentQueType][this.currentId];
+      if (before.type != question.type) {
+        let index = this.order[this.currentQueType].indexOf(before.id);
+        this.order[this.currentQueType].splice(index, 1);
+        if (this.order[this.currentQueType].length == 0) {
+          this.order.part.splice(this.order.part.indexOf(this.currentQueType));
+        }
+
+        this.order[question.type].push(before.id);
+        if (this.order[question.type].length == 1) {
+          this.order.part.push(question.type);
+        }
+        this.currentQueType = question.type;
+        this.getTitleNumberIndex();
+      }
+
+      this.questions[this.currentQueType][this.currentId] = question;
+
       axios({
         url: "exam/addQuestionScore",
         data: {
@@ -582,7 +636,8 @@ export default {
           if (res.data.errCode != 0) {
             alert("修改失败");
           } else {
-            this.questionScores[question.id] = score;
+            this.questionScores[question.id].score = score;
+            if (before.type != question.type) this.commitExam();
           }
         })
         .catch(() => {
@@ -727,6 +782,192 @@ export default {
         this.correctTimeDiff = correctTime - local;
         // console.log(this.correctTimeDiff);
       });
+    },
+    addCurrentOrder() {
+      let titleNumber = this.currentTitleNumber - 1;
+      if (
+        titleNumber >= this.titleNumberIndex.length - 1 ||
+        this.titleNumberIndex[titleNumber].type !=
+          this.titleNumberIndex[titleNumber + 1].type
+      )
+        return;
+      let temp = this.titleNumberIndex[titleNumber + 1];
+      this.titleNumberIndex[titleNumber + 1] =
+        this.titleNumberIndex[titleNumber];
+      this.titleNumberIndex[titleNumber] = temp;
+
+      let index = this.order[this.currentQueType].indexOf(this.currentId);
+      temp = this.order[this.currentQueType][index + 1];
+      this.order[this.currentQueType][index + 1] =
+        this.order[this.currentQueType][index];
+      this.order[this.currentQueType][index] = temp;
+
+      this.currentTitleNumber++;
+    },
+    subCurrentOrder() {
+      let titleNumber = this.currentTitleNumber - 1;
+      if (
+        titleNumber <= 0 ||
+        this.titleNumberIndex[titleNumber].type !=
+          this.titleNumberIndex[titleNumber - 1].type
+      )
+        return;
+      let temp = this.titleNumberIndex[titleNumber - 1];
+      this.titleNumberIndex[titleNumber - 1] =
+        this.titleNumberIndex[titleNumber];
+      this.titleNumberIndex[titleNumber] = temp;
+
+      let index = this.order[this.currentQueType].indexOf(this.currentId);
+      temp = this.order[this.currentQueType][index - 1];
+      this.order[this.currentQueType][index - 1] =
+        this.order[this.currentQueType][index];
+      this.order[this.currentQueType][index] = temp;
+
+      this.currentTitleNumber--;
+    },
+    addPartOrder(part) {
+      let index = this.order.part.indexOf(part);
+      if (index >= this.order.part.length - 1) return;
+      let temp = this.order.part[index + 1];
+      this.order.part[index + 1] = this.order.part[index];
+      this.order.part[index] = temp;
+      this.getTitleNumberIndex();
+      this.currentTitleNumber =
+        this.titleNumberIndex.findIndex((value) => {
+          return value.id == this.currentId;
+        }) + 1;
+    },
+    subPartOrder(part) {
+      let index = this.order.part.indexOf(part);
+      if (index <= 0) return;
+      let temp = this.order.part[index - 1];
+      this.order.part[index - 1] = this.order.part[index];
+      this.order.part[index] = temp;
+      this.getTitleNumberIndex();
+      this.currentTitleNumber =
+        this.titleNumberIndex.findIndex((value) => {
+          return value.id == this.currentId;
+        }) + 1;
+    },
+    commitExam() {
+      let data = Object.assign({}, this.exam);
+      data.earliestStartTime = new Date(data.earliestStartTime);
+      data.latestStartTime = new Date(data.latestStartTime);
+      data.orderJson = JSON.stringify(this.order);
+      data.fullMark = this.fullMark;
+
+      // console.log(data);
+
+      axios({
+        url: "exam/addExam",
+        data: data,
+      })
+        .then((res) => {
+          if (res.data.errCode != 0) alert("保存失败");
+        })
+        .catch(() => {
+          alert("保存失败");
+        });
+    },
+    onTypeChange(value) {
+      this.exam.type = value;
+    },
+    onCalAtOnceChange(value) {
+      this.calGradeAtOnce = value == "true";
+    },
+    addQuestion() {
+      let question = {
+        description: "",
+        type: "choice",
+        choice: JSON.stringify(["", "", "", ""]),
+        answer: JSON.stringify({ 0: true }),
+        bankId: this.exam.bankId,
+      };
+      axios({
+        url: "question/addQuestion",
+        data: question,
+      })
+        .then((res) => {
+          if (res.data.errCode == 0) {
+            question.id = res.data.data;
+            question.choice = JSON.parse(question.choice);
+            question.answer = JSON.parse(question.answer);
+            this.questions["choice"][question.id] = question;
+            if (!this.order["choice"]) this.order["choice"] = [];
+            this.order["choice"].push(question.id);
+            if (this.order.part.length == 0) this.order.part.push("choice");
+
+            this.questionScores[question.id] = {};
+            this.questionScores[question.id].score = 2;
+            this.getTitleNumberIndex();
+            this.commitExam();
+            this.currentTitleNumber =
+              this.titleNumberIndex.findIndex((val) => val.id == question.id) +
+              1;
+            this.currentQueType = "choice";
+            this.currentId = question.id;
+
+            axios({
+              url: "exam/addQuestionScore",
+              data: {
+                questionId: question.id,
+                examId: this.examId,
+                score: this.questionScores[question.id].score,
+              },
+            })
+              .then((res) => {
+                if (res.data.errCode != 0) {
+                  alert("修改失败");
+                }
+              })
+              .catch(() => {
+                alert("修改失败");
+              });
+          } else {
+            alert("添加失败");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          alert("添加失败");
+        });
+    },
+    deleteQuestion() {
+      let id = this.currentId;
+      let type = this.currentQueType;
+      axios({
+        url: "question/deleteQuestion",
+        data: {
+          id: id,
+        },
+      })
+        .then((res) => {
+          if (res.data.errCode != 0) {
+            alert("删除失败");
+          } else {
+            delete this.questions[type][id];
+            delete this.questionScores[id];
+            this.order[type].splice(this.order[type].indexOf(id), 1);
+            if (this.order[type].length == 0) {
+              this.order.part.splice(this.order.part.indexOf(type), 1);
+            }
+            let index = this.titleNumberIndex.findIndex((val) => val.id == id);
+            this.titleNumberIndex.splice(index, 1);
+            if (index >= this.titleNumberIndex.length)
+              index = this.titleNumberIndex.length - 1;
+            if (index >= 0) {
+              this.currentId = this.titleNumberIndex[index].id;
+              this.currentQueType = this.titleNumberIndex[index].type;
+              this.titleNumber = index + 1;
+            }
+
+            this.commitExam();
+            // this.getTitleNumberIndex();
+          }
+        })
+        .catch(() => {
+          alert("删除失败");
+        });
     },
   },
   computed: {
@@ -965,5 +1206,11 @@ input[type="radio"]:checked {
   background: #e6e6e6;
   border-radius: 5px;
   font-size: 14px;
+}
+
+.order {
+  color: #338afb;
+  margin: 0 10px;
+  cursor: pointer;
 }
 </style>
