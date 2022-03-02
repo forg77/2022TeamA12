@@ -62,7 +62,7 @@
         style="background-color: #5399f3; color: #fff; border: none"
         @click="
           saveQuestion();
-          $emit('save',question);
+          $emit('save', question);
         "
       >
         保存该题
@@ -145,12 +145,20 @@ export default {
         });
     },
     getInitQuestion() {
-      return {
+      let question = {
         description: "",
         type: "completion",
         answerArray: [""],
         answer: {},
       };
+      if (this.questionBefore != null) {
+        question.id = this.questionBefore.id;
+        question.bankId = this.questionBefore.bankId;
+      } else {
+        question.id = this.id;
+        question.bankId = this.bankId;
+      }
+      return question;
     },
     reset() {
       this.question = this.getInitQuestion();
