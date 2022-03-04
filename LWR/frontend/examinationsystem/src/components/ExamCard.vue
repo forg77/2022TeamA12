@@ -166,6 +166,7 @@ export default {
   vertical-align: middle;
   position: relative;
   bottom: 2px;
+  color: #338AFB;
 }
 
 .tag {

@@ -1,5 +1,24 @@
 <template>
   <div class="table">
+    <!--确认删除-->
+    <DialogBox v-model:show="showDeleteDialog">
+      <template v-slot:header>确认</template>
+      确定删除所选项吗？
+      <template v-slot:bottom>
+        <button
+            class="btn"
+            @click="
+            deleteExam(selectExam.id);
+            this.getExams();
+            showDeleteDialog = false;
+          "
+            style="margin-right: 20px"
+        >
+          确定
+        </button>
+        <button class="btn" @click="showDeleteDialog = false">取消</button>
+      </template>
+    </DialogBox>
     <table style="width: 100%">
       <td style="text-align: center">
         <Loading v-show="isLoading"></Loading>
@@ -92,9 +111,10 @@ import Loading from "./Loading.vue";
 import ClickDropDown from "@/components/ClickDropDown";
 import axios from "axios";
 import {formatDate} from "@/common.js";
+import DialogBox from "@/components/DialogBox";
 
 export default {
-  components: {ExamCard, Loading, ExamCardAdd, ClickDropDown},
+  components: {ExamCard, Loading, ExamCardAdd, ClickDropDown,DialogBox},
   data() {
     return {
       exams: [],
@@ -116,8 +136,10 @@ export default {
       },
       expandMenu: false,
 
-      editMenu: ["删除","批改"],
-      selectExam: null
+      editMenu: ["删除", "批改"],
+      selectExam: null,
+
+      showDeleteDialog: false
     };
   },
   emits: ["cardClick", "addClick"],
@@ -239,8 +261,8 @@ export default {
     onMenuItemClick(index) {
       // console.log(1);
       if (index === 0) {
-        this.deleteExam(this.selectExam["id"]);
-        this.getExams();
+        // this.deleteExam(this.selectExam["id"]);
+        this.showDeleteDialog = true;
       }
     }
   },
@@ -272,7 +294,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    canManage:{
+    canManage: {
       type: Boolean,
       default: false,
     }
