@@ -7,8 +7,8 @@
       <div class="exam-name">
         <slot name="title"></slot>
       </div>
-      <button @click="onManageClick($event)" style="width: 64px;height: 31px"
-              :class="{btn:canManage,button:!canManage}"><span class="btncontent">{{ canManage ? "管理" : "考试" }}</span>
+      <button @click="onManageClick($event)" style="width: 64px;height: 31px;font-size: 16px;"
+              :class="{btn:canManage,button:!canManage}">{{ canManage ? "管理" : "考试" }}
       </button>
     </div>
 
@@ -104,15 +104,19 @@ export default {
 }
 
 .button {
-  display: flex;
+  /*display: flex;*/
   width: 64px;
   height: 31px;
   background: #338AFB;
   opacity: 1;
   border-radius: 5px;
-  align-items: center;
+  /*align-items: center;*/
   border-style: none;
   cursor: pointer;
+  font-size: 16px;
+  font-family: Microsoft YaHei;
+  color: white;
+  text-align: center;
 }
 
 .btncontent {

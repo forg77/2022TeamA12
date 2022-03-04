@@ -29,6 +29,7 @@
               :extraData="extraData"
               :canAdd="true"
               @addClick="onAddClick()"
+              :canManage="true"
           ></ExamTable>
         </div>
 <!--        <ClickDropDown @click="onMenuItemClick"></ClickDropDown>-->

@@ -8,7 +8,7 @@
     <ClickDropDown id="menu" :expand="expandMenu" :position="menuPos" :items="editMenu"
                    @itemClick="onMenuItemClick"></ClickDropDown>
     <template v-for="exam in exams" :key="exam.id">
-      <ExamCard :tag="getExamTag(exam)" @click="this.$emit('cardClick', exam)" :canManage="editMenu.length>0"
+      <ExamCard :tag="getExamTag(exam)" @click="this.$emit('cardClick', exam)" :canManage="canManage"
                 @manageClick="selectExam=exam;onManageClick($event,exam);">
         <template v-slot:title>{{ exam.title }}</template>
         <template v-slot:subtitle>{{ exam.subtitle }}</template>
@@ -116,7 +116,7 @@ export default {
       },
       expandMenu: false,
 
-      editMenu: ["删除"],
+      editMenu: ["删除","批改"],
       selectExam: null
     };
   },
@@ -272,6 +272,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    canManage:{
+      type: Boolean,
+      default: false,
+    }
     // editMenu: {
     //   type: Array,
     //   default() {
