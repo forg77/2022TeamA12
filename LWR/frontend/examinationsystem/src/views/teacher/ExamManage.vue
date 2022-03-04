@@ -29,10 +29,9 @@
               :extraData="extraData"
               :canAdd="true"
               @addClick="onAddClick()"
-              :editMenu="['删除','发布']"
           ></ExamTable>
         </div>
-        <ClickDropDown></ClickDropDown>
+<!--        <ClickDropDown @click="onMenuItemClick"></ClickDropDown>-->
       </template>
     </Card>
   </div>
@@ -99,6 +98,7 @@ export default {
     onAddClick() {
       this.addExam();
     },
+
   },
   watch: {
     searchText(newVal) {

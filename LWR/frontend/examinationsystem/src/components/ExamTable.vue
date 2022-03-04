@@ -5,10 +5,11 @@
         <Loading v-show="isLoading"></Loading>
       </td>
     </table>
-    <ClickDropDown id="menu" :expand="expandMenu" :position="menuPos" :items="editMenu"></ClickDropDown>
+    <ClickDropDown id="menu" :expand="expandMenu" :position="menuPos" :items="editMenu"
+                   @itemClick="onMenuItemClick"></ClickDropDown>
     <template v-for="exam in exams" :key="exam.id">
       <ExamCard :tag="getExamTag(exam)" @click="this.$emit('cardClick', exam)" :canManage="editMenu.length>0"
-                @manageClick="onManageClick($event,exam)">
+                @manageClick="selectExam=exam;onManageClick($event,exam);">
         <template v-slot:title>{{ exam.title }}</template>
         <template v-slot:subtitle>{{ exam.subtitle }}</template>
         <template v-slot:time>{{
@@ -113,7 +114,10 @@ export default {
         x: 300,
         y: 300
       },
-      expandMenu: false
+      expandMenu: false,
+
+      editMenu: ["删除"],
+      selectExam: null
     };
   },
   emits: ["cardClick", "addClick"],
@@ -216,6 +220,28 @@ export default {
       this.menuPos.x = event.pageX;
       this.menuPos.y = event.pageY;
       this.expandMenu = true;
+    },
+    deleteExam(id) {
+      axios({
+        url: "exam/deleteExam",
+        data: {
+          id: id
+        }
+      }).then((res) => {
+        if (res.data["errCode"] !== 0) {
+          alert("删除失败");
+        }
+      }).catch(() => {
+        alert("删除失败");
+      });
+
+    },
+    onMenuItemClick(index) {
+      // console.log(1);
+      if (index === 0) {
+        this.deleteExam(this.selectExam["id"]);
+        this.getExams();
+      }
     }
   },
   mounted() {
@@ -246,12 +272,12 @@ export default {
       type: Boolean,
       default: false,
     },
-    editMenu: {
-      type: Array,
-      default() {
-        return [];
-      }
-    }
+    // editMenu: {
+    //   type: Array,
+    //   default() {
+    //     return [];
+    //   }
+    // }
   },
   computed: {},
 };

@@ -1,11 +1,8 @@
 <template>
   <div class="dropdown" :class="{expand:expand}" :style="{top:position.y+'px',left:position.x+'px'}">
-    <div class="dropdown-content" v-for="item in items" :key="item">
+    <div class="dropdown-content" v-for="(item,index) in items" :key="item" @click="$emit('itemClick',index)">
       {{ item }}
     </div>
-<!--    <div class="dropdown-content">-->
-<!--      选项2-->
-<!--    </div>-->
   </div>
 </template>
 
@@ -33,6 +30,7 @@ export default {
       }
     }
   },
+  emits: ["itemClick"]
 }
 </script>
 
@@ -55,7 +53,7 @@ export default {
 
   transform: scaleY(0);
   transform-origin: 0 0;
-  transition: transform 0.5s;
+  transition: transform 0.3s;
 }
 
 .expand {
