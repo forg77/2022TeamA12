@@ -93,15 +93,23 @@ public class QuestionService {
         }
     }
 
-    public Integer deleteChoiceQuestion(Integer id){
+    public Integer deleteChoiceQuestion(Integer id) {
         return questionMapper.deleteChoiceQuestion(id);
     }
 
-    public Integer deleteNormalQuestion(Integer id){
+    public Integer deleteNormalQuestion(Integer id) {
         return questionMapper.deleteNormalQuestion(id);
     }
 
-    public Integer deleteQuestion(Integer id){
+    public Integer deleteQuestion(Integer id) {
         return questionMapper.deleteQuestion(id);
+    }
+
+    public Integer addBank(QuestionBank bank) {
+        return questionMapper.addBank(bank);
+    }
+
+    public Integer updateBankName(Integer id, String name) {
+        return questionMapper.updateBankName(id, name);
     }
 }

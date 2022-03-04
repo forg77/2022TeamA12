@@ -230,8 +230,32 @@
 
     <delete id="deleteQuestion">
         DELETE
-        FROM
-            `question`
+        FROM `question`
         WHERE `id` = #{id};
     </delete>
+
+    <insert id="addBank" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `question_bank` (`id`,
+                                     `name`,
+                                     `author`,
+                                     `creation_time`,
+                                     `private`)
+        VALUES (#{id},
+                #{name},
+                #{author},
+                #{creationTime},
+                #{private})
+        ON DUPLICATE KEY UPDATE `name`          = #{name},
+                                `author`        = #{author},
+                                `creation_time` = #{creationTime},
+                                `private`       = #{private};
+    </insert>
+
+    <update id="updateBankName">
+        UPDATE
+            `question_bank`
+        SET
+            `name` = #{name}
+        WHERE `id` = #{id};
+    </update>
 </mapper>

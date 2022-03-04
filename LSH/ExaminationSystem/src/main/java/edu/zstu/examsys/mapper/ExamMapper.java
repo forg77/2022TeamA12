@@ -52,4 +52,6 @@ public interface ExamMapper {
     QuestionScore getQuestionScore(Integer examId,Integer questionId);
 
     Integer addExam(Exam exam);
+
+    Integer deleteExam(Integer id);
 }

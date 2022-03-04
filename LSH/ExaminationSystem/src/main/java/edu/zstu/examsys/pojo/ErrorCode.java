@@ -15,7 +15,10 @@ public class ErrorCode {
     //2--，数据库错误
     //插入失败
     public static final int INSERT_FAILED = 201;
+    //查询失败
     public static final int QUERY_FAILED = 202;
+    //删除失败
+    public static final int DELETE_FAILED = 203;
 
     //3--，考试错误
     //考试已结束

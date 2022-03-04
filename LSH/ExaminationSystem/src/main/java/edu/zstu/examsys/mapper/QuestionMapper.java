@@ -43,4 +43,7 @@ public interface QuestionMapper {
     Integer deleteQuestion(Integer id);
 
     Integer addBank(QuestionBank bank);
+
+    Integer updateBankName(Integer id,String name);
+
 }

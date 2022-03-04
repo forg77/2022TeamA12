@@ -120,4 +120,8 @@ public class ExamService {
     public Integer addExam(Exam exam){
         return examMapper.addExam(exam);
     }
+
+    public Integer deleteExam(Integer id){
+        return examMapper.deleteExam(id);
+    }
 }
