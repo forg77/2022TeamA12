@@ -103,15 +103,6 @@ export default {
     },
 
   },
-  watch: {
-    searchText(newVal) {
-      if (newVal === "" && this.extraData.search != null) {
-        this.extraData.search = null;
-        this.searchButtonString = "搜索考试";
-        this.$refs.examTable.getExams();
-      }
-    },
-  },
   components: {
     ClickDropDown,
     Card,
@@ -126,7 +117,7 @@ export default {
   },
   setup() {
     let info = getSearchInfo();
-    info.searchString.value = "搜索考试";
+    info.searchButtonString.value = info.searchString.value = "搜索考试";
     return info;
   }
 };
