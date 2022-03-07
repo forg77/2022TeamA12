@@ -29,7 +29,7 @@
   width: 1000px;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 100px;
+  margin-top: 90px;
   margin-bottom: 20px;
 }
 

@@ -2,6 +2,8 @@ package edu.zstu.examsys.controller;
 
 import com.alibaba.fastjson.JSON;
 import edu.zstu.examsys.mapper.TestMapper;
+import edu.zstu.examsys.pojo.CommonData;
+import edu.zstu.examsys.pojo.ErrorCode;
 import edu.zstu.examsys.pojo.User;
 import edu.zstu.examsys.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,25 +39,25 @@ public class UserController {
 
     @GetMapping("/needLogin")
     public String needLogin() {
-        Map<String, Object> result = new HashMap<>();
-        result.put("errCode", 101);
-        result.put("errMsg", "请先登录");
+        CommonData res = new CommonData(ErrorCode.NO_LOGIN, "请先登录");
 
-//        res.setContentType("application/json;charset=UTF-8");
-        return JSON.toJSONString(result);
+        return JSON.toJSONString(res);
     }
 
     //获取当前用户基本信息
     @RequestMapping("/userInfo")
     public String userInfo(Authentication authentication) {
-        Map<String, Object> result = new HashMap<>();
+        Map<String, Object> data = new HashMap<>();
 
         User user = (User) authentication.getPrincipal();
 
-        result.put("id", user.getId());
-        result.put("username", user.getUsername());
-        result.put("nickname", user.getNickname());
+        data.put("id", user.getId());
+        data.put("username", user.getUsername());
+        data.put("nickname", user.getNickname());
+        data.put("permission", user.getPermission());
 
-        return JSON.toJSONString(result);
+        CommonData res = new CommonData(ErrorCode.SUCCESS, "成功", data);
+
+        return JSON.toJSONString(res);
     }
 }

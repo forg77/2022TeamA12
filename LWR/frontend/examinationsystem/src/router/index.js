@@ -40,12 +40,13 @@ const routes = [{
                         { title: "表格测试", link: "/admin/tableTest" },
                         { title: "对话框测试", link: "/admin/dialogTest" },
                         { title: "考试测试", link: "/admin/examTest" },
+                        { title: "考试表格测试", link: "/admin/examTableTest" },
                     ],
                 },
             ],
         },
         children: [{
-                path: '',
+                path: 'home',
                 name: 'Home',
                 component: Home
             },
@@ -137,6 +138,147 @@ const routes = [{
                     title: "考试测试" + postTitle,
                     pageTitle: "考试测试"
                 }
+            },
+            {
+                path: 'examTableTest',
+                name: 'ExamTableTest',
+                component: () =>
+                    import ('../testViews/ExamTableTest.vue'),
+                meta: {
+                    title: "考试表格测试" + postTitle,
+                    pageTitle: "考试表格测试"
+                }
+            },
+        ]
+    },
+    {
+        path: '/teacher',
+        name: "Teacher",
+        component: () =>
+            import ('../views/MainView.vue'),
+        props: {
+            navs: [{
+                title: "考试管理",
+                content: [
+                    { title: "考试管理", link: "/teacher/examManage" },
+                ],
+            }, {
+                title: "题库管理",
+                content: [
+                    { title: "题库查询", link: "/teacher/questionsManage" },
+                    { title: "题库录入", link: "/teacher/questionsInput" },
+                ],
+            }],
+        },
+        children: [{
+                path: 'questionsManage',
+                name: 'teacherQuestionsManage',
+                component: () =>
+                    import ('../views/teacher/QuestionsManage'),
+                meta: {
+                    title: "题库管理" + postTitle,
+                    pageTitle: "题库管理"
+                }
+            },
+            {
+                path: 'questionManage/:bankId',
+                name: 'teacherQuestionManage',
+                component: () =>
+                    import ('../views/teacher/QuestionsManage/QuestionTable.vue'),
+                meta: {
+                    title: "题目管理" + postTitle,
+                    pageTitle: "题目管理"
+                }
+            },
+            {
+                path: 'examManage',
+                name: 'teacherExamManage',
+                component: () =>
+                    import ('../views/teacher/ExamManage.vue'),
+                meta: {
+                    title: "考试管理" + postTitle,
+                    pageTitle: "考试管理"
+                }
+            },
+            {
+                path: 'examEdit/:examId',
+                name: 'teacherExamEdit',
+                component: () =>
+                    import ('../views/teacher/ExamEdit.vue'),
+                meta: {
+                    title: "考试编辑" + postTitle,
+                    pageTitle: "考试编辑"
+                }
+            },
+        ]
+    },
+    {
+        path: '/student',
+        name: "Student",
+        component: () =>
+            import ('../views/MainView.vue'),
+        props: {
+            navs: [{
+                    title: "我的考试",
+                    link: "/student/exams",
+                },
+                {
+                    title: "我的成绩",
+                    content: [
+                        { title: "成绩查询", link: "/student/gradeQuery" },
+                        { title: "知识分析", link: "/student/message" },
+                    ],
+                },
+                {
+                    title: "我的消息",
+                    link: "/student/message"
+                }
+            ],
+        },
+        children: [{
+                path: '',
+                name: 'Home1',
+                component: Home
+            },
+            {
+                path: 'exams',
+                name: 'Exams',
+                component: () =>
+                    import ('../views/student/Exams.vue'),
+                meta: {
+                    title: "我的考试" + postTitle,
+                    pageTitle: "我的考试"
+                }
+            },
+            {
+                path: 'message',
+                name: 'Massage',
+                component: () =>
+                    import ('../views/student/Message.vue'),
+                meta: {
+                    title: "我的消息" + postTitle,
+                    pageTitle: "我的消息"
+                },
+            },
+            {
+                path: 'studentExam/:examId',
+                name: 'StudentExam',
+                component: () =>
+                    import ('../views/student/StudentExam.vue'),
+                meta: {
+                    title: "考试" + postTitle,
+                    pageTitle: "考试"
+                }
+            },
+            {
+                path: 'gradeQuery',
+                name: 'GradeQuery',
+                component: () =>
+                    import ('../views/student/GradeQuery.vue'),
+                meta: {
+                    title: "成绩查询" + postTitle,
+                    pageTitle: "成绩查询"
+                },
             },
         ]
     }

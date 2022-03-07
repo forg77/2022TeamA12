@@ -14,7 +14,7 @@
       </template>
       <template v-slot:content>
         <div class="content">
-          <Table url="test/test" :columns="columns"></Table>
+          <Table :urls="{queryUrl:'test/test'}" :columns="columns"></Table>
         </div>
       </template>
     </Card>

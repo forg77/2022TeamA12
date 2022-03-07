@@ -1,5 +1,5 @@
 <template>
-  <NavBar :items="navs" :nickname="nickname" />
+  <NavBar :items="navs" />
   <!-- <p>当前路径：{{ $route.path }}</p> -->
   <div class="title">
     {{ $route.meta.pageTitle }}
@@ -14,13 +14,11 @@
 <script>
 import NavBar from "@/components/NavBar.vue";
 import axios from "axios";
-import config from "@/config";
+// import config from "@/config";
 
 export default {
   data() {
-    return {
-      nickname: "",
-    };
+    return {};
   },
   components: {
     NavBar,
@@ -33,18 +31,25 @@ export default {
       },
     },
   },
-  created: async function () {
-    await axios({
+  created() {
+    axios({
       url: "/user/userInfo",
     })
       .then((res) => {
         if (res.data.errCode != 101) {
-          config.user = res.data;
-          this.nickname = res.data.nickname;
-        } else this.$router.replace("/login");
+          // this.config.user = res.data.data;
+          this.$store.commit("setUser", res.data.data);
+          // this.nickname = res.data.data.nickname;
+          // console.log(this.$route.path);
+        } else {
+          // console.log(this.$route.path);
+          if (this.$route.path != "/login")
+            this.$router.push("/login?path=" + this.$route.path);
+        }
       })
       .catch(() => {
-        this.$router.replace("/login");
+        if (this.$route.path != "/login")
+          this.$router.push("/login?path=" + this.$route.path);
       });
   },
 };

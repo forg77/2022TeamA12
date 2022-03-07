@@ -2,10 +2,30 @@
     box-sizing: border-box;
 }
 
+p {
+    display: inline;
+}
+
+p::after {
+    display: block;
+}
+
+code {
+    display: inline-block;
+    background-color: #f1f1f1;
+    border-radius: 3px;
+    padding: 3px 5px;
+    margin: 0 3px;
+}
+
+code::before {
+    display: block;
+}
+
 .btn {
     width: 120px;
     height: 40px;
-    background: #ff3c3c;
+    background: #338AFB;
     opacity: 1;
     border-radius: 5px;
     border: none;
@@ -20,7 +40,7 @@
 
 .btn:hover {
     background: #eeeeee;
-    color: #ff3c3c;
+    color: #338AFB;
     border: solid;
     /* border-color: gray; */
 }
