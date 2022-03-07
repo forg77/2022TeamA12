@@ -9,7 +9,6 @@
             class="btn"
             @click="
             deleteExam(selectExam.id);
-            this.getExams();
             showDeleteDialog = false;
           "
             style="margin-right: 20px"
@@ -114,7 +113,7 @@ import {formatDate} from "@/common.js";
 import DialogBox from "@/components/DialogBox";
 
 export default {
-  components: {ExamCard, Loading, ExamCardAdd, ClickDropDown,DialogBox},
+  components: {ExamCard, Loading, ExamCardAdd, ClickDropDown, DialogBox},
   data() {
     return {
       exams: [],
@@ -252,6 +251,8 @@ export default {
       }).then((res) => {
         if (res.data["errCode"] !== 0) {
           alert("删除失败");
+        } else {
+          this.getExams();
         }
       }).catch(() => {
         alert("删除失败");
