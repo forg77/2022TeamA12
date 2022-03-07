@@ -263,7 +263,7 @@ export default {
       totalCount: 0,
       order: null,
       desc: false,
-      itemsPerPage: 10,
+      itemsPerPage: 8,
       currentPage: 1,
       lineHeight: 60,
       totalHeight: 252,

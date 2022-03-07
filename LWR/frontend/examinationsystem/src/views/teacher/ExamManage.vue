@@ -32,7 +32,7 @@
               :canManage="true"
           ></ExamTable>
         </div>
-<!--        <ClickDropDown @click="onMenuItemClick"></ClickDropDown>-->
+        <!--        <ClickDropDown @click="onMenuItemClick"></ClickDropDown>-->
       </template>
     </Card>
   </div>
@@ -45,14 +45,16 @@ import SearchBox from "@/components/SearchBox.vue";
 import DropDown from "@/components/DropDown.vue";
 import axios from "axios";
 import ClickDropDown from "@/components/ClickDropDown";
+// import * as search from "@/composables/search.js"
+import {getSearchInfo} from "@/composables/search.js";
 
 export default {
   data() {
     return {
       // search: null,
-      searchText: "",
-      searchButtonString: "搜索考试",
-      extraData: {},
+      // searchText: "",
+      // searchButtonString: "搜索考试",
+      // extraData: {},
       dropDown: [
         {value: "all", text: "全部"},
         {value: "notStarted", text: "未开始"},
@@ -65,19 +67,19 @@ export default {
     onCardClick(exam) {
       this.$router.push("/teacher/examEdit/" + exam.id);
     },
-    onSearchButtonClick() {
-      if (this.extraData.search == null) {
-        if (this.searchText != "") {
-          this.extraData.search = this.searchText;
-          this.searchButtonString = "取消搜索";
-          this.$refs.examTable.getExams();
-        }
-      } else {
-        this.extraData.search = null;
-        this.searchButtonString = "搜索考试";
-        this.$refs.examTable.getExams();
-      }
-    },
+    // onSearchButtonClick() {
+    //   if (this.extraData.search == null) {
+    //     if (this.searchText != "") {
+    //       this.extraData.search = this.searchText;
+    //       this.searchButtonString = "取消搜索";
+    //       this.$refs.examTable.getExams();
+    //     }
+    //   } else {
+    //     this.extraData.search = null;
+    //     this.searchButtonString = "搜索考试";
+    //     this.$refs.examTable.getExams();
+    //   }
+    // },
     onDropDownChange(val) {
       // console.log({val});
       this.extraData.screen = val;
@@ -103,7 +105,7 @@ export default {
   },
   watch: {
     searchText(newVal) {
-      if (newVal == "" && this.extraData.search != null) {
+      if (newVal === "" && this.extraData.search != null) {
         this.extraData.search = null;
         this.searchButtonString = "搜索考试";
         this.$refs.examTable.getExams();
@@ -117,6 +119,16 @@ export default {
     SearchBox,
     DropDown,
   },
+  mounted() {
+    this.searchCallback = () => {
+      this.$refs.examTable.getExams();
+    }
+  },
+  setup() {
+    let info = getSearchInfo();
+    info.searchString.value = "搜索考试";
+    return info;
+  }
 };
 </script>
 
