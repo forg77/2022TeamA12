@@ -128,7 +128,7 @@ public class ExamController {
         } else if (isExamTimeOut(exam)) {
             return JSON.toJSONString(new CommonData(ErrorCode.EXAM_TIME_OUT, "考试已过期"));
         }
-        List<ExamPaper> examPapers = examService.getExamPapers(examId, examinee, new Condition());
+        List<ExamPaper> examPapers = examService.getExamPapers(examinee, examId, new Condition());
         ExamPaper examPaper;
         if (examPapers.size() > 0) {
             examPaper = examPapers.get(0);
@@ -141,7 +141,7 @@ public class ExamController {
 
         CommonData res;
         if (examPaper.getStartTime() == null || isExamOver(exam, examPaper)) {
-            System.out.println("A.");
+//            System.out.println("A.");
             examPaper.setExamId(body.getInteger("examId"));
             examPaper.setExaminee(body.getInteger("examinee"));
             examPaper.setOrderJson(body.getString("orderJson"));
@@ -375,9 +375,9 @@ public class ExamController {
     @PostMapping("/deleteExam")
     public String deleteExam(@RequestBody String requestBody) {
         JSONObject body = JSON.parseObject(requestBody);
-        Integer id=body.getInteger("id");
+        Integer id = body.getInteger("id");
 
-        Integer suc=examService.deleteExam(id);
+        Integer suc = examService.deleteExam(id);
 
         CommonData res;
         if (suc > 0) {
