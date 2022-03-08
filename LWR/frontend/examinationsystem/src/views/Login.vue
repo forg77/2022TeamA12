@@ -41,7 +41,7 @@ export default {
         this.ajaxCancel = null;
       }
       axios({
-        url: this.config.loginUrl,
+        url: this.config.urls.login,
         cancelToken: new axios.CancelToken((c) => {
           this.ajaxCancel = c;
         }),

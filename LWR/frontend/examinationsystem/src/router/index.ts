@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory,Router } from 'vue-router'
-import config from '../config'
+import {config} from '../config'
 import Home from '../views/Home.vue'
 
 const postTitle = " - " + config.siteTitle;

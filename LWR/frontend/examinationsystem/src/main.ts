@@ -3,14 +3,14 @@ import { createStore } from 'vuex'
 import App from './App.vue'
 import router from './router/index'
 import SvgIcon from '@/components/Svgicon/index.vue'
-import config from '@/config.ts'
+import {config} from '@/config.ts'
 
 const app = createApp(App);
 app.use(router)
     .component('svg-icon', SvgIcon)
     .mount('#app');
 
-app.config.globalProperties.config = config;
+// app.config.globalProperties.config = config;
 
 const store = createStore({
     state() {
