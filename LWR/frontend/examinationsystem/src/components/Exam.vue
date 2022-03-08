@@ -429,10 +429,10 @@
 
 <script>
 import axios from "axios";
-import { formatDate } from "@/common.js";
+import { formatDate } from "@/common.ts";
 import DialogBox from "./DialogBox.vue";
 import Loading from "./Loading.vue";
-// import config from "@/config.js";
+// import config from "@/config.ts";
 export default {
   components: {
     DialogBox,

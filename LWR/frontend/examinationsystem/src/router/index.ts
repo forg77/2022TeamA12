@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHashHistory,Router } from 'vue-router'
 import config from '../config'
 import Home from '../views/Home.vue'
 
@@ -174,7 +174,7 @@ const routes = [{
                 path: 'questionsManage',
                 name: 'teacherQuestionsManage',
                 component: () =>
-                    import ('../views/teacher/QuestionsManage'),
+                    import ('../views/teacher/QuestionsManage/index.vue'),
                 meta: {
                     title: "题库管理" + postTitle,
                     pageTitle: "题库管理"
@@ -284,7 +284,7 @@ const routes = [{
     }
 ]
 
-const router = createRouter({
+const router:Router = createRouter({
     history: createWebHashHistory(),
     routes
 })
@@ -292,7 +292,7 @@ const router = createRouter({
 //配置标题
 router.beforeEach(to => {
     if (to.meta.title) {
-        document.title = to.meta.title;
+        document.title = <string>to.meta.title;
     }
 });
 

@@ -8,9 +8,9 @@
 import {defineComponent} from 'vue'
 
 interface Book {
-  title: string;
-  author: string;
-  year: number;
+  title: string
+  author: string
+  year: number
 }
 
 export default defineComponent({
@@ -20,8 +20,8 @@ export default defineComponent({
         title: 'Vue 3 Guide',
         author: 'Vue Team',
         year: 2020,
-      }
+      } as Book
     }
-  }
+  },
 })
 </script>

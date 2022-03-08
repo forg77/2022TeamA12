@@ -34,7 +34,7 @@
 import Card from "@/components/Card.vue";
 import SearchBox from "@/components/SearchBox.vue";
 import Table from "@/components/Table.vue";
-import {formatDate} from "@/common.js";
+import {formatDate} from "@/common.ts";
 import {getSearchInfo} from "@/composables/search";
 
 export default {

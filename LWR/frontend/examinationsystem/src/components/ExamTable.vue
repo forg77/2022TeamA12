@@ -109,7 +109,7 @@ import ExamCardAdd from "./ExamCardAdd.vue"
 import Loading from "./Loading.vue";
 import ClickDropDown from "@/components/ClickDropDown";
 import axios from "axios";
-import {formatDate} from "@/common.js";
+import {formatDate} from "@/common.ts";
 import DialogBox from "@/components/DialogBox";
 
 export default {
