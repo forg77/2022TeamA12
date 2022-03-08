@@ -162,13 +162,8 @@ export default {
 
     transition: background-color 0.5s, color 0.5s;
 
-    &:hover {
-      background-color: #338AFB;
-      color: white;
-    }
-
-    .active {
-      background-color: #338AFB;
+    &:hover, &.active {
+      background-color: $primary-color;
       color: white;
     }
   }
@@ -189,7 +184,7 @@ export default {
   margin: 0;
   border-bottom-style: solid;
   border-bottom-width: 4px;
-  border-bottom-color: #338AFB;
+  border-bottom-color: $primary-color;
 
   transform: scaleY(0);
   transform-origin: 0 0;
