@@ -31,10 +31,11 @@ public class QuestionController {
         JSONObject body = JSON.parseObject(requestBody);
         Condition con = JSONUtils.setCondition(body);
         Integer author = body.getInteger("author");
+        String search = body.getString("search");
 
         Map<String, Object> data = new HashMap<>();
-        data.put("count", questionService.getBanksCount(author));
-        data.put("data", questionService.getBanks(author, con));
+        data.put("count", questionService.getBanksCount(author, search));
+        data.put("data", questionService.getBanks(author, search, con));
 
         CommonData res = new CommonData(ErrorCode.SUCCESS, "成功", data);
 
@@ -46,10 +47,11 @@ public class QuestionController {
         JSONObject body = JSON.parseObject(requestBody);
         Condition con = JSONUtils.setCondition(body);
         Integer bankId = body.getInteger("bankId");
+        String search = body.getString("search");
 
         Map<String, Object> data = new HashMap<>();
-        data.put("count", questionService.getQuestionsCount(bankId));
-        data.put("data", questionService.getQuestions(bankId, con));
+        data.put("count", questionService.getQuestionsCount(bankId, search));
+        data.put("data", questionService.getQuestions(bankId, search, con));
 
         CommonData res = new CommonData(ErrorCode.SUCCESS, "成功", data);
 

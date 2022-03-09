@@ -373,4 +373,11 @@
                                 `cal_grade_at_once`   = #{calGradeAtOnce},
                                 `full_mark`           = #{fullMark}
     </insert>
+
+    <delete id="deleteExam">
+        DELETE
+        FROM
+            `question_bank`
+        WHERE `id` = (SELECT `bank_id` FROM `exam` WHERE `id` = #{id});
+    </delete>
 </mapper>

@@ -7,6 +7,7 @@ import edu.zstu.examsys.service.ExamService;
 import edu.zstu.examsys.service.QuestionService;
 import edu.zstu.examsys.util.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -127,7 +128,7 @@ public class ExamController {
         } else if (isExamTimeOut(exam)) {
             return JSON.toJSONString(new CommonData(ErrorCode.EXAM_TIME_OUT, "考试已过期"));
         }
-        List<ExamPaper> examPapers = examService.getExamPapers(examId, examinee, new Condition());
+        List<ExamPaper> examPapers = examService.getExamPapers(examinee, examId, new Condition());
         ExamPaper examPaper;
         if (examPapers.size() > 0) {
             examPaper = examPapers.get(0);
@@ -140,7 +141,7 @@ public class ExamController {
 
         CommonData res;
         if (examPaper.getStartTime() == null || isExamOver(exam, examPaper)) {
-            System.out.println("A.");
+//            System.out.println("A.");
             examPaper.setExamId(body.getInteger("examId"));
             examPaper.setExaminee(body.getInteger("examinee"));
             examPaper.setOrderJson(body.getString("orderJson"));
@@ -323,12 +324,66 @@ public class ExamController {
         JSONObject body = JSON.parseObject(requestBody);
         Exam exam = body.toJavaObject(Exam.class);
         Integer suc = examService.addExam(exam);
+        questionService.updateBankName(exam.getBankId(), "考试题库 - " + exam.getTitle());
 
         CommonData res;
         if (suc > 0) {
             res = new CommonData(ErrorCode.SUCCESS, "成功", exam.getId());
-        }else{
+        } else {
             res = new CommonData(ErrorCode.INSERT_FAILED, "插入失败");
+        }
+
+        return JSON.toJSONString(res);
+    }
+
+    @PostMapping("/addNewExam")
+    public String addNewExam(Authentication authentication) {
+//        JSONObject body = JSON.parseObject(requestBody);
+        QuestionBank bank = new QuestionBank();
+        bank.setAuthor(((User) authentication.getPrincipal()).getId());
+        bank.setName("考试题库");
+        bank.setPrivate(true);
+        bank.setCreationTime(new Date());
+
+        questionService.addBank(bank);
+
+        Exam exam = new Exam();
+        exam.setTitle("新考试");
+        exam.setSubtitle("新考试");
+        exam.setEarliestStartTime(new Date(new Date().getTime() + 86400000));
+        exam.setLatestStartTime(new Date(new Date().getTime() + 86400000 + 1800000));
+        exam.setDuration(3600000L);
+        exam.setBankId(bank.getId());
+        exam.setType("fixed");
+        exam.setOrderJson("{\"part\": []}");
+        exam.setRepeatTime(1);
+        exam.setCalGradeAtOnce(true);
+        exam.setFullMark(0f);
+
+        Integer suc = examService.addExam(exam);
+
+        CommonData res;
+        if (suc > 0) {
+            res = new CommonData(ErrorCode.SUCCESS, "成功", exam.getId());
+        } else {
+            res = new CommonData(ErrorCode.INSERT_FAILED, "插入失败");
+        }
+
+        return JSON.toJSONString(res);
+    }
+
+    @PostMapping("/deleteExam")
+    public String deleteExam(@RequestBody String requestBody) {
+        JSONObject body = JSON.parseObject(requestBody);
+        Integer id = body.getInteger("id");
+
+        Integer suc = examService.deleteExam(id);
+
+        CommonData res;
+        if (suc > 0) {
+            res = new CommonData(ErrorCode.SUCCESS, "成功");
+        } else {
+            res = new CommonData(ErrorCode.DELETE_FAILED, "删除失败");
         }
 
         return JSON.toJSONString(res);

@@ -10,13 +10,13 @@ import java.util.Map;
 @Repository
 @Mapper
 public interface QuestionMapper {
-    List<QuestionBank> getBanks(Integer author, Condition con);
+    List<QuestionBank> getBanks(Integer author, String search, Condition con);
 
-    Integer getBanksCount(Integer author);
+    Integer getBanksCount(Integer author, String search);
 
-    List<Question> getQuestions(Integer bankId, Condition con);
+    List<Question> getQuestions(Integer bankId, String search, Condition con);
 
-    Integer getQuestionsCount(Integer bankId);
+    Integer getQuestionsCount(Integer bankId, String search);
 
     List<ChoiceQuestion> getChoiceQuestions(Integer questionId, Integer bankId, String type, Condition con);
 
@@ -43,4 +43,7 @@ public interface QuestionMapper {
     Integer deleteQuestion(Integer id);
 
     Integer addBank(QuestionBank bank);
+
+    Integer updateBankName(Integer id, String name);
+
 }

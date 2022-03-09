@@ -10,12 +10,15 @@
         `nickname` AS `author_name`,
         `creation_time`,
         `private` AS `is_private`,
-        (SELECT COUNT(*) FROM `question` WHERE `bank_id` = `id`) AS `count`
+        (SELECT COUNT(*) FROM `question` WHERE `bank_id` = `question_bank`.`id`) AS `count`
         FROM `question_bank`
         INNER JOIN `user` ON `user`.`id` = `author`
         <where>
             <if test="author != null">
                 AND `author` = #{author}
+            </if>
+            <if test="search != null">
+                AND `name` LIKE CONCAT('%',#{search},'%')
             </if>
         </where>
         ORDER BY
@@ -59,6 +62,9 @@
             <if test="author != null">
                 AND `author` = #{author}
             </if>
+            <if test="search != null">
+                AND `name` LIKE CONCAT('%',#{search},'%')
+            </if>
         </where>
     </select>
 
@@ -73,6 +79,9 @@
         <where>
             <if test="bankId != null">
                 AND `bank_id` = #{bankId}
+            </if>
+            <if test="search != null">
+                AND `description` LIKE CONCAT('%',#{search},'%')
             </if>
         </where>
         ORDER BY
@@ -111,8 +120,11 @@
         FROM
         `question`
         <where>
-            <if test="author != null">
+            <if test="bankId != null">
                 AND `bank_id` = #{bankId}
+            </if>
+            <if test="search != null">
+                AND `description` LIKE CONCAT('%',#{search},'%')
             </if>
         </where>
     </select>
@@ -230,8 +242,32 @@
 
     <delete id="deleteQuestion">
         DELETE
-        FROM
-            `question`
+        FROM `question`
         WHERE `id` = #{id};
     </delete>
+
+    <insert id="addBank" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `question_bank` (`id`,
+                                     `name`,
+                                     `author`,
+                                     `creation_time`,
+                                     `private`)
+        VALUES (#{id},
+                #{name},
+                #{author},
+                #{creationTime},
+                #{private})
+        ON DUPLICATE KEY UPDATE `name`          = #{name},
+                                `author`        = #{author},
+                                `creation_time` = #{creationTime},
+                                `private`       = #{private};
+    </insert>
+
+    <update id="updateBankName">
+        UPDATE
+            `question_bank`
+        SET
+            `name` = #{name}
+        WHERE `id` = #{id};
+    </update>
 </mapper>

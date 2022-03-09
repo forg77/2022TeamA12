@@ -33,15 +33,15 @@ class ExaminationSystemApplicationTests {
 //    void requestTest() {
 //        RestTemplate restTemplate = new RestTemplate();
 //        restTemplate.getMessageConverters().set(1, new StringHttpMessageConverter(StandardCharsets.UTF_8));
-//        String url = "http://localhost:8082/test/test";
+//        String url = "http://139.9.58.231:8080/user/userInfo";
 //        HttpHeaders headers = new HttpHeaders();
 //        headers.setContentType(MediaType.APPLICATION_JSON);
 //        //headers.add("Cookie","JSESSIONID=F248DCAB13DC766B9C35B646C13ECAB7");
 //        //HttpEntity<String> request = new HttpEntity<>("{}",headers);
 //        //HttpEntity<String> request = new HttpEntity<>("{\"houseId\":1,\"name\":\"村庄33\"}", headers);//("{\"text\":" + "\"百度是一家高科技公司\"" + "}", headers);
 //        Map<String, Object> map = new HashMap<>();
-//        //map.put("villager_id", 2);
-////        map.put("villager_id", 2);
+//        map.put("username", "admin1");
+//        map.put("password", "123");
 ////        map.put("emergency", true);
 ////        map.put("type", 0);
 ////        map.put("receiver_id", 1);
