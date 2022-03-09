@@ -7,8 +7,7 @@ import {config} from '@/config.ts'
 
 const app = createApp(App);
 app.use(router)
-    .component('svg-icon', SvgIcon)
-    .mount('#app');
+    .component('svg-icon', SvgIcon);
 
 // app.config.globalProperties.config = config;
 
@@ -26,6 +25,6 @@ const store = createStore({
             state.config.user = user;
         }
     }
-})
+});
 
-app.use(store);
+app.use(store).mount('#app');

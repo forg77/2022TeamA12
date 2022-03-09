@@ -14,6 +14,7 @@ export interface Config {
     urls: Urls;
     user: User | null;
     siteTitle: string;
+    showLoading: boolean;
 }
 
 //当前登录的用户信息
@@ -28,7 +29,8 @@ const urls: Urls = {
 const config: Config = {
     user: null,
     urls,
-    siteTitle: '考试系统'
+    siteTitle: '考试系统',
+    showLoading: false
 };
 
 //配置axios默认值

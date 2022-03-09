@@ -1013,7 +1013,7 @@ input[type="radio"]:checked {
   top: 0;
   bottom: 0;
   background-color: #00000033;
-  z-index: 20;
+  z-index: 30;
 }
 
 .mark-icon {

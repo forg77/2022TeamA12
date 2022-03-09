@@ -23,7 +23,7 @@ export interface Urls {
 }
 
 //后台错误代码
-const enum ErrCode {
+export const enum ErrCode {
     SUCCESS = 0,
 
     NO_LOGIN = 101,
