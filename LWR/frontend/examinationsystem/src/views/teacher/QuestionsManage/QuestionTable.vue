@@ -11,7 +11,7 @@
             <td>
               <div
                   @click="$event.stopPropagation()"
-                  style="width: fit-content; height:600px;margin:auto"
+                  style=" height:600px;margin:auto;width:1000px"
               >
                 <QuestionEdit
                     :id="selectId"
