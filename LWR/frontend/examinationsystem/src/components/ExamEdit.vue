@@ -208,7 +208,7 @@
                       </button>
                       <button
                           class="btn"
-                          style="height: 28px; width: 234px"
+                          style="height: 28px; width: 234px;margin-bottom: 5px;"
                           @click="
                           commitExam();
                           $router.replace('/teacher/examManage');

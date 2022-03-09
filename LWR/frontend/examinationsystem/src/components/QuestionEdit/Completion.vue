@@ -20,7 +20,7 @@
       <div class="content">
         <table style="width: 100%;border-spacing: 0 10px">
           <tr>
-            <td style="width: 50px">题干:</td>
+            <td style="width: 50px;vertical-align: top">题干:</td>
             <td style="margin-left: 30px">
               <TextEdit v-model:content="question.description"/>
             </td>
