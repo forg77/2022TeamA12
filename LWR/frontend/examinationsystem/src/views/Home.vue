@@ -1,36 +1,18 @@
 <template>
   <div class="home">
-    <!-- <Card>
-      <template v-slot:headerLeft> 标题 </template>
-      <template v-slot:content>
-        <div class="content">
-          <img alt="Vue logo" src="../assets/logo.png" />
-          <HelloWorld msg="Welcome to Your Vue.js App" />
-        </div>
-      </template>
-    </Card> -->
-    <QuestionEdit :id="5"></QuestionEdit>
+    <img alt="Vue logo" src="../assets/logo.png">
+    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
   </div>
 </template>
 
-<script>
-// @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
-import Card from "@/components/Card.vue";
-import QuestionEdit from "@/components/QuestionEdit"
-export default {
-  name: "Home",
+<script lang="ts">
+import { Options, Vue } from 'vue-class-component';
+import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+
+@Options({
   components: {
     HelloWorld,
-    Card,
-    QuestionEdit
   },
-};
+})
+export default class Home extends Vue {}
 </script>
-
-<style scoped>
-.content {
-  text-align: center;
-  padding: 30px;
-}
-</style>

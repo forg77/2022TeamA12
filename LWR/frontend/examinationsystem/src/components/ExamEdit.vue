@@ -3,7 +3,9 @@
     <div class="loading-back" v-show="isLoading">
       <div style="width: 100%; height: 100%">
         <table style="width: 100%; height: 100%; vertical-align: middle">
-          <td style="text-align: center"><Loading></Loading></td>
+          <td style="text-align: center">
+            <Loading></Loading>
+          </td>
         </table>
       </div>
     </div>
@@ -78,10 +80,10 @@
     </template>
   </DialogBox> -->
   <table
-    class="exam"
-    cellspacing="0"
-    cellpadding="0"
-    style="width: calc(100% - 150px); max-width: 1300px"
+      class="exam"
+      cellspacing="0"
+      cellpadding="0"
+      style="width: calc(100% - 150px); max-width: 1300px"
   >
     <tr>
       <td style="width: 262px">
@@ -89,8 +91,8 @@
           <tr>
             <td>
               <div
-                class="card"
-                style="
+                  class="card"
+                  style="
                   height: 84px;
                   margin-top: 0;
                   display: flex;
@@ -102,25 +104,27 @@
                 "
               >
                 <div>
-                  类型：<DropDown
-                    :width="93"
-                    :height="20"
-                    :values="[
+                  类型：
+                  <DropDown
+                      :width="93"
+                      :height="20"
+                      :values="[
                       { value: 'fixed', text: '固定题' },
                       { value: 'random', text: '随机抽题' },
                     ]"
-                    @change="onTypeChange"
+                      @change="onTypeChange"
                   ></DropDown>
                 </div>
                 <div>
-                  考试结束后计算分数：<DropDown
-                    :width="60"
-                    :height="20"
-                    :values="[
+                  考试结束后计算分数：
+                  <DropDown
+                      :width="60"
+                      :height="20"
+                      :values="[
                       { value: 'true', text: '是' },
                       { value: 'false', text: '否' },
                     ]"
-                    @change="onCalAtOnceChange"
+                      @change="onCalAtOnceChange"
                   ></DropDown>
                 </div>
                 <div>
@@ -129,7 +133,7 @@
                     class="inputBox"
                     style="width: 50px; height: 20px; text-align: center"
                     v-model="exam.repeatTime"
-                  />
+                />
                 </div>
               </div>
             </td>
@@ -143,42 +147,42 @@
                       {{ ((serial = 1), (index = {}), undefined) }}
                       <template v-for="queType in order.part" :key="queType">
                         <span
-                          style="
+                            style="
                             margin-left: 14px;
                             font-weight: bold;
                             color: black;
                           "
-                          >{{ getQuestionTypeName(queType) }}：</span
+                        >{{ getQuestionTypeName(queType) }}：</span
                         >
                         <span
-                          class="order"
-                          style="margin-left: 20px"
-                          @click="subPartOrder(queType)"
-                          >上移</span
+                            class="order"
+                            style="margin-left: 20px"
+                            @click="subPartOrder(queType)"
+                        >上移</span
                         >
                         <span class="order" @click="addPartOrder(queType)"
-                          >下移</span
+                        >下移</span
                         >
-                        <br />
+                        <br/>
                         <template v-for="queId in order[queType]" :key="queId">
                           {{
                             ((ans = answers[getAnswerType(queType)][queId]),
-                            (isAnswered =
-                              (Boolean(ans) || ans == 0) &&
-                              getObjProCount(ans) != 0),
-                            (index[queId] = serial),
-                            undefined)
+                                (isAnswered =
+                                    (Boolean(ans) || ans == 0) &&
+                                    getObjProCount(ans) != 0),
+                                (index[queId] = serial),
+                                undefined)
                           }}
                           <div
-                            class="unanswered"
-                            :class="{
+                              class="unanswered"
+                              :class="{
                               current: queId == currentId,
                               answered: isAnswered,
                               'current-answered':
                                 isAnswered && queId == currentId,
                             }"
-                            style="cursor: pointer"
-                            @click="
+                              style="cursor: pointer"
+                              @click="
                               currentQueType = queType;
                               currentId = queId;
                               this.currentTitleNumber = index[queId];
@@ -189,23 +193,23 @@
                             </table>
                           </div>
                         </template>
-                        <br />
+                        <br/>
                       </template>
                     </td>
                   </tr>
                   <tr>
                     <td style="height: 38px; text-align: center">
                       <button
-                        class="btn"
-                        style="height: 28px; width: 234px; margin-bottom: 10px"
-                        @click="addQuestion()"
+                          class="btn"
+                          style="height: 28px; width: 234px; margin-bottom: 10px"
+                          @click="addQuestion()"
                       >
                         添加题目
                       </button>
                       <button
-                        class="btn"
-                        style="height: 28px; width: 234px"
-                        @click="
+                          class="btn"
+                          style="height: 28px; width: 234px"
+                          @click="
                           commitExam();
                           $router.replace('/teacher/examManage');
                         "
@@ -225,27 +229,27 @@
           <tr>
             <td>
               <div
-                class="card"
-                style="width: 100%; height: 84px; margin-top: 0"
+                  class="card"
+                  style="width: 100%; height: 84px; margin-top: 0"
               >
                 <table
-                  cellpadding="0"
-                  cellspacing="0"
-                  style="height: 100%; width: 100%; color: black; padding: 14px"
+                    cellpadding="0"
+                    cellspacing="0"
+                    style="height: 100%; width: 100%; color: black; padding: 14px"
                 >
                   <tr>
                     <td style="vertical-align: top">
                       <table
-                        cellpadding="0"
-                        cellspacing="0"
-                        style="width: 100%"
+                          cellpadding="0"
+                          cellspacing="0"
+                          style="width: 100%"
                       >
                         <tr>
                           <td>
                             <table cellpadding="0" cellspacing="0">
                               <tr>
                                 <td
-                                  style="
+                                    style="
                                     font-weight: bold;
                                     font-size: 21px;
                                     padding-right: 28px;
@@ -253,14 +257,14 @@
                                 >
                                   <!-- {{ exam.title }} -->
                                   <input
-                                    placeholder="标题"
-                                    style="font-size: 21px; font-weight: bold"
-                                    class="input"
-                                    v-model="exam.title"
+                                      placeholder="标题"
+                                      style="font-size: 21px; font-weight: bold"
+                                      class="input"
+                                      v-model="exam.title"
                                   />
                                 </td>
                                 <td
-                                  style="
+                                    style="
                                     font-size: 14px;
                                     opacity: 0.7;
                                     vertical-align: bottom;
@@ -268,10 +272,10 @@
                                 >
                                   <!-- {{ exam.subtitle }} -->
                                   <input
-                                    placeholder="全名"
-                                    style="font-size: 14px; font-weight: bold"
-                                    class="input"
-                                    v-model="exam.subtitle"
+                                      placeholder="全名"
+                                      style="font-size: 14px; font-weight: bold"
+                                      class="input"
+                                      v-model="exam.subtitle"
                                   />
                                 </td>
                               </tr>
@@ -279,8 +283,8 @@
                           </td>
                           <td style="text-align: right; font-size: 21px">
                             <button
-                              class="btn"
-                              style="width: 44px; height: 21px; font-size: 11px"
+                                class="btn"
+                                style="width: 44px; height: 21px; font-size: 11px"
                             >
                               预览
                             </button>
@@ -294,38 +298,38 @@
                   <tr>
                     <td style="vertical-align: bottom">
                       <table
-                        cellpadding="0"
-                        cellspacing="0"
-                        style="width: 100%; font-size: 14px"
+                          cellpadding="0"
+                          cellspacing="0"
+                          style="width: 100%; font-size: 14px"
                       >
                         <tr>
                           <td>
                             题量：<span
                               class="val-text"
                               style="margin-right: 28px"
-                              >{{ titleNumberIndex.length }}</span
-                            >
+                          >{{ titleNumberIndex.length }}</span
+                          >
                             满分：<span
                               class="val-text"
                               style="margin-right: 28px"
-                              >{{ fullMark }}</span
-                            >
+                          >{{ fullMark }}</span
+                          >
                             最早开始时间：
                             <input
-                              style="height: 18px; width: 126px"
-                              placeholder="xxxx-xx-xx xx:xx:xx"
-                              class="input"
-                              v-model="exam.earliestStartTime"
+                                style="height: 18px; width: 126px"
+                                placeholder="xxxx-xx-xx xx:xx:xx"
+                                class="input"
+                                v-model="exam.earliestStartTime"
                             />
                             <!-- <span class="val-text">{{
                               stopTimeString
                             }}</span> -->
                             最晚开始时间：
                             <input
-                              style="height: 18px; width: 126px"
-                              placeholder="xxxx-xx-xx xx:xx:xx"
-                              class="input"
-                              v-model="exam.latestStartTime"
+                                style="height: 18px; width: 126px"
+                                placeholder="xxxx-xx-xx xx:xx:xx"
+                                class="input"
+                                v-model="exam.latestStartTime"
                             />
                             <!-- <span class="val-text">{{
                               stopTimeString
@@ -333,8 +337,8 @@
                           </td>
                           <td style="text-align: right">
                             <svg-icon
-                              iconName="sandglass"
-                              className="sandglass"
+                                iconName="sandglass"
+                                className="sandglass"
                             ></svg-icon>
                             <span style="vertical-align: middle">
                               考试时间：
@@ -342,28 +346,28 @@
                                 Math.floor(remainingTime / 1000 / 60)
                               }}</span> -->
                               <input
-                                id="minute"
-                                style="
+                                  id="minute"
+                                  style="
                                   height: 18px;
                                   width: 35px;
                                   text-align: center;
                                 "
-                                class="input"
-                                @change="calDuration()"
+                                  class="input"
+                                  @change="calDuration()"
                               />
                               分钟
                               <!-- <span class="val-text">{{
                                 Math.floor((remainingTime / 1000) % 60)
                               }}</span> -->
                               <input
-                                id="second"
-                                style="
+                                  id="second"
+                                  style="
                                   height: 18px;
                                   width: 35px;
                                   text-align: center;
                                 "
-                                class="input"
-                                @change="calDuration()"
+                                  class="input"
+                                  @change="calDuration()"
                               />
                               秒
                             </span>
@@ -385,25 +389,25 @@
                       style="height: 25px; width: 40px; text-align: center"
                       class="input"
                       v-model.number="score"
-                    />
+                  />
                     <span
-                      class="order"
-                      style="margin-left: 20px"
-                      @click="subCurrentOrder()"
-                      >上移</span
+                        class="order"
+                        style="margin-left: 20px"
+                        @click="subCurrentOrder()"
+                    >上移</span
                     >
                     <span class="order" @click="addCurrentOrder()">下移</span>
                     <span
-                      class="order"
-                      style="margin-left: 10px"
-                      @click="deleteQuestion()"
-                      >删除题目</span
+                        class="order"
+                        style="margin-left: 10px"
+                        @click="deleteQuestion()"
+                    >删除题目</span
                     >
                   </div>
                   <div style="width: 100%">
                     <QuestionEdit
-                      :questionBefore="questions[currentQueType][currentId]"
-                      @save="saveQuestionScore"
+                        :questionBefore="questions[currentQueType][currentId]"
+                        @save="saveQuestionScore"
                     ></QuestionEdit>
                   </div>
                 </div>
@@ -417,18 +421,18 @@
             <td>
               <div class="card" style="width: 100%; height: 70px">
                 <table
-                  cellpadding="0"
-                  cellspacing="0"
-                  style="width: 100%; height: 100%"
+                    cellpadding="0"
+                    cellspacing="0"
+                    style="width: 100%; height: 100%"
                 >
                   <tr>
                     <td style="width: 33%; text-align: right">
                       <!-- <table border="1" style="vertical-align:middle"> -->
 
                       <span
-                        class="next"
-                        @click="setTitleNumber(currentTitleNumber - 1)"
-                        :class="{ unabled: currentTitleNumber - 1 <= 0 }"
+                          class="next"
+                          @click="setTitleNumber(currentTitleNumber - 1)"
+                          :class="{ unabled: currentTitleNumber - 1 <= 0 }"
                       >
                         <svg-icon className="arrow" iconName="left"></svg-icon>
                         <span style="vertical-align: middle">上一题</span>
@@ -438,9 +442,9 @@
                     <td style="text-align: center">标记</td>
                     <td style="width: 33%">
                       <span
-                        class="next"
-                        @click="setTitleNumber(currentTitleNumber + 1)"
-                        :class="{
+                          class="next"
+                          @click="setTitleNumber(currentTitleNumber + 1)"
+                          :class="{
                           unabled:
                             currentTitleNumber + 1 > titleNumberIndex.length,
                         }"
@@ -463,12 +467,12 @@
 
 <script>
 import axios from "axios";
-import { formatDate } from "@/common.js";
+import {formatDate} from "@/common.ts";
 import DialogBox from "./DialogBox.vue";
 import Loading from "./Loading.vue";
 import DropDown from "./DropDown.vue";
 import QuestionEdit from "./QuestionEdit";
-// import config from "@/config.js";
+// import config from "@/config.ts";
 export default {
   components: {
     DialogBox,
@@ -486,7 +490,7 @@ export default {
         completion: {},
         shortAnswer: {},
       },
-      answers: { normal: {} },
+      answers: {normal: {}},
       exam: {},
       examPaper: {},
       order: {},
@@ -527,10 +531,10 @@ export default {
         this.exam = data.exam;
         //转换日期格式
         this.exam.earliestStartTime = formatDate(
-          new Date(this.exam.earliestStartTime)
+            new Date(this.exam.earliestStartTime)
         );
         this.exam.latestStartTime = formatDate(
-          new Date(this.exam.latestStartTime)
+            new Date(this.exam.latestStartTime)
         );
         //转换duration
         let minute = document.getElementById("minute");
@@ -556,7 +560,7 @@ export default {
           completion: {},
           shortAnswer: {},
         };
-        this.answers = { normal: {} };
+        this.answers = {normal: {}};
         for (let question of data.questions.choice) {
           question.choice = JSON.parse(question.choice);
           question.answer = JSON.parse(question.answer);
@@ -581,7 +585,7 @@ export default {
         if (!this.examPaper) this.showJoinDialog = true;
         else {
           this.stopTime = new Date(
-            this.examPaper.startTime + this.exam.duration
+              this.examPaper.startTime + this.exam.duration
           );
         }
 
@@ -607,15 +611,19 @@ export default {
       let score = this.score;
 
       let before = this.questions[this.currentQueType][this.currentId];
-      if (before.type != question.type) {
+
+      if (before.type !== question.type) {
+        // console.log("dfd")
         let index = this.order[this.currentQueType].indexOf(before.id);
         this.order[this.currentQueType].splice(index, 1);
-        if (this.order[this.currentQueType].length == 0) {
+        if (this.order[this.currentQueType].length === 0) {
           this.order.part.splice(this.order.part.indexOf(this.currentQueType));
         }
 
+        if (!this.order[question.type]) this.order[question.type] = [];
         this.order[question.type].push(before.id);
-        if (this.order[question.type].length == 1) {
+        if (this.order[question.type].length === 1) {
+          if (!this.order.part) this.order.part = [];
           this.order.part.push(question.type);
         }
         this.currentQueType = question.type;
@@ -632,17 +640,17 @@ export default {
           score: this.score,
         },
       })
-        .then((res) => {
-          if (res.data.errCode != 0) {
+          .then((res) => {
+            if (res.data.errCode != 0) {
+              alert("修改失败");
+            } else {
+              this.questionScores[question.id].score = score;
+              if (before.type != question.type) this.commitExam();
+            }
+          })
+          .catch(() => {
             alert("修改失败");
-          } else {
-            this.questionScores[question.id].score = score;
-            if (before.type != question.type) this.commitExam();
-          }
-        })
-        .catch(() => {
-          alert("修改失败");
-        });
+          });
     },
     joinExam() {
       axios({
@@ -698,7 +706,7 @@ export default {
       this.titleNumberIndex = [];
       for (let type of this.order.part) {
         for (let queId of this.order[type]) {
-          this.titleNumberIndex.push({ id: queId, type: type });
+          this.titleNumberIndex.push({id: queId, type: type});
         }
       }
     },
@@ -710,7 +718,7 @@ export default {
     },
     normalQueChange(event, n) {
       let ans =
-        this.answers[this.getAnswerType(this.currentQueType)][this.currentId];
+          this.answers[this.getAnswerType(this.currentQueType)][this.currentId];
       let value = event.target.value;
       if (value == "") {
         if (ans[n]) delete ans[n];
@@ -718,8 +726,8 @@ export default {
         ans[n] = value;
       }
       this.commitAnswer(
-        this.currentId,
-        this.getAnswerType(this.currentQueType)
+          this.currentId,
+          this.getAnswerType(this.currentQueType)
       );
     },
     getObjProCount(obj) {
@@ -759,10 +767,10 @@ export default {
       this.currentTime = new Date() + this.correctTimeDiff;
       let interval = setInterval(() => {
         this.currentTime = new Date(
-          new Date().valueOf() + this.correctTimeDiff
+            new Date().valueOf() + this.correctTimeDiff
         );
         this.remainingTime =
-          this.stopTime.valueOf() - this.currentTime.valueOf();
+            this.stopTime.valueOf() - this.currentTime.valueOf();
         // console.log(this.currentTime);
         if (this.remainingTime <= 0 || this.isExamOver) {
           this.remainingTime = 0;
@@ -786,20 +794,20 @@ export default {
     addCurrentOrder() {
       let titleNumber = this.currentTitleNumber - 1;
       if (
-        titleNumber >= this.titleNumberIndex.length - 1 ||
-        this.titleNumberIndex[titleNumber].type !=
+          titleNumber >= this.titleNumberIndex.length - 1 ||
+          this.titleNumberIndex[titleNumber].type !=
           this.titleNumberIndex[titleNumber + 1].type
       )
         return;
       let temp = this.titleNumberIndex[titleNumber + 1];
       this.titleNumberIndex[titleNumber + 1] =
-        this.titleNumberIndex[titleNumber];
+          this.titleNumberIndex[titleNumber];
       this.titleNumberIndex[titleNumber] = temp;
 
       let index = this.order[this.currentQueType].indexOf(this.currentId);
       temp = this.order[this.currentQueType][index + 1];
       this.order[this.currentQueType][index + 1] =
-        this.order[this.currentQueType][index];
+          this.order[this.currentQueType][index];
       this.order[this.currentQueType][index] = temp;
 
       this.currentTitleNumber++;
@@ -807,20 +815,20 @@ export default {
     subCurrentOrder() {
       let titleNumber = this.currentTitleNumber - 1;
       if (
-        titleNumber <= 0 ||
-        this.titleNumberIndex[titleNumber].type !=
+          titleNumber <= 0 ||
+          this.titleNumberIndex[titleNumber].type !=
           this.titleNumberIndex[titleNumber - 1].type
       )
         return;
       let temp = this.titleNumberIndex[titleNumber - 1];
       this.titleNumberIndex[titleNumber - 1] =
-        this.titleNumberIndex[titleNumber];
+          this.titleNumberIndex[titleNumber];
       this.titleNumberIndex[titleNumber] = temp;
 
       let index = this.order[this.currentQueType].indexOf(this.currentId);
       temp = this.order[this.currentQueType][index - 1];
       this.order[this.currentQueType][index - 1] =
-        this.order[this.currentQueType][index];
+          this.order[this.currentQueType][index];
       this.order[this.currentQueType][index] = temp;
 
       this.currentTitleNumber--;
@@ -833,9 +841,9 @@ export default {
       this.order.part[index] = temp;
       this.getTitleNumberIndex();
       this.currentTitleNumber =
-        this.titleNumberIndex.findIndex((value) => {
-          return value.id == this.currentId;
-        }) + 1;
+          this.titleNumberIndex.findIndex((value) => {
+            return value.id == this.currentId;
+          }) + 1;
     },
     subPartOrder(part) {
       let index = this.order.part.indexOf(part);
@@ -845,9 +853,9 @@ export default {
       this.order.part[index] = temp;
       this.getTitleNumberIndex();
       this.currentTitleNumber =
-        this.titleNumberIndex.findIndex((value) => {
-          return value.id == this.currentId;
-        }) + 1;
+          this.titleNumberIndex.findIndex((value) => {
+            return value.id == this.currentId;
+          }) + 1;
     },
     commitExam() {
       let data = Object.assign({}, this.exam);
@@ -862,12 +870,12 @@ export default {
         url: "exam/addExam",
         data: data,
       })
-        .then((res) => {
-          if (res.data.errCode != 0) alert("保存失败");
-        })
-        .catch(() => {
-          alert("保存失败");
-        });
+          .then((res) => {
+            if (res.data.errCode != 0) alert("保存失败");
+          })
+          .catch(() => {
+            alert("保存失败");
+          });
     },
     onTypeChange(value) {
       this.exam.type = value;
@@ -880,57 +888,57 @@ export default {
         description: "",
         type: "choice",
         choice: JSON.stringify(["", "", "", ""]),
-        answer: JSON.stringify({ 0: true }),
+        answer: JSON.stringify({0: true}),
         bankId: this.exam.bankId,
       };
       axios({
         url: "question/addQuestion",
         data: question,
       })
-        .then((res) => {
-          if (res.data.errCode == 0) {
-            question.id = res.data.data;
-            question.choice = JSON.parse(question.choice);
-            question.answer = JSON.parse(question.answer);
-            this.questions["choice"][question.id] = question;
-            if (!this.order["choice"]) this.order["choice"] = [];
-            this.order["choice"].push(question.id);
-            if (this.order.part.length == 0) this.order.part.push("choice");
+          .then((res) => {
+            if (res.data.errCode == 0) {
+              question.id = res.data.data;
+              question.choice = JSON.parse(question.choice);
+              question.answer = JSON.parse(question.answer);
+              this.questions["choice"][question.id] = question;
+              if (!this.order["choice"]) this.order["choice"] = [];
+              this.order["choice"].push(question.id);
+              if (this.order.part.indexOf("choice") < 0) this.order.part.push("choice");
 
-            this.questionScores[question.id] = {};
-            this.questionScores[question.id].score = 2;
-            this.getTitleNumberIndex();
-            this.commitExam();
-            this.currentTitleNumber =
-              this.titleNumberIndex.findIndex((val) => val.id == question.id) +
-              1;
-            this.currentQueType = "choice";
-            this.currentId = question.id;
+              this.questionScores[question.id] = {};
+              this.questionScores[question.id].score = 2;
+              this.getTitleNumberIndex();
+              this.commitExam();
+              this.currentTitleNumber =
+                  this.titleNumberIndex.findIndex((val) => val.id == question.id) +
+                  1;
+              this.currentQueType = "choice";
+              this.currentId = question.id;
 
-            axios({
-              url: "exam/addQuestionScore",
-              data: {
-                questionId: question.id,
-                examId: this.examId,
-                score: this.questionScores[question.id].score,
-              },
-            })
-              .then((res) => {
-                if (res.data.errCode != 0) {
-                  alert("修改失败");
-                }
+              axios({
+                url: "exam/addQuestionScore",
+                data: {
+                  questionId: question.id,
+                  examId: this.examId,
+                  score: this.questionScores[question.id].score,
+                },
               })
-              .catch(() => {
-                alert("修改失败");
-              });
-          } else {
+                  .then((res) => {
+                    if (res.data.errCode != 0) {
+                      alert("修改失败");
+                    }
+                  })
+                  .catch(() => {
+                    alert("修改失败");
+                  });
+            } else {
+              alert("添加失败");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
             alert("添加失败");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          alert("添加失败");
-        });
+          });
     },
     deleteQuestion() {
       let id = this.currentId;
@@ -941,33 +949,33 @@ export default {
           id: id,
         },
       })
-        .then((res) => {
-          if (res.data.errCode != 0) {
-            alert("删除失败");
-          } else {
-            delete this.questions[type][id];
-            delete this.questionScores[id];
-            this.order[type].splice(this.order[type].indexOf(id), 1);
-            if (this.order[type].length == 0) {
-              this.order.part.splice(this.order.part.indexOf(type), 1);
-            }
-            let index = this.titleNumberIndex.findIndex((val) => val.id == id);
-            this.titleNumberIndex.splice(index, 1);
-            if (index >= this.titleNumberIndex.length)
-              index = this.titleNumberIndex.length - 1;
-            if (index >= 0) {
-              this.currentId = this.titleNumberIndex[index].id;
-              this.currentQueType = this.titleNumberIndex[index].type;
-              this.titleNumber = index + 1;
-            }
+          .then((res) => {
+            if (res.data.errCode != 0) {
+              alert("删除失败");
+            } else {
+              delete this.questions[type][id];
+              delete this.questionScores[id];
+              this.order[type].splice(this.order[type].indexOf(id), 1);
+              if (this.order[type].length == 0) {
+                this.order.part.splice(this.order.part.indexOf(type), 1);
+              }
+              let index = this.titleNumberIndex.findIndex((val) => val.id == id);
+              this.titleNumberIndex.splice(index, 1);
+              if (index >= this.titleNumberIndex.length)
+                index = this.titleNumberIndex.length - 1;
+              if (index >= 0) {
+                this.currentId = this.titleNumberIndex[index].id;
+                this.currentQueType = this.titleNumberIndex[index].type;
+                this.titleNumber = index + 1;
+              }
 
-            this.commitExam();
-            // this.getTitleNumberIndex();
-          }
-        })
-        .catch(() => {
-          alert("删除失败");
-        });
+              this.commitExam();
+              // this.getTitleNumberIndex();
+            }
+          })
+          .catch(() => {
+            alert("删除失败");
+          });
     },
   },
   computed: {
@@ -1002,8 +1010,8 @@ export default {
     },
     currentTitleNumber(val) {
       this.score =
-        this.questionScores[this.currentId] &&
-        this.questionScores[this.currentId].score;
+          this.questionScores[this.currentId] &&
+          this.questionScores[this.currentId].score;
     },
   },
   async mounted() {
@@ -1159,6 +1167,7 @@ export default {
   border-bottom: 1px solid rgba(153, 153, 153, 0.616);
   outline: none;
 }
+
 input[type="radio"] {
   -webkit-appearance: none;
   appearance: none;

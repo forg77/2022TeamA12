@@ -1,36 +1,64 @@
 <template>
   <div class="table">
+    <!--确认删除-->
+    <DialogBox v-model:show="showDeleteDialog">
+      <template v-slot:header>确认</template>
+      确定删除所选项吗？
+      <template v-slot:bottom>
+        <button
+            class="btn"
+            @click="
+            deleteExam(selectExam.id);
+            showDeleteDialog = false;
+          "
+            style="margin-right: 20px"
+        >
+          确定
+        </button>
+        <button class="btn" @click="showDeleteDialog = false">取消</button>
+      </template>
+    </DialogBox>
     <table style="width: 100%">
-      <td style="text-align: center"><Loading v-show="isLoading"></Loading></td>
+      <td style="text-align: center">
+        <Loading v-show="isLoading"></Loading>
+      </td>
     </table>
+    <ClickDropDown id="menu" :expand="expandMenu" :position="menuPos" :items="editMenu"
+                   @itemClick="onMenuItemClick"></ClickDropDown>
     <template v-for="exam in exams" :key="exam.id">
-      <ExamCard :tag="getExamTag(exam)" @click="this.$emit('cardClick', exam)">
+      <ExamCard :tag="getExamTag(exam)" @click="this.$emit('cardClick', exam)" :canManage="canManage"
+                @manageClick="selectExam=exam;onManageClick($event,exam);">
         <template v-slot:title>{{ exam.title }}</template>
         <template v-slot:subtitle>{{ exam.subtitle }}</template>
         <template v-slot:time>{{
-          formatDate(new Date(exam.earliestStartTime))
-        }}</template>
+            formatDate(new Date(exam.earliestStartTime))
+          }}
+        </template>
         <template v-slot:limitTime
-          >限时{{ Math.floor(exam.duration / 1000 / 60) }}分钟</template
+        >限时{{ Math.floor(exam.duration / 1000 / 60) }}分钟
+        </template
         >
         <template v-slot:score>满分{{ exam.fullMark }}</template>
       </ExamCard>
     </template>
+    <ExamCardAdd v-show="canAdd && !isLoading" @click="$emit('addClick')">
+
+    </ExamCardAdd>
 
     <table class="footer">
       <tr>
         <td style="width: 44%; text-align: right">
           <span class="normal-text"
-            >共{{ getTotalPages() }}页，共{{ totalCount }}条</span
+          >共{{ getTotalPages() }}页，共{{ totalCount }}条</span
           >
 
           <input
-            id="setItemsPerPage"
-            style="margin-left: 30px"
-            class="inputBox input"
-            type="number"
-            :value="itemsPerPage"
-            @input="onItemsPerPageChanged($event)"
+              id="setItemsPerPage"
+              style="margin-left: 30px"
+              class="inputBox input"
+              type="number"
+              :value="itemsPerPage"
+              @input="onItemsPerPageChanged($event)"
           />
           <span class="normal-text" style="margin-right: 30px">条/页</span>
         </td>
@@ -38,9 +66,9 @@
           <table class="page">
             <tr>
               <td
-                class="active"
-                :class="{ disable: currentPage <= 1 }"
-                @click="gotoPage(currentPage - 1)"
+                  class="active"
+                  :class="{ disable: currentPage <= 1 }"
+                  @click="gotoPage(currentPage - 1)"
               >
                 <svg-icon iconName="left" className="arrow"></svg-icon>
               </td>
@@ -48,11 +76,11 @@
                 <span class="text">{{ currentPage }}</span>
               </td>
               <td
-                class="active"
-                :class="{
+                  class="active"
+                  :class="{
                   disable: currentPage >= getTotalPages(),
                 }"
-                @click="gotoPage(currentPage + 1)"
+                  @click="gotoPage(currentPage + 1)"
               >
                 <svg-icon iconName="right" className="arrow"></svg-icon>
               </td>
@@ -68,7 +96,7 @@
             @input="onCurrentPageChanged($event)"
             :value="currentPage"
             style="-moz-appearance: textfield"
-          /><span class="normal-text">页</span>
+        /><span class="normal-text">页</span>
         </td>
       </tr>
     </table>
@@ -77,11 +105,15 @@
 
 <script>
 import ExamCard from "./ExamCard.vue";
+import ExamCardAdd from "./ExamCardAdd.vue"
 import Loading from "./Loading.vue";
+import ClickDropDown from "@/components/ClickDropDown";
 import axios from "axios";
-import { formatDate } from "@/common.js";
+import {formatDate} from "@/common.ts";
+import DialogBox from "@/components/DialogBox";
+
 export default {
-  components: { ExamCard, Loading },
+  components: {ExamCard, Loading, ExamCardAdd, ClickDropDown, DialogBox},
   data() {
     return {
       exams: [],
@@ -96,9 +128,20 @@ export default {
       timeNow: new Date(),
 
       isLoading: false,
+
+      menuPos: {
+        x: 300,
+        y: 300
+      },
+      expandMenu: false,
+
+      editMenu: ["删除", "批改"],
+      selectExam: null,
+
+      showDeleteDialog: false
     };
   },
-  emits: ["cardClick"],
+  emits: ["cardClick", "addClick"],
   methods: {
     getExams() {
       if (this.ajaxCancel != null) {
@@ -181,8 +224,8 @@ export default {
     },
     isExamGoing(exam) {
       return (
-        this.timeNow <= new Date(exam.latestStartTime + exam.duration) &&
-        this.timeNow >= new Date(exam.earliestStartTime)
+          this.timeNow <= new Date(exam.latestStartTime + exam.duration) &&
+          this.timeNow >= new Date(exam.earliestStartTime)
       );
     },
     getExamTag(exam) {
@@ -190,10 +233,52 @@ export default {
       else if (this.isExamGoing(exam)) return "进行中";
       else return "";
     },
+    onManageClick(event, exam) {
+      // console.log(event)
+      // let target = event.target;
+      // let x = target.getBoundingClientRect().left + document.documentElement.scrollLeft;
+      // let y = target.getBoundingClientRect().top + document.documentElement.scrollTop;
+      this.menuPos.x = event.pageX;
+      this.menuPos.y = event.pageY;
+      this.expandMenu = true;
+    },
+    deleteExam(id) {
+      axios({
+        url: "exam/deleteExam",
+        data: {
+          id: id
+        }
+      }).then((res) => {
+        if (res.data["errCode"] !== 0) {
+          alert("删除失败");
+        } else {
+          this.getExams();
+        }
+      }).catch(() => {
+        alert("删除失败");
+      });
+
+    },
+    onMenuItemClick(index) {
+      // console.log(1);
+      if (index === 0) {
+        // this.deleteExam(this.selectExam["id"]);
+        this.showDeleteDialog = true;
+      }
+    }
   },
   mounted() {
     this.timeNow = new Date();
     this.getExams();
+
+    // let menu = document.querySelector('#menu')
+    let self = this;
+    document.addEventListener("click", function (e) {
+      // 判断被点击的元素是不是scheduleInput元素，不是的话，就隐藏之
+      // if (e.target !== menu) {
+      self.expandMenu = false;
+      // }
+    });
   },
   props: {
     examUrl: {
@@ -206,6 +291,20 @@ export default {
         return {};
       },
     },
+    canAdd: {
+      type: Boolean,
+      default: false,
+    },
+    canManage: {
+      type: Boolean,
+      default: false,
+    }
+    // editMenu: {
+    //   type: Array,
+    //   default() {
+    //     return [];
+    //   }
+    // }
   },
   computed: {},
 };
@@ -215,6 +314,7 @@ export default {
 .table {
   min-height: 200px;
 }
+
 .footer {
   width: 100%;
   margin-top: 35px;
@@ -235,7 +335,7 @@ export default {
 .page .text {
   font-size: 16px;
   font-family: Microsoft YaHei;
-  color: #338AFB;
+  color: #338afb;
   opacity: 0.7;
   margin: 0 20px;
 }

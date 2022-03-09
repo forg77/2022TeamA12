@@ -1,22 +1,88 @@
 <template>
   <!-- <button class="btn" @click="login('admin1', '123')">点击登录</button> -->
   <div class="container">
-    <div class="left">
-      <button class="register-btn">去注册</button>
-    </div>
     <div class="right">
-      <div class="title">欢迎登录</div>
+      <div v-if="false">
+        <div class="title">欢迎注册</div>
 
-      <div class="notice">请使用您本人的账号密码登录</div>
+        <div style="width: 490px; margin: auto">
+          <table style="border-spacing: 0px 20px">
+            <tr>
+              <td style="text-align: right">手机号: &nbsp;</td>
+              <td>
+                <input
+                  type="number"
+                  class="input"
+                  placeholder="请输入手机号"
+                  v-model="phone"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td style="text-align: right">密码: &nbsp;</td>
+              <td>
+                <input
+                  type="text"
+                  class="input"
+                  placeholder="请输入密码"
+                  v-model="password1"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td style="text-align: right">确认密码: &nbsp;</td>
+              <td>
+                <input
+                  type="text"
+                  class="input"
+                  placeholder="请确认密码"
+                  v-model="password2"
+                />
+              </td>
+            </tr>
+          </table>
+        </div>
+        <br />
+        <div>
+          <button class="login-btn" @click="login(username, password)">
+            注册
+          </button>
+        </div>
+      </div>
+      <div v-if="true">
+        <div class="title" style="color: rgb(73, 236, 73);">注册成功</div>
 
-      <div>
-        <input type="text" class="input" placeholder="请输入账号" v-model="username"/>
-        <input type="password" class="input" placeholder="请输入密码" v-model="password"/>
-        <div class="forget">忘记密码？</div>
+        <div style="width: 490px; margin: auto">
+          <table style="border-spacing: 0px 20px">
+            <tr>
+              <td style="text-align: right">账号: &nbsp;</td>
+              <td>
+                <input
+                  type="number"
+                  class="input"
+                  v-model="account"
+                  disabled
+                />
+              </td>
+            </tr>
+            <tr>
+              <td style="text-align: right">密码: &nbsp;</td>
+              <td>
+                <input
+                  type="text"
+                  class="input"
+                  v-model="password1"
+                  disabled
+                />
+              </td>
+            </tr>
+          </table>
+        </div>
+        <br />
       </div>
-      <div>
-        <button class="login-btn" @click="login(username,password)">登录</button>
-      </div>
+    </div>
+    <div class="left">
+      <button class="register-btn">去登录</button>
     </div>
   </div>
 </template>
@@ -30,8 +96,10 @@ export default {
       ajaxCancel: null,
       jumpPath: null,
 
-      username:"admin1",
-      password:"123"
+      phone: "",
+      password1: "231321",
+      password2: "",
+      account:"321321"
     };
   },
   methods: {
@@ -41,7 +109,7 @@ export default {
         this.ajaxCancel = null;
       }
       axios({
-        url: this.config.urls.login,
+        url: this.config.loginUrl,
         cancelToken: new axios.CancelToken((c) => {
           this.ajaxCancel = c;
         }),
@@ -178,7 +246,6 @@ export default {
   height: 56px;
   width: 409.5px;
   margin: auto;
-  margin-top: 20px;
   border-radius: 8px;
   background-color: #f4f8f7;
   padding: 20px;
@@ -193,13 +260,5 @@ export default {
   text-shadow: none;
   outline-color: transparent;
   box-shadow: none;
-}
-.forget {
-  color: #5399f3;
-  font-size: 13px;
-  margin-left: 156.031px;
-  cursor: pointer;
-  margin-top: 20px;
-  margin-bottom: 50px;
 }
 </style>

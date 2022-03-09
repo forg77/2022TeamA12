@@ -429,10 +429,10 @@
 
 <script>
 import axios from "axios";
-import { formatDate } from "@/common.js";
+import { formatDate } from "@/common.ts";
 import DialogBox from "./DialogBox.vue";
 import Loading from "./Loading.vue";
-// import config from "@/config.js";
+// import config from "@/config.ts";
 export default {
   components: {
     DialogBox,
@@ -504,16 +504,16 @@ export default {
           question.choice = JSON.parse(question.choice);
           // console.log(question.choice);
           this.answers.normal[question.id] = {};
-          if (question.type == "choice")
+          if (question.type === "choice")
             this.questions.choice[question.id] = question;
-          else if (question.type == "multi_choice")
+          else if (question.type === "multi_choice")
             this.questions.multiChoice[question.id] = question;
         }
         for (let question of data.questions.normal) {
           this.answers.normal[question.id] = {};
-          if (question.type == "completion")
+          if (question.type === "completion")
             this.questions.completion[question.id] = question;
-          else if (question.type == "short_answer")
+          else if (question.type === "short_answer")
             this.questions.shortAnswer[question.id] = question;
         }
 
@@ -536,6 +536,7 @@ export default {
           this.questionScores[score.questionId] = score;
         }
 
+        this.setTitleNumber(1);
         this.isLoading = false;
       });
     },
@@ -557,16 +558,16 @@ export default {
           question.choice = JSON.parse(question.choice);
           // console.log(question.choice);
           this.answers.normal[question.id] = {};
-          if (question.type == "choice")
+          if (question.type === "choice")
             this.questions.choice[question.id] = question;
-          else if (question.type == "multi_choice")
+          else if (question.type === "multi_choice")
             this.questions.multiChoice[question.id] = question;
         }
         for (let question of res.data.data.normal) {
           this.answers.normal[question.id] = {};
-          if (question.type == "completion")
+          if (question.type === "completion")
             this.questions.completion[question.id] = question;
-          else if (question.type == "short_answer")
+          else if (question.type === "short_answer")
             this.questions.shortAnswer[question.id] = question;
         }
       });
@@ -659,10 +660,10 @@ export default {
       });
     },
     getQuestionTypeName(type) {
-      if (type == "choice") return "单选题";
-      else if (type == "multi_choice") return "多选题";
-      else if (type == "completion") return "填空题";
-      else if (type == "short_answer") return "简答题";
+      if (type === "choice") return "单选题";
+      else if (type === "multi_choice") return "多选题";
+      else if (type === "completion") return "填空题";
+      else if (type === "short_answer") return "简答题";
       return "";
     },
     getAnswerType(queType) {
