@@ -17,20 +17,20 @@ public class QuestionService {
         this.questionMapper = questionMapper;
     }
 
-    public List<QuestionBank> getBanks(Integer author, Condition con) {
-        return questionMapper.getBanks(author, con);
+    public List<QuestionBank> getBanks(Integer author, String search, Condition con) {
+        return questionMapper.getBanks(author, search, con);
     }
 
-    public Integer getBanksCount(Integer author) {
-        return questionMapper.getBanksCount(author);
+    public Integer getBanksCount(Integer author, String search) {
+        return questionMapper.getBanksCount(author, search);
     }
 
-    public List<Question> getQuestions(Integer bankId, Condition con) {
-        return questionMapper.getQuestions(bankId, con);
+    public List<Question> getQuestions(Integer bankId, String search, Condition con) {
+        return questionMapper.getQuestions(bankId, search, con);
     }
 
-    public Integer getQuestionsCount(Integer bankId) {
-        return questionMapper.getQuestionsCount(bankId);
+    public Integer getQuestionsCount(Integer bankId, String search) {
+        return questionMapper.getQuestionsCount(bankId, search);
     }
 
     public List<ChoiceQuestion> getChoiceQuestions(Integer questionId, Integer bankId, String type, Condition con) {

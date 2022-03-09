@@ -17,6 +17,9 @@
             <if test="author != null">
                 AND `author` = #{author}
             </if>
+            <if test="search != null">
+                AND `name` LIKE CONCAT('%',#{search},'%')
+            </if>
         </where>
         ORDER BY
         <choose>
@@ -59,6 +62,9 @@
             <if test="author != null">
                 AND `author` = #{author}
             </if>
+            <if test="search != null">
+                AND `name` LIKE CONCAT('%',#{search},'%')
+            </if>
         </where>
     </select>
 
@@ -73,6 +79,9 @@
         <where>
             <if test="bankId != null">
                 AND `bank_id` = #{bankId}
+            </if>
+            <if test="search != null">
+                AND `description` LIKE CONCAT('%',#{search},'%')
             </if>
         </where>
         ORDER BY
@@ -111,8 +120,11 @@
         FROM
         `question`
         <where>
-            <if test="author != null">
+            <if test="bankId != null">
                 AND `bank_id` = #{bankId}
+            </if>
+            <if test="search != null">
+                AND `description` LIKE CONCAT('%',#{search},'%')
             </if>
         </where>
     </select>
