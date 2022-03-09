@@ -39,3 +39,16 @@ export const enum ErrCode {
     EXAM_MISSING_LATEST_TIME = 304,
     EXAM_NOT_STARTED = 305
 }
+
+//导航栏子结构
+export interface NavSubItem {
+    title: string;
+    link?: string;
+}
+
+//导航栏结构
+export interface NavItem {
+    title: string;
+    link?: string;
+    content?: Array<NavSubItem>;
+}

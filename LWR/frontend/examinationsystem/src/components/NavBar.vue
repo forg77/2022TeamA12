@@ -16,14 +16,14 @@
                   <div class="child">
                     <div class="dropdown">
                       <template v-if="!nav.link">
-                        <a :class="{ active: isNavActive(nav) }">{{
+                        <a :class="{ active: navIndex.get(nav) }">{{
                             nav.title
                           }}</a>
                       </template>
                       <template v-else>
                         <router-link
                             :to="nav.link"
-                            :class="{ active: isNavActive(nav) }"
+                            :class="{ active: navIndex.get(nav) }"
                         >{{ nav.title }}
                         </router-link
                         >
@@ -47,6 +47,15 @@
                   </div>
                 </td>
               </template>
+              <transition name="fade">
+                <template v-if="navIndex.size===0">
+                  <div class="child">
+                    <a class="active">{{
+                        $route.meta.pageTitle
+                      }}</a>
+                  </div>
+                </template>
+              </transition>
             </tr>
           </table>
         </td>
@@ -72,29 +81,68 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: ["items"],
-  methods: {
-    isNavActive(items) {
-      let routePath = this.$route.path;
-      //console.log(items);
-      if (items.content && items.content.length > 0) {
-        for (let item of items.content) {
-          if (routePath == item.link) return true;
-        }
-      } else {
-        if (routePath == items.link) return true;
+<script lang="ts">
+import {defineComponent, PropType} from "vue";
+import {NavItem} from "@/models";
+
+export default defineComponent({
+  props: {
+    items: {
+      type: Array as PropType<Array<NavItem>>,
+      default: () => {
+        return [];
       }
-      return false;
-    },
+    }
+  },
+  data() {
+    return {
+      navIndex: new Map() as Map<NavItem, boolean>
+    };
+  },
+  watch: {
+    path() {
+      this.getNavIndex();
+    }
+  },
+  methods: {
+    // isNavActive(items) {
+    //   let routePath = this.$route.path;
+    //   //console.log(items);
+    //   if (items.content && items.content.length > 0) {
+    //     for (let item of items.content) {
+    //       if (routePath == item.link) return true;
+    //     }
+    //   } else {
+    //     if (routePath == items.link) return true;
+    //   }
+    //   return false;
+    // },
+    getNavIndex() {
+      this.navIndex.clear();
+      for (let nav of this.items) {
+        if (nav.link === this.path) {
+          this.navIndex.set(nav, true);
+        } else {
+          if (nav.content && nav.content.length > 0) {
+            for (let item of nav.content) {
+              if (this.path === item.link) {
+                this.navIndex.set(nav, true);
+              }
+            }
+          }
+        }
+      }
+    }
   },
   computed: {
     user() {
       return this.$store.state.config.user;
     },
+    path() {
+      return this.$route.path;
+    }
   },
-};
+});
 </script>
 
 

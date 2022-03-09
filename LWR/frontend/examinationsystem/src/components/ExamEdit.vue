@@ -439,7 +439,14 @@
                         <!-- </table> -->
                       </span>
                     </td>
-                    <td style="text-align: center">标记</td>
+                    <td style="text-align: center">
+                      <div class="mark-circle mark-circle-select">
+                        <svg-icon iconName="bookmark"
+                                  className="mark-icon-select"></svg-icon>
+                      </div>
+                      <br/>
+                      <span class="mark-text">标记</span>
+                    </td>
                     <td style="width: 33%">
                       <span
                           class="next"
@@ -1032,7 +1039,9 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "src/styles/variables";
+
 .exam {
   margin-left: auto;
   margin-right: auto;
@@ -1221,5 +1230,40 @@ input[type="radio"]:checked {
   color: #338afb;
   margin: 0 10px;
   cursor: pointer;
+}
+
+.mark-icon {
+  width: 24px;
+  height: 24px;
+  color: $primary-color;
+}
+
+.mark-icon-select {
+  width: 24px;
+  height: 24px;
+  color: white;
+}
+
+.mark-circle {
+  width: 35px;
+  height: 35px;
+//background: $primary-color;
+  border-style: solid;
+  border-width: 2px;
+  border-color: $primary-color;
+  border-radius: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.mark-circle-select {
+  background: $primary-color;
+}
+
+.mark-text {
+  font-size: 14px;
+  color: $primary-color;
 }
 </style>
