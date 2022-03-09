@@ -5,7 +5,9 @@
       <div class="loading-back" v-show="isLoading">
         <div style="width: 100%; height: 100%">
           <table style="width: 100%; height: 100%; vertical-align: middle">
-            <td style="text-align: center"><Loading></Loading></td>
+            <td style="text-align: center">
+              <Loading></Loading>
+            </td>
           </table>
         </div>
       </div>
@@ -16,10 +18,14 @@
         <input type="text" class="input-score" />
       </div> -->
       <div class="content">
-        <div>题干:</div>
-        <div style="margin-left: 30px">
-          <TextEdit v-model:content="question.description" />
-        </div>
+        <table style="width: 100%;border-spacing: 0 10px">
+          <tr>
+            <td style="width: 50px">题干:</td>
+            <td style="margin-left: 30px">
+              <TextEdit v-model:content="question.description"/>
+            </td>
+          </tr>
+        </table>
       </div>
     </div>
     <div class="line2"></div>
@@ -27,40 +33,37 @@
       <div class="detail" style="display: flex">
         <div>答案:</div>
       </div>
-      <div style="margin-top: 20px">
+      <table style="margin-top: 20px;width: 100%;border-spacing: 0 10px">
         <template v-for="(answer, index) in question.answerArray" :key="index">
-          <div
-            class="anser-content"
-            style="display: inline-block; vertical-align: middle"
-          >
-            ({{ index + 1 }})
-          </div>
-          <div
-            style="
-              display: inline-block;
-              vertical-align: middle;
-              margin-left: 20px;
-            "
-          >
-            <TextEdit v-model:content="question.answerArray[index]" />
-          </div>
-          <button class="BTN" @click="question.answerArray.splice(index, 1)">
-            删除答案
-          </button>
-          <br />
-          <div style="height: 10px"></div>
+          <tr>
+            <td style="width:50px">
+              ({{ index + 1 }})
+            </td>
+            <td>
+              <TextEdit deleteString="删除答案" @deleteClick="question.answerArray.splice(index, 1)" :deleteMenu="true"
+                        v-model:content="question.answerArray[index]"/>
+            </td>
+            <!--          <button class="BTN" @click="question.answerArray.splice(index, 1)">-->
+            <!--            删除答案-->
+            <!--          </button>-->
+            <br/>
+            <div style="height: 10px"></div>
+          </tr>
         </template>
-        <button class="BTN" @click="question.answerArray.push('')">
-          添加答案
-        </button>
-      </div>
+        <tr>
+          <td></td>
+          <td style="text-align: right;padding-top:10px">
+            <span class="add" @click="question.answerArray.push('')">添加答案</span>
+          </td>
+        </tr>
+      </table>
     </div>
     <div class="line2"></div>
     <div class="footer">
       <button
-        class="btn2"
-        style="background-color: #5399f3; color: #fff; border: none"
-        @click="
+          class="btn2"
+          style="background-color: #5399f3; color: #fff; border: none"
+          @click="
           saveQuestion();
           $emit('save', question);
         "
@@ -73,9 +76,10 @@
 </template>
 
 <script>
-import TextEdit from "@/components/TextEdit.vue";
+import TextEdit from "@/components/TextEdit";
 import axios from "axios";
 import Loading from "@/components/Loading.vue";
+
 export default {
   components: {
     TextEdit,
@@ -95,8 +99,8 @@ export default {
   },
   mounted() {
     if (
-      this.questionBefore != null &&
-      this.questionBefore.type == "completion"
+        this.questionBefore != null &&
+        this.questionBefore.type == "completion"
     ) {
       this.question = this.questionBefore;
       this.question.answerArray = [];
@@ -133,16 +137,16 @@ export default {
         url: "question/addQuestion",
         data: data,
       })
-        .then((res) => {
-          if (res.data.errCode != 0) {
+          .then((res) => {
+            if (res.data.errCode != 0) {
+              alert("保存失败");
+            }
+            this.isLoading = false;
+          })
+          .catch(() => {
             alert("保存失败");
-          }
-          this.isLoading = false;
-        })
-        .catch(() => {
-          alert("保存失败");
-          this.isLoading = false;
-        });
+            this.isLoading = false;
+          });
     },
     getInitQuestion() {
       let question = {
