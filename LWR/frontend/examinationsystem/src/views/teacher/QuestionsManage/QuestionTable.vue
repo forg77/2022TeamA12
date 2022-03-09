@@ -53,6 +53,9 @@
       </template>
       <template v-slot:content>
         <div class="content">
+          <span style="margin-left:10px" v-show="extraData.search != null"
+          >“{{ extraData.search }}”的搜索结果</span
+          >
           <Table
               ref="table"
               @clickItem="clickItem"

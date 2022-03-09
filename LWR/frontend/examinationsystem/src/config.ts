@@ -32,7 +32,7 @@ const config: Config = {
 };
 
 //配置axios默认值
-axios.defaults.baseURL = config.siteTitle;
+axios.defaults.baseURL = urls.server;
 axios.defaults.method = 'post';
 axios.defaults.withCredentials = true;
 
