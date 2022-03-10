@@ -1,16 +1,15 @@
 import { createApp } from 'vue'
 import { createStore } from 'vuex'
 import App from './App.vue'
-import router from './router'
-import SvgIcon from '@/components/Svgicon'
-import config from '@/config.js'
+import router from './router/index'
+import SvgIcon from '@/components/Svgicon/index.vue'
+import {config} from '@/config.ts'
 
-let app = createApp(App);
+const app = createApp(App);
 app.use(router)
-    .component('svg-icon', SvgIcon)
-    .mount('#app');
+    .component('svg-icon', SvgIcon);
 
-app.config.globalProperties.config = config;
+// app.config.globalProperties.config = config;
 
 const store = createStore({
     state() {
@@ -19,13 +18,13 @@ const store = createStore({
         }
     },
     mutations: {
-        setConfig(state, config) {
+        setConfig(state:any, config) {
             state.config = config;
         },
         setUser(state, user) {
             state.config.user = user;
         }
     }
-})
+});
 
-app.use(store);
+app.use(store).mount('#app');

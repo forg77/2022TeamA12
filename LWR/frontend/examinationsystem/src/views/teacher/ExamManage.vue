@@ -45,8 +45,8 @@ import SearchBox from "@/components/SearchBox.vue";
 import DropDown from "@/components/DropDown.vue";
 import axios from "axios";
 import ClickDropDown from "@/components/ClickDropDown";
-// import * as search from "@/composables/search.js"
-import {getSearchInfo} from "@/composables/search.js";
+// import * as search from "@/composables/search.ts"
+import {getSearchInfo} from "@/composables/search.ts";
 
 export default {
   data() {

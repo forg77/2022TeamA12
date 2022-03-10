@@ -11,7 +11,7 @@
             <td>
               <div
                   @click="$event.stopPropagation()"
-                  style="width: fit-content; height:600px;margin:auto"
+                  style=" height:600px;margin:auto;width:1000px"
               >
                 <QuestionEdit
                     :id="selectId"
@@ -53,6 +53,9 @@
       </template>
       <template v-slot:content>
         <div class="content">
+          <span style="margin-left:10px" v-show="extraData.search != null"
+          >“{{ extraData.search }}”的搜索结果</span
+          >
           <Table
               ref="table"
               @clickItem="clickItem"
@@ -72,8 +75,8 @@ import Card from "@/components/Card.vue";
 import SearchBox from "@/components/SearchBox.vue";
 import Table from "@/components/Table.vue";
 import QuestionEdit from "@/components/QuestionEdit";
-import {formatDate} from "@/common.js";
-import {getSearchInfo} from "@/composables/search";
+import {formatDate} from "@/common.ts";
+import {getSearchInfo} from "@/composables/search.ts";
 
 export default {
   data() {

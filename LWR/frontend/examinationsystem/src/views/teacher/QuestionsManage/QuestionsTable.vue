@@ -16,6 +16,9 @@
       </template>
       <template v-slot:content>
         <div class="content">
+          <span style="margin-left:10px" v-show="extraData.search != null"
+          >“{{ extraData.search }}”的搜索结果</span
+          >
           <Table
               ref="table"
               :urls="urls"
@@ -34,8 +37,8 @@
 import Card from "@/components/Card.vue";
 import SearchBox from "@/components/SearchBox.vue";
 import Table from "@/components/Table.vue";
-import {formatDate} from "@/common.js";
-import {getSearchInfo} from "@/composables/search";
+import {formatDate} from "@/common.ts";
+import {getSearchInfo} from "@/composables/search.ts";
 
 export default {
   data() {

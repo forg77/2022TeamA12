@@ -1,5 +1,5 @@
 <template>
-  <div class="dropdown" :class="{expand:expand}" :style="{top:position.y+'px',left:position.x+'px'}">
+  <div class="dropdown-click" :class="{expand:expand}" :style="{top:position.y+'px',left:position.x+'px'}">
     <div class="dropdown-content" v-for="(item,index) in items" :key="item" @click="$emit('itemClick',index)">
       {{ item }}
     </div>
@@ -37,7 +37,7 @@ export default {
 <style lang="scss" scoped>
 @import "src/styles/_variables";
 
-.dropdown {
+.dropdown-click {
   display: block;
   position: absolute;
   background-color: white;
@@ -49,7 +49,7 @@ export default {
   border-bottom-style: solid;
   border-bottom-width: 4px;
   border-bottom-color: $primary-color;
-  z-index: 5;
+  z-index: 15;
 
   transform: scaleY(0);
   transform-origin: 0 0;

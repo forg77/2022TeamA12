@@ -188,6 +188,7 @@
                               this.currentTitleNumber = index[queId];
                             "
                           >
+                            <div v-if="markNumber[serial]" class="marked"></div>
                             <table class="inner">
                               <td class="inner-number">{{ serial++ }}</td>
                             </table>
@@ -208,7 +209,7 @@
                       </button>
                       <button
                           class="btn"
-                          style="height: 28px; width: 234px"
+                          style="height: 28px; width: 234px;margin-bottom: 5px;"
                           @click="
                           commitExam();
                           $router.replace('/teacher/examManage');
@@ -439,7 +440,15 @@
                         <!-- </table> -->
                       </span>
                     </td>
-                    <td style="text-align: center">标记</td>
+                    <td style="text-align: center">
+                      <div @click="markNumber[currentTitleNumber]=!markNumber[currentTitleNumber]" class="mark-circle"
+                           :class="{'mark-circle-select':markNumber[currentTitleNumber]}">
+                        <svg-icon iconName="bookmark"
+                                  :className="markNumber[currentTitleNumber]?' mark-icon-select':'mark-icon'"></svg-icon>
+                      </div>
+                      <br/>
+                      <span class="mark-text">标记</span>
+                    </td>
                     <td style="width: 33%">
                       <span
                           class="next"
@@ -467,12 +476,12 @@
 
 <script>
 import axios from "axios";
-import {formatDate} from "@/common.js";
+import {formatDate} from "@/common.ts";
 import DialogBox from "./DialogBox.vue";
 import Loading from "./Loading.vue";
 import DropDown from "./DropDown.vue";
 import QuestionEdit from "./QuestionEdit";
-// import config from "@/config.js";
+// import config from "@/config.ts";
 export default {
   components: {
     DialogBox,
@@ -513,6 +522,7 @@ export default {
       showJoinDialog: false,
 
       isLoading: false,
+      markNumber: {}
     };
   },
   methods: {
@@ -1032,7 +1042,9 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "src/styles/variables";
+
 .exam {
   margin-left: auto;
   margin-right: auto;
@@ -1050,54 +1062,71 @@ export default {
   font-family: Microsoft YaHei;
 }
 
+.marked {
+  width: 8px;
+  height: 8px;
+  background: $primary-color;
+  border-radius: 50%;
+  position: absolute;
+  left: 21px;
+  top: 0px;
+  /* margin: 9.5px; */
+  border-style: solid;
+  border-color: white;
+  border-width: 1px;
+}
+
 .unanswered {
   width: 31px;
   height: 31px;
   border: 1px solid rgba(51, 138, 251, 0.30196078431372547);
   border-radius: 50%;
   display: inline-block;
-  margin: 9.5px;
+  margin: 8px;
   transition: background 0.3s;
+  position: relative;
 }
 
 .current {
   border-radius: 50%;
   width: 31px;
   height: 31px;
-  border: 2px solid #338afb;
+  border: 2px solid $primary-color;
   display: inline-block;
-  margin: 9.5px;
+  margin: 8px;
+  position: relative;
+
+  .marked {
+    left: 20px;
+    top: -1px;
+  }
 }
 
 .answered {
   width: 31px;
   height: 31px;
-  background: #338afb;
+  background: $primary-color;
   border: 1px solid rgba(51, 138, 251, 0.30196078431372547);
   border-radius: 50%;
   display: inline-block;
-  margin: 9.5px;
+  margin: 8px;
+  position: relative;
 }
 
 .current-answered {
   width: 31px;
   height: 31px;
-  background: #338afb;
+  background: $primary-color;
   border: 2px solid #60a2f8;
   border-radius: 50%;
   display: inline-block;
-  margin: 9.5px;
-}
-
-.marked {
-  width: 7px;
-  height: 7px;
-  background: #338afb;
-  border-radius: 50%;
+  margin: 8px;
   position: relative;
-  left: 21px;
-  top: 0px;
-  /* margin: 9.5px; */
+
+  .marked {
+    left: 20px;
+    top: -1px;
+  }
 }
 
 .next {
@@ -1221,5 +1250,40 @@ input[type="radio"]:checked {
   color: #338afb;
   margin: 0 10px;
   cursor: pointer;
+}
+
+.mark-icon {
+  width: 24px;
+  height: 24px;
+  color: $primary-color;
+}
+
+.mark-icon-select {
+  width: 24px;
+  height: 24px;
+  color: white;
+}
+
+.mark-circle {
+  width: 35px;
+  height: 35px;
+  //background: $primary-color;
+  border-style: solid;
+  border-width: 2px;
+  border-color: $primary-color;
+  border-radius: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.mark-circle-select {
+  background: $primary-color;
+}
+
+.mark-text {
+  font-size: 14px;
+  color: $primary-color;
 }
 </style>

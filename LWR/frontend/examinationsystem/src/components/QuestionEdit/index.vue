@@ -19,6 +19,12 @@
             >
               填空题
             </button>
+            <button
+                class="BTN"
+                :class="{ 'BTN-select': tag == 'more' }"
+            >
+              更多 >
+            </button>
             <!-- <button class="BTN">判断题</button>
           <button class="BTN">简答题</button> -->
           </div>
@@ -94,7 +100,7 @@
 </template>
 
 <script>
-import WangEnduit from "@/components/TextEdit.vue";
+import WangEnduit from "@/components/TextEdit";
 import DropDown from "@/components/DropDown.vue";
 
 import Choice from "./Choice.vue";
@@ -191,7 +197,8 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "src/styles/variables";
 .container1 {
   /* width: 1000px;
   height: 600px; */
@@ -200,7 +207,7 @@ export default {
   overflow: auto;
   background-color: #fff;
   border: solid 1px rgba(177, 177, 177, 0.466);
-  box-shadow: 1px;
+  //box-shadow: 1px;
   display: inline-block;
 }
 .classification {
@@ -232,7 +239,7 @@ export default {
 .BTN:hover,
 .BTN-select,
 .tag :deep(.BTN:hover) {
-  background-color: #5399f3;
+  background-color: $primary-color;
   color: #fff;
   border: none;
 }
@@ -315,5 +322,10 @@ export default {
   text-align: center;
   padding-top: 40px;
   padding-bottom: 40px;
+}
+
+:deep(.add){
+  cursor: pointer;
+  color: $primary-color;
 }
 </style>

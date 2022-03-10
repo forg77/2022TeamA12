@@ -1,12 +1,12 @@
 <template>
-  <NavBar :items="navs" />
+  <NavBar :items="navs"/>
   <!-- <p>当前路径：{{ $route.path }}</p> -->
   <div class="title">
     {{ $route.meta.pageTitle }}
   </div>
   <router-view v-slot="{ Component }">
     <transition name="fade" mode="out-in">
-      <component :is="Component" />
+      <component :is="Component"/>
     </transition>
   </router-view>
 </template>
@@ -35,22 +35,22 @@ export default {
     axios({
       url: "/user/userInfo",
     })
-      .then((res) => {
-        if (res.data.errCode != 101) {
-          // this.config.user = res.data.data;
-          this.$store.commit("setUser", res.data.data);
-          // this.nickname = res.data.data.nickname;
-          // console.log(this.$route.path);
-        } else {
-          // console.log(this.$route.path);
+        .then((res) => {
+          if (res.data.errCode != 101) {
+            // this.config.user = res.data.data;
+            this.$store.commit("setUser", res.data.data);
+            // this.nickname = res.data.data.nickname;
+            // console.log(this.$route.path);
+          } else {
+            // console.log(this.$route.path);
+            if (this.$route.path != "/login")
+              this.$router.push("/login?path=" + this.$route.path);
+          }
+        })
+        .catch(() => {
           if (this.$route.path != "/login")
             this.$router.push("/login?path=" + this.$route.path);
-        }
-      })
-      .catch(() => {
-        if (this.$route.path != "/login")
-          this.$router.push("/login?path=" + this.$route.path);
-      });
+        });
   },
 };
 </script>

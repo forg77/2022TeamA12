@@ -8,9 +8,18 @@
       <component :is="Component" />
     </transition>
   </router-view> -->
+  <LoadingFull :show="$store.state.config.showLoading"></LoadingFull>
   <router-view></router-view>
 </template>
 
+<script lang="ts">
+import {defineComponent} from "vue";
+import LoadingFull from "@/components/LoadingFull.vue";
+
+export default defineComponent({
+  components: {LoadingFull}
+});
+</script>
 
 <style>
 @import "./styles/global.css";

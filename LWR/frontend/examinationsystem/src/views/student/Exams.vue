@@ -39,7 +39,7 @@ import Card from "@/components/Card.vue";
 import ExamTable from "@/components/ExamTable.vue";
 import SearchBox from "@/components/SearchBox.vue";
 import DropDown from "@/components/DropDown.vue";
-import {getSearchInfo} from "@/composables/search";
+import {getSearchInfo} from "@/composables/search.ts";
 
 export default {
   data() {

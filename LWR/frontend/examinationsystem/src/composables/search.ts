@@ -1,10 +1,21 @@
-import {ref, watch} from 'vue'
+import {Ref, ref, watch} from 'vue'
 
-export function getSearchInfo() {
+export interface SearchInfo {
+    searchString: Ref<string>;
+    cancelString: Ref<string>;
+    searchText: Ref<string>;
+    extraData: Ref;
+    searchButtonString: Ref<string>;
+    searchCallback: Ref<() => void>;
+
+    onSearchButtonClick(): void;
+}
+
+export function getSearchInfo(): SearchInfo {
     function onSearchButtonClick() {
         if (extraData.value.search == null) {
             if (searchText.value !== "") {
-                extraData.value.search = this.searchText;
+                extraData.value.search = searchText.value;
                 searchButtonString.value = cancelString.value;
                 // this.$refs.examTable.getExams();
                 searchCallback.value();
@@ -16,13 +27,13 @@ export function getSearchInfo() {
         }
     }
 
-    let searchString = ref('搜索');
-    let cancelString = ref('取消搜索');
+    const searchString = ref('搜索');
+    const cancelString = ref('取消搜索');
 
-    let searchText = ref('');
-    let extraData = ref({search: null});
-    let searchButtonString = ref(searchString.value);
-    let searchCallback = ref(() => {
+    const searchText = ref('');
+    const extraData: Ref = ref({search: null});
+    const searchButtonString = ref(searchString.value);
+    const searchCallback = ref(() => {
     });
 
     watch(searchText, (newVal) => {
