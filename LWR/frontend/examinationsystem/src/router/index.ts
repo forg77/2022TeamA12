@@ -1,18 +1,18 @@
-import { createRouter, createWebHashHistory,Router } from 'vue-router'
+import {createRouter, createWebHashHistory, Router} from 'vue-router'
 import {config} from '../config'
 import Home from '../views/Home.vue'
 
 const postTitle = " - " + config.siteTitle;
 
 const routes = [{
-        path: '/login',
-        name: "Login",
-        component: () =>
-            import ('../views/Login.vue'),
-        meta: {
-            title: "登录"
-        }
-    },
+    path: '/login',
+    name: "Login",
+    component: () =>
+        import ('../views/Login.vue'),
+    meta: {
+        title: "登录"
+    }
+},
     {
         path: '/admin',
         name: "Admin",
@@ -20,36 +20,36 @@ const routes = [{
             import ('../views/MainView.vue'),
         props: {
             navs: [{
-                    title: "考试管理",
-                    content: [
-                        { title: "考试管理", link: "/admin/examManage" },
-                        { title: "添加考试", link: "/admin/addExam" },
-                        { title: "监考管理", link: "/admin/invigilationManage" },
-                    ],
-                },
+                title: "考试管理",
+                content: [
+                    {title: "考试管理", link: "/admin/examManage"},
+                    {title: "添加考试", link: "/admin/addExam"},
+                    {title: "监考管理", link: "/admin/invigilationManage"},
+                ],
+            },
                 {
                     title: "题库管理",
                     content: [
-                        { title: "题库查询", link: "/admin/questionsManage" },
-                        { title: "题库录入", link: "/admin/questionsInput" },
+                        {title: "题库查询", link: "/admin/questionsManage"},
+                        {title: "题库录入", link: "/admin/questionsInput"},
                     ],
                 },
                 {
                     title: "测试",
                     content: [
-                        { title: "表格测试", link: "/admin/tableTest" },
-                        { title: "对话框测试", link: "/admin/dialogTest" },
-                        { title: "考试测试", link: "/admin/examTest" },
-                        { title: "考试表格测试", link: "/admin/examTableTest" },
+                        {title: "表格测试", link: "/admin/tableTest"},
+                        {title: "对话框测试", link: "/admin/dialogTest"},
+                        {title: "考试测试", link: "/admin/examTest"},
+                        {title: "考试表格测试", link: "/admin/examTableTest"},
                     ],
                 },
             ],
         },
         children: [{
-                path: 'home',
-                name: 'Home',
-                component: Home
-            },
+            path: 'home',
+            name: 'Home',
+            component: Home
+        },
             {
                 path: 'about',
                 name: 'About',
@@ -160,26 +160,26 @@ const routes = [{
             navs: [{
                 title: "考试管理",
                 content: [
-                    { title: "考试管理", link: "/teacher/examManage" },
+                    {title: "考试管理", link: "/teacher/examManage"},
                 ],
             }, {
                 title: "题库管理",
                 content: [
-                    { title: "题库查询", link: "/teacher/questionsManage" },
-                    { title: "题库录入", link: "/teacher/questionsInput" },
+                    {title: "题库查询", link: "/teacher/questionsManage"},
+                    {title: "题库录入", link: "/teacher/questionsInput"},
                 ],
             }],
         },
         children: [{
-                path: 'questionsManage',
-                name: 'teacherQuestionsManage',
-                component: () =>
-                    import ('../views/teacher/QuestionsManage/index.vue'),
-                meta: {
-                    title: "题库管理" + postTitle,
-                    pageTitle: "题库管理"
-                }
-            },
+            path: 'questionsManage',
+            name: 'teacherQuestionsManage',
+            component: () =>
+                import ('../views/teacher/QuestionsManage/index.vue'),
+            meta: {
+                title: "题库管理" + postTitle,
+                pageTitle: "题库管理"
+            }
+        },
             {
                 path: 'questionManage/:bankId',
                 name: 'teacherQuestionManage',
@@ -219,14 +219,14 @@ const routes = [{
             import ('../views/MainView.vue'),
         props: {
             navs: [{
-                    title: "我的考试",
-                    link: "/student/exams",
-                },
+                title: "我的考试",
+                link: "/student/exams",
+            },
                 {
                     title: "我的成绩",
                     content: [
-                        { title: "成绩查询", link: "/student/gradeQuery" },
-                        { title: "知识分析", link: "/student/message" },
+                        {title: "成绩查询", link: "/student/gradeQuery"},
+                        {title: "知识分析", link: "/student/message"},
                     ],
                 },
                 {
@@ -236,10 +236,10 @@ const routes = [{
             ],
         },
         children: [{
-                path: '',
-                name: 'Home1',
-                component: Home
-            },
+            path: '',
+            name: 'Home1',
+            component: Home
+        },
             {
                 path: 'exams',
                 name: 'Exams',
@@ -281,10 +281,36 @@ const routes = [{
                 },
             },
         ]
-    }
+    },
+    {
+        path: '/config',
+        name: "Config",
+        component: () =>
+            import ('../views/MainView.vue'),
+        props: {
+            navs: [{
+                title: "个人中心",
+                link: "/config/personal"
+                // content: [
+                //     { title: "考试管理", link: "/teacher/examManage" },
+                // ],
+            }],
+        },
+        children: [{
+            path: 'personal',
+            name: 'Personal',
+            component: () =>
+                import ('../views/Personal.vue'),
+            meta: {
+                title: "个人中心" + postTitle,
+                pageTitle: "个人中心"
+            }
+        },
+        ]
+    },
 ]
 
-const router:Router = createRouter({
+const router: Router = createRouter({
     history: createWebHashHistory(),
     routes
 })

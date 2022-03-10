@@ -307,7 +307,7 @@
 
 <script>
 import axios from "axios";
-import { formatDate } from "@/common.js";
+import { formatDate } from "@/common.ts";
 import DialogBox from "./DialogBox.vue";
 import Loading from "./Loading.vue";
 // import config from "@/config.js";
@@ -875,7 +875,7 @@ input[type="checkbox"].switch::after {
   height: 1rem;
   border-radius: 50%;
   background: #fff;
-  box-shadow: 0, 0, 2px, #999;
+  box-shadow: 0 0 2px #999;
   transition: 0.4s;
   top: 2px;
   position: absolute;
