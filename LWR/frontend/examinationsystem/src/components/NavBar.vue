@@ -1,4 +1,6 @@
 <template>
+  <clickDropDown :expand="expandMenu" :position="menuPos" :items="editMenu"
+                 @itemClick="onMenuItemClick"></clickDropDown>
   <div class="nav">
     <table cellpadding="0" cellspacing="0" style="width: 100%; height: 100%">
       <tr>
@@ -60,7 +62,7 @@
           </table>
         </td>
         <td style="text-align: right">
-          <div class="headimg">
+          <div ref="headimg" class="headimg" @click="onHeadimgClick($event)">
             <table>
               <tr>
                 <td>
@@ -84,8 +86,11 @@
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
 import {NavItem} from "@/models";
+import login from "@/views/Login.vue";
+import ClickDropDown from "@/components/ClickDropDown.vue";
 
 export default defineComponent({
+  components: {ClickDropDown},
   props: {
     items: {
       type: Array as PropType<Array<NavItem>>,
@@ -96,13 +101,33 @@ export default defineComponent({
   },
   data() {
     return {
-      navIndex: new Map() as Map<NavItem, boolean>
+      navIndex: new Map() as Map<NavItem, boolean>,
+      expandMenu: false,
+      menuPos: {
+        x: 0,
+        y: 0
+      },
+      editMenu: ["个人用户", "退出登录"],
     };
   },
   watch: {
-    path() {
-      this.getNavIndex();
+    path: {
+      handler() {
+        this.getNavIndex();
+      },
+      immediate: true
+    },
+    items: {
+      handler() {
+        this.getNavIndex();
+      },
+      immediate: true
     }
+  },
+  mounted() {
+    document.addEventListener("click", () => {
+      this.expandMenu = false;
+    });
   },
   methods: {
     // isNavActive(items) {
@@ -117,13 +142,23 @@ export default defineComponent({
     //   }
     //   return false;
     // },
+    onMenuItemClick(index: number) {
+
+    },
+    onHeadimgClick(event: MouseEvent) {
+      event.stopPropagation();
+      this.$refs.headimg;
+      this.menuPos.x = event.pageX;
+      this.menuPos.y = event.pageY;
+      this.expandMenu = true;
+    },
     getNavIndex() {
       this.navIndex.clear();
       for (let nav of this.items) {
         if (nav.link === this.path) {
           this.navIndex.set(nav, true);
         } else {
-          if (nav.content && nav.content.length > 0) {
+          if (nav.content) {
             for (let item of nav.content) {
               if (this.path === item.link) {
                 this.navIndex.set(nav, true);
@@ -167,6 +202,12 @@ export default defineComponent({
   /* float: right; */
   margin-right: 30px;
   display: inline-block;
+  cursor: pointer;
+  transition: color 0.5s;
+
+  &:hover {
+    color: $primary-color;
+  }
 }
 
 .headimg-icon {
@@ -177,7 +218,7 @@ export default defineComponent({
 .nav {
   margin: 0;
   padding: 0;
-  overflow-x: auto;
+  overflow-x: hidden;
   overflow-y: hidden;
   position: fixed;
   box-shadow: 0px 3px 6px rgba(51, 138, 251, 0.72);
