@@ -9,7 +9,10 @@
               <SearchBox v-model:text="searchText" placeholder="按标题搜索"></SearchBox>
             </td>
             <td>
-              <button class="btn" style="margin-left: 30px" @click="onSearchButtonClick()">{{ searchButtonString }}</button>
+              <button class="btn" style="margin-left: 30px" @click="onSearchButtonClick()">{{
+                  searchButtonString
+                }}
+              </button>
             </td>
           </tr>
         </table>
@@ -64,12 +67,25 @@ export default {
           },
         },
         {title: "题目数量", name: "count"},
+        {
+          title: "考试题库",
+          name: "examId",
+          transformer(value) {
+            if (value == null)
+              return '否';
+            else
+              return '是';
+          },
+        },
       ],
     };
   },
   methods: {
     clickItem(item) {
-      this.$router.push("/teacher/questionManage/" + item.id);
+      if (item.examId == null)
+        this.$router.push("/teacher/questionManage/" + item.id);
+      else
+        this.$router.push("/teacher/examEdit/" + item.id);
     },
   },
   components: {
