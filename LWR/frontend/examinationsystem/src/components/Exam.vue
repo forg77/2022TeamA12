@@ -864,7 +864,7 @@ export default {
   border: 1px solid rgba(51, 138, 251, 0.30196078431372547);
   border-radius: 50%;
   display: inline-block;
-  margin: 9.5px;
+  margin: 8px;
   transition: background 0.3s;
   position: relative;
 }
@@ -875,7 +875,7 @@ export default {
   height: 31px;
   border: 2px solid $primary-color;
   display: inline-block;
-  margin: 9.5px;
+  margin: 8px;
   position: relative;
 
   .marked {
@@ -891,7 +891,7 @@ export default {
   border: 1px solid rgba(51, 138, 251, 0.30196078431372547);
   border-radius: 50%;
   display: inline-block;
-  margin: 9.5px;
+  margin: 8px;
   position: relative;
 }
 
@@ -902,7 +902,7 @@ export default {
   border: 2px solid #60a2f8;
   border-radius: 50%;
   display: inline-block;
-  margin: 9.5px;
+  margin: 8px;
   position: relative;
 
   .marked {

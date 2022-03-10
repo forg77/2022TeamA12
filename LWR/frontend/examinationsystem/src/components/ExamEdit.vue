@@ -188,6 +188,7 @@
                               this.currentTitleNumber = index[queId];
                             "
                           >
+                            <div v-if="markNumber[serial]" class="marked"></div>
                             <table class="inner">
                               <td class="inner-number">{{ serial++ }}</td>
                             </table>
@@ -440,9 +441,10 @@
                       </span>
                     </td>
                     <td style="text-align: center">
-                      <div class="mark-circle mark-circle-select">
+                      <div @click="markNumber[currentTitleNumber]=!markNumber[currentTitleNumber]" class="mark-circle"
+                           :class="{'mark-circle-select':markNumber[currentTitleNumber]}">
                         <svg-icon iconName="bookmark"
-                                  className="mark-icon-select"></svg-icon>
+                                  :className="markNumber[currentTitleNumber]?' mark-icon-select':'mark-icon'"></svg-icon>
                       </div>
                       <br/>
                       <span class="mark-text">标记</span>
@@ -520,6 +522,7 @@ export default {
       showJoinDialog: false,
 
       isLoading: false,
+      markNumber: {}
     };
   },
   methods: {
@@ -1059,54 +1062,71 @@ export default {
   font-family: Microsoft YaHei;
 }
 
+.marked {
+  width: 8px;
+  height: 8px;
+  background: $primary-color;
+  border-radius: 50%;
+  position: absolute;
+  left: 21px;
+  top: 0px;
+  /* margin: 9.5px; */
+  border-style: solid;
+  border-color: white;
+  border-width: 1px;
+}
+
 .unanswered {
   width: 31px;
   height: 31px;
   border: 1px solid rgba(51, 138, 251, 0.30196078431372547);
   border-radius: 50%;
   display: inline-block;
-  margin: 9.5px;
+  margin: 8px;
   transition: background 0.3s;
+  position: relative;
 }
 
 .current {
   border-radius: 50%;
   width: 31px;
   height: 31px;
-  border: 2px solid #338afb;
+  border: 2px solid $primary-color;
   display: inline-block;
-  margin: 9.5px;
+  margin: 8px;
+  position: relative;
+
+  .marked {
+    left: 20px;
+    top: -1px;
+  }
 }
 
 .answered {
   width: 31px;
   height: 31px;
-  background: #338afb;
+  background: $primary-color;
   border: 1px solid rgba(51, 138, 251, 0.30196078431372547);
   border-radius: 50%;
   display: inline-block;
-  margin: 9.5px;
+  margin: 8px;
+  position: relative;
 }
 
 .current-answered {
   width: 31px;
   height: 31px;
-  background: #338afb;
+  background: $primary-color;
   border: 2px solid #60a2f8;
   border-radius: 50%;
   display: inline-block;
-  margin: 9.5px;
-}
-
-.marked {
-  width: 7px;
-  height: 7px;
-  background: #338afb;
-  border-radius: 50%;
+  margin: 8px;
   position: relative;
-  left: 21px;
-  top: 0px;
-  /* margin: 9.5px; */
+
+  .marked {
+    left: 20px;
+    top: -1px;
+  }
 }
 
 .next {
@@ -1247,7 +1267,7 @@ input[type="radio"]:checked {
 .mark-circle {
   width: 35px;
   height: 35px;
-//background: $primary-color;
+  //background: $primary-color;
   border-style: solid;
   border-width: 2px;
   border-color: $primary-color;
