@@ -302,11 +302,28 @@ const routes = [{
             component: () =>
                 import ('../views/Personal.vue'),
             meta: {
-                title: "个人中心" + postTitle,
-                pageTitle: "个人中心"
+                title: '个人中心' + postTitle,
+                pageTitle: '个人中心'
             }
         },
         ]
+    },
+    //重定向
+    {
+        path:'/',
+        redirect:'/login'
+    },
+    {
+        path:'/admin/',
+        redirect:'/admin/examManage'
+    },
+    {
+        path:'/student/',
+        redirect:'/student/exams'
+    },
+    {
+        path:'/teacher/',
+        redirect:'/teacher/examManage'
     },
 ]
 

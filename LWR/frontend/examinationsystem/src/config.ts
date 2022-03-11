@@ -1,6 +1,6 @@
 import axios from "axios";
 import router from './router/index'
-import {Urls, User} from "@/models";
+import {ErrCode, Urls, User} from "@/models";
 
 //网站的标题
 // const siteTitle = "考试系统";
@@ -21,8 +21,8 @@ export interface Config {
 // const user: User | null = null;
 
 const urls: Urls = {
-    // server: 'http://localhost:8082/',
-    server: 'http://139.9.58.231:8080/',
+    server: 'http://localhost:8082/',
+    // server: 'http://139.9.58.231:8080/',
     login: 'user/login'
 };
 
@@ -43,7 +43,7 @@ axios.interceptors.response.use((response) => {
     //配置用户未登录的处理
     if (response.config.url != '/user/userInfo') {
         const errCode = response.data && response.data.errCode;
-        if (errCode == 101) {
+        if (errCode == ErrCode.NO_LOGIN) {
             const path = router.currentRoute.value.path;
             if (path != '/login')
                 router.push('/login?path=' + router.currentRoute.value.path);

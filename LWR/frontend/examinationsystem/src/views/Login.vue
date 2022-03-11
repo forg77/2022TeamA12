@@ -77,16 +77,7 @@ export default defineComponent({
           if (this.jumpPath) {
             this.$router.push(this.jumpPath);
           } else {
-            if (this.config.user) {
-              let permissions = this.config.user.permission.split(",");
-              if (permissions.indexOf("admin") >= 0) {
-                this.$router.push("/admin");
-              } else if (permissions.indexOf("teacher")) {
-                this.$router.push("/teacher");
-              } else {
-                this.$router.push("/student");
-              }
-            }
+            this.redirect();
           }
         } else {
           if (response.errCode == ErrCode.LOGIN_FAILED) {
@@ -105,9 +96,30 @@ export default defineComponent({
         this.config.showLoading = false;
       });
     },
+    redirect() {
+      if (this.config.user) {
+        let permissions = this.config.user.permission.split(",");
+        if (permissions.indexOf("admin") >= 0) {
+          this.$router.push("/admin");
+        } else if (permissions.indexOf("teacher")) {
+          this.$router.push("/teacher");
+        } else {
+          this.$router.push("/student");
+        }
+      }
+    }
   },
   created() {
     this.jumpPath = this.$route.query.path as string;
+    axios({
+      url: "/user/userInfo",
+    })
+        .then((res) => {
+          if (res.data.errCode != 101) {
+            this.$store.commit("setUser", res.data.data);
+            this.redirect();
+          }
+        });
 
   },
   // computed: {
