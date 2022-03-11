@@ -1,9 +1,12 @@
 <template>
-  <div>
-    <Card>
+  <div class="outer">
+    <Card :width="788" style="margin-right: 30px">
       <template v-slot:headerLeft>
         <div style="display: flex">
-          <div class="btn1">基本信息</div>
+          <div class="btn1">
+            基本信息
+            <div class="line"></div>
+          </div>
           &nbsp; &nbsp;
           <div>账号管理</div>
         </div>
@@ -120,6 +123,15 @@
         </div>
       </template>
     </Card>
+    <Card :width="314">
+      <template v-slot:headerLeft>
+        认证信息
+      </template>
+
+      <template v-slot:content>
+        身份
+      </template>
+    </Card>
   </div>
 </template>title
 
@@ -130,9 +142,21 @@ export default {
   components: {Card},
 };
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .btn1 {
   font-weight: bold;
+  //border-bottom: black;
+  //border-bottom-style: solid;
+  position: relative;
+}
+
+.line{
+  position: absolute;
+  height: 2px;
+  width: 50px;
+  background-color: black;
+  top:50px;
+  left: 14%;
 }
 
 .title1 {
@@ -180,5 +204,11 @@ span {
   border-radius: 5px;
   box-shadow: none;
   border: solid 1px rgb(151, 151, 151);
+}
+
+.outer{
+  display: flex;
+  justify-content: center;
+
 }
 </style>
