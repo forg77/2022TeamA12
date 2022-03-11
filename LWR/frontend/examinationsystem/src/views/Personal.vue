@@ -1,6 +1,6 @@
 <template>
   <div class="outer">
-    <Card :width="788" style="margin-right: 30px">
+    <Card :width="788" style="margin-right: 30px;margin-left: auto">
       <template v-slot:headerLeft>
         <div style="display: flex">
           <div class="btn1">
@@ -123,7 +123,7 @@
         </div>
       </template>
     </Card>
-    <Card :width="314">
+    <Card :width="314" style="margin-right: auto">
       <template v-slot:headerLeft>
         认证信息
       </template>
@@ -133,7 +133,7 @@
       </template>
     </Card>
   </div>
-</template>title
+</template>
 
 <script>
 import Card from "@/components/Card.vue";
@@ -208,7 +208,9 @@ span {
 
 .outer{
   display: flex;
-  justify-content: center;
-
+  //justify-content: center;
+  //overflow-x: hidden;
+  //margin: auto;
+  //width: 100%;
 }
 </style>

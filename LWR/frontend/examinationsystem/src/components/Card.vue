@@ -26,9 +26,9 @@
 import {defineComponent, PropType} from "vue";
 
 export default defineComponent({
-  data() {
-
-  },
+  // data() {
+  //
+  // },
   props: {
     width: {
       type: Number as PropType<number>,
