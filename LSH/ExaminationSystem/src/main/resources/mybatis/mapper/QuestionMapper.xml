@@ -10,7 +10,8 @@
         `nickname` AS `author_name`,
         `creation_time`,
         `private` AS `is_private`,
-        (SELECT COUNT(*) FROM `question` WHERE `bank_id` = `question_bank`.`id`) AS `count`
+        (SELECT COUNT(*) FROM `question` WHERE `bank_id` = `question_bank`.`id`) AS `count`,
+        (SELECT `id` FROM `exam` WHERE `exam`.bank_id = `question_bank`.`id`) AS `exam_id`
         FROM `question_bank`
         INNER JOIN `user` ON `user`.`id` = `author`
         <where>

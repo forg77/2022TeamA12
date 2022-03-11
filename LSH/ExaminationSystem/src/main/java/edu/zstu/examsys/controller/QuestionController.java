@@ -167,4 +167,17 @@ public class QuestionController {
 
         return JSON.toJSONString(new CommonData(ErrorCode.SUCCESS, "成功"));
     }
+
+    @PostMapping("/addBank")
+    public String addBank(@RequestBody String requestBody) {
+        JSONObject body = JSON.parseObject(requestBody);
+        QuestionBank bank = body.toJavaObject(QuestionBank.class);
+
+        Integer suc = questionService.addBank(bank);
+
+        if (suc > 0)
+            return JSON.toJSONString(new CommonData(ErrorCode.SUCCESS, "成功"));
+        else
+            return JSON.toJSONString(new CommonData(ErrorCode.INSERT_FAILED, "插入失败"));
+    }
 }
