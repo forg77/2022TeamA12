@@ -21,8 +21,8 @@ export interface Config {
 // const user: User | null = null;
 
 const urls: Urls = {
-    server: 'http://localhost:8082/',
-    //server: 'http://localhost:8082/',
+    // server: 'http://localhost:8082/',
+    server: 'http://139.9.58.231:8080/',
     login: 'user/login'
 };
 

@@ -1,5 +1,5 @@
-import {createRouter, createWebHashHistory, Router} from 'vue-router'
-import {config} from '../config'
+import {createRouter, createWebHistory, Router} from 'vue-router'
+import {config} from '@/config'
 import Home from '../views/Home.vue'
 
 const postTitle = " - " + config.siteTitle;
@@ -311,8 +311,8 @@ const routes = [{
 ]
 
 const router: Router = createRouter({
-    history: createWebHashHistory(),
-    routes
+    history: createWebHistory('/web/'),
+    routes,
 })
 
 //配置标题
