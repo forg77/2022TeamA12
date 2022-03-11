@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="cardHeader" :style="{width:width+'px'}">
+    <div class="cardHeader" :style="{width:width+'px',height:headerHeight+'px'}">
       <table style="width: 100%;height:100%;font-size:0">
         <tr>
           <td style="text-align: left">
@@ -33,6 +33,10 @@ export default defineComponent({
     width: {
       type: Number as PropType<number>,
       default: 1000
+    },
+    headerHeight: {
+      type: Number as PropType<number>,
+      default: 80
     }
   }
 });

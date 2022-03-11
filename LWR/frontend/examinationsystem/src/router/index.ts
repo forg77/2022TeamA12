@@ -300,7 +300,7 @@ const routes = [{
             path: 'personal',
             name: 'Personal',
             component: () =>
-                import ('../views/Personal.vue'),
+                import ('../views/Personal/index.vue'),
             meta: {
                 title: '个人中心' + postTitle,
                 pageTitle: '个人中心'
