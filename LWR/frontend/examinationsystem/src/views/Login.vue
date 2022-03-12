@@ -30,9 +30,9 @@
 
 <script lang="ts">
 import axios, {Canceler} from "axios";
-import DialogBox from "@/components/DialogBox.vue";
+import DialogBox from "../components/DialogBox.vue";
 import {defineComponent} from "vue";
-import {Response, ErrCode} from "@/models";
+import {Response, ErrCode} from "../models";
 
 export default defineComponent({
   components: {DialogBox},
