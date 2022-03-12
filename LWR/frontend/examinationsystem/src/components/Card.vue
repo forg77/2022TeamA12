@@ -1,24 +1,47 @@
 <template>
-  <div class="cardHeader">
-    <table style="width: 100%;height:100%;font-size:0">
-      <tr>
-        <td style="text-align: left">
-          <div class="headerContent">
-            <slot name="headerLeft"></slot>
-          </div>
-        </td>
-        <td style="text-align: right">
-          <div class="headerContent" style="text-align: left;">
-            <slot name="headerRight"></slot>
-          </div>
-        </td>
-      </tr>
-    </table>
-  </div>
-  <div class="card">
-    <slot name="content"></slot>
+  <div>
+    <div class="cardHeader" :style="{width:width+'px',height:headerHeight+'px'}">
+      <table style="width: 100%;height:100%;font-size:0">
+        <tr>
+          <td style="text-align: left">
+            <div class="headerContent">
+              <slot name="headerLeft"></slot>
+            </div>
+          </td>
+          <td style="text-align: right">
+            <div class="headerContent" style="text-align: left;">
+              <slot name="headerRight"></slot>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="card" :style="{width:width+'px'}">
+      <slot name="content"></slot>
+    </div>
   </div>
 </template>
+
+<script lang="ts">
+import {defineComponent, PropType} from "vue";
+
+export default defineComponent({
+  // data() {
+  //
+  // },
+  props: {
+    width: {
+      type: Number as PropType<number>,
+      default: 1000
+    },
+    headerHeight: {
+      type: Number as PropType<number>,
+      default: 80
+    }
+  }
+});
+
+</script>
 
 <style scoped>
 .cardHeader {

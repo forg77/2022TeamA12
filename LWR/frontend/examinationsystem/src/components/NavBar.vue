@@ -85,7 +85,7 @@
 
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
-import {NavItem} from "@/models";
+import {NavItem, Pair, Pos} from "@/models";
 import login from "@/views/Login.vue";
 import ClickDropDown from "@/components/ClickDropDown.vue";
 
@@ -106,8 +106,8 @@ export default defineComponent({
       menuPos: {
         x: 0,
         y: 0
-      },
-      editMenu: ["个人用户", "退出登录"],
+      } as Pos,
+      editMenu: [{key: 'personal', value: '个人用户'}, {key: 'logout', value: '退出登录'}] as Pair[],
     };
   },
   watch: {
@@ -142,8 +142,10 @@ export default defineComponent({
     //   }
     //   return false;
     // },
-    onMenuItemClick(index: number) {
-
+    onMenuItemClick(key: string) {
+      if (key == 'personal') {
+        this.$router.push('/config/personal');
+      }
     },
     onHeadimgClick(event: MouseEvent) {
       event.stopPropagation();

@@ -135,7 +135,7 @@ export default {
       },
       expandMenu: false,
 
-      editMenu: ["删除", "批改"],
+      editMenu: [{key: "delete", value: "删除"}, {key: "correct", value: "批改"}],
       selectExam: null,
 
       showDeleteDialog: false
@@ -259,9 +259,9 @@ export default {
       });
 
     },
-    onMenuItemClick(index) {
+    onMenuItemClick(key) {
       // console.log(1);
-      if (index === 0) {
+      if (key === 'delete') {
         // this.deleteExam(this.selectExam["id"]);
         this.showDeleteDialog = true;
       }

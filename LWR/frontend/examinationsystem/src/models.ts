@@ -52,3 +52,15 @@ export interface NavItem {
     link?: string;
     content?: Array<NavSubItem>;
 }
+
+//位置
+export interface Pos {
+    x: number;
+    y: number;
+}
+
+//键值对
+export interface Pair {
+    key: string;
+    value: string;
+}

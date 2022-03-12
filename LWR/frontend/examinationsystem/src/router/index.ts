@@ -1,5 +1,5 @@
-import {createRouter, createWebHashHistory, Router} from 'vue-router'
-import {config} from '../config'
+import {createRouter, createWebHistory, Router} from 'vue-router'
+import {config} from '@/config'
 import Home from '../views/Home.vue'
 
 const postTitle = " - " + config.siteTitle;
@@ -300,19 +300,36 @@ const routes = [{
             path: 'personal',
             name: 'Personal',
             component: () =>
-                import ('../views/Personal.vue'),
+                import ('../views/Personal/index.vue'),
             meta: {
-                title: "个人中心" + postTitle,
-                pageTitle: "个人中心"
+                title: '个人中心' + postTitle,
+                pageTitle: '个人中心'
             }
         },
         ]
     },
+    //重定向
+    {
+        path:'/',
+        redirect:'/login'
+    },
+    {
+        path:'/admin/',
+        redirect:'/admin/examManage'
+    },
+    {
+        path:'/student/',
+        redirect:'/student/exams'
+    },
+    {
+        path:'/teacher/',
+        redirect:'/teacher/examManage'
+    },
 ]
 
 const router: Router = createRouter({
-    history: createWebHashHistory(),
-    routes
+    history: createWebHistory('/web/'),
+    routes,
 })
 
 //配置标题
