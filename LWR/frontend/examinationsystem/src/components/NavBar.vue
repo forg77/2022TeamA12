@@ -202,7 +202,7 @@ export default defineComponent({
 
 .headimg {
   /* float: right; */
-  margin-right: 30px;
+  margin-right: 70px;
   display: inline-block;
   cursor: pointer;
   transition: color 0.5s;
