@@ -9,25 +9,25 @@
         <div style="display: flex">
           <div
             :class="{
-              btn1: content === 'BasicInfo',
-              btn2: content !== 'BasicInfo',
+              btn1: content === 'AccountManage',
+              btn2: content !== 'AccountManage',
             }"
-            @click="content = 'BasicInfo'"
+            @click="content = 'AccountManage'"
           >
             基本信息
-            <div v-show="content === 'BasicInfo'" class="line"></div>
+            <div v-show="content === 'AccountManage'" class="line"></div>
           </div>
           &nbsp; &nbsp;
           <div
             :class="{
-              btn1: content === 'AccountManage',
-              btn2: content !== 'AccountManage',
+              btn1: content === 'BasicInfo',
+              btn2: content !== 'BasicInfo',
             }"
             class="btn2"
-            @click="content = 'AccountManage'"
+            @click="content = 'BasicInfo'"
           >
             账号管理
-            <div v-show="content === 'AccountManage'" class="line"></div>
+            <div v-show="content === 'BasicInfo'" class="line"></div>
           </div>
         </div>
       </template>
@@ -88,7 +88,7 @@ export default defineComponent({
   components: { Card, BasicInfo, AccountManage },
   data() {
     return {
-      content: "BasicInfo",
+      content: "AccountManage",
     };
   },
 });
