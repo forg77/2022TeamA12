@@ -231,24 +231,56 @@
                       </div>
                       <br />
                       <div>
-                        <button class="score">满分</button
-                        ><button class="score">零分</button>
+                        <button
+                          class="score"
+                          style="background-color: #f0f9ea; color: #67c239;border:solid #67c239 0.5px"
+                        >
+                          满分</button
+                        ><button class="score"
+                          style="background-color: #FEF0F0; color: #F56C6C;border:solid #F56C6C 0.5px"
+                        >零分</button>
                       </div>
                     </div>
                     <div>
-                      <table style="border-collapse:separate;">
+                      <table style="border-collapse: separate">
                         <tr>
                           <td><button class="score">1分</button></td>
                           <td><button class="score">3分</button></td>
                           <td><button class="score">5分</button></td>
-                          <td><button class="score">退出</button></td>
+                          <td style="width: 40px"></td>
+                          <td>
+                            <button
+                              class="score"
+                              style="
+                                width: 80px;
+                                color: white;
+                                background-color: #f56c6c;
+                                border: none;
+                              "
+                            >
+                              退出
+                            </button>
+                          </td>
                         </tr>
-                        <div style="height:10px"></div>
+                        <div style="height: 10px"></div>
                         <tr>
                           <td><button class="score">7分</button></td>
                           <td><button class="score">9分</button></td>
                           <td><button class="score">10分</button></td>
-                          <td><button class="score">提交</button></td>
+                          <td style="width: 40px"></td>
+                          <td>
+                            <button
+                              class="score"
+                              style="
+                                width: 80px;
+                                color: white;
+                                background-color: #409eff;
+                                border: none;
+                              "
+                            >
+                              提交
+                            </button>
+                          </td>
                         </tr>
                       </table>
                     </div>
