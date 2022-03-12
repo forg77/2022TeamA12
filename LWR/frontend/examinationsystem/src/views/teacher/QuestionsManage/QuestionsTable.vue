@@ -85,7 +85,7 @@ export default {
       if (item.examId == null)
         this.$router.push("/teacher/questionManage/" + item.id);
       else
-        this.$router.push("/teacher/examEdit/" + item.id);
+        this.$router.push("/teacher/examEdit/" + item.examId);
     },
   },
   components: {
