@@ -88,6 +88,7 @@ import {defineComponent, PropType} from "vue";
 import {NavItem, Pair, Pos} from "@/models";
 import login from "@/views/Login.vue";
 import ClickDropDown from "@/components/ClickDropDown.vue";
+import axios from "axios";
 
 export default defineComponent({
   components: {ClickDropDown},
@@ -145,7 +146,17 @@ export default defineComponent({
     onMenuItemClick(key: string) {
       if (key == 'personal') {
         this.$router.push('/config/personal');
+      } else if (key == 'logout') {
+        this.logout();
       }
+    },
+    logout() {
+      axios({
+        url: 'user/logout'
+      }).then((res) => {
+        if (res.data.errCode == 0)
+          this.$router.push('/login');
+      });
     },
     onHeadimgClick(event: MouseEvent) {
       event.stopPropagation();

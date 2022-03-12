@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="drop-down-container">
     <select class="dropdown" @change="$emit('change',$event.target.value);" :style="{width:width+'px',height:height+'px'}">
       <option v-for="val in values" :key="val.value" :value="val.value" >{{val.text}}</option>
     </select>
@@ -29,7 +29,7 @@ export default {
 </script>
 
 <style>
-.container {
+.drop-down-container {
   display: inline-block;
   vertical-align: middle;
 }

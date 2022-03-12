@@ -4,15 +4,25 @@ import Home from '../views/Home.vue'
 
 const postTitle = " - " + config.siteTitle;
 
-const routes = [{
-    path: '/login',
-    name: "Login",
-    component: () =>
-        import ('../views/Login.vue'),
-    meta: {
-        title: "登录"
-    }
-},
+const routes = [
+    {
+        path: '/login',
+        name: "Login",
+        component: () =>
+            import ('../views/Login.vue'),
+        meta: {
+            title: "登录"
+        }
+    },
+    {
+        path: '/register',
+        name: "Register",
+        component: () =>
+            import ('../views/Register.vue'),
+        meta: {
+            title: "注册"
+        }
+    },
     {
         path: '/admin',
         name: "Admin",
@@ -310,20 +320,20 @@ const routes = [{
     },
     //重定向
     {
-        path:'/',
-        redirect:'/login'
+        path: '/',
+        redirect: '/login'
     },
     {
-        path:'/admin/',
-        redirect:'/admin/examManage'
+        path: '/admin/',
+        redirect: '/admin/examManage'
     },
     {
-        path:'/student/',
-        redirect:'/student/exams'
+        path: '/student/',
+        redirect: '/student/exams'
     },
     {
-        path:'/teacher/',
-        redirect:'/teacher/examManage'
+        path: '/teacher/',
+        redirect: '/teacher/examManage'
     },
 ]
 

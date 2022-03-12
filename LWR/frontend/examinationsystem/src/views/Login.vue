@@ -9,7 +9,7 @@
       </template>
     </DialogBox>
     <div class="left">
-      <button class="register-btn">去注册</button>
+      <button class="register-btn" @click="$router.push('/register')">去注册</button>
     </div>
     <div class="right">
       <div class="title">欢迎登录</div>
@@ -101,7 +101,7 @@ export default defineComponent({
         let permissions = this.config.user.permission.split(",");
         if (permissions.indexOf("admin") >= 0) {
           this.$router.push("/admin");
-        } else if (permissions.indexOf("teacher")) {
+        } else if (permissions.indexOf("teacher") >= 0) {
           this.$router.push("/teacher");
         } else {
           this.$router.push("/student");
