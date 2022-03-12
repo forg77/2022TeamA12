@@ -9,9 +9,9 @@
             </tr>
             <tr>
               <td>
-                    <span style="color: rgb(192, 192, 192); font-size: 12px"
-                    >设置复杂密码更能保护您的账号安全</span
-                    >
+                <span style="color: rgb(192, 192, 192); font-size: 12px"
+                  >设置复杂密码更能保护您的账号安全</span
+                >
               </td>
             </tr>
           </table>
@@ -29,9 +29,9 @@
             </tr>
             <tr>
               <td>
-                    <span style="color: rgb(192, 192, 192); font-size: 12px"
-                    >认证信息与您密切相关，请谨慎修改</span
-                    >
+                <span style="color: rgb(192, 192, 192); font-size: 12px"
+                  >认证信息与您密切相关，请谨慎修改</span
+                >
               </td>
             </tr>
           </table>
@@ -49,9 +49,9 @@
             </tr>
             <tr>
               <td>
-                    <span style="color: rgb(192, 192, 192); font-size: 12px"
-                    >为保证您的账号安全，需要满足相应的条件，才能提交注销申请</span
-                    >
+                <span style="color: rgb(192, 192, 192); font-size: 12px"
+                  >为保证您的账号安全，需要满足相应的条件，才能提交注销申请</span
+                >
               </td>
             </tr>
           </table>
@@ -66,10 +66,19 @@
 
 <script>
 export default {
-  name: "BasicInfo"
-}
+  name: "BasicInfo",
+};
 </script>
 
 <style scoped>
-
+button {
+  width: 120px;
+  height: 40px;
+  background: #338afb;
+  opacity: 1;
+  border-radius: 5px;
+  color: white;
+  border: none;
+  outline: none;
+}
 </style>

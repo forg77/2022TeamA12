@@ -1,17 +1,33 @@
 <template>
   <div class="outer">
-    <Card :width="788" style="margin-right: 30px;margin-left: auto" :headerHeight="64">
+    <Card
+      :width="788"
+      style="margin-right: 30px; margin-left: auto"
+      :headerHeight="64"
+    >
       <template v-slot:headerLeft>
         <div style="display: flex">
-          <div :class="{btn1:content==='BasicInfo',btn2:content!=='BasicInfo'}" @click="content='BasicInfo'">
+          <div
+            :class="{
+              btn1: content === 'BasicInfo',
+              btn2: content !== 'BasicInfo',
+            }"
+            @click="content = 'BasicInfo'"
+          >
             基本信息
-            <div v-show="content==='BasicInfo'" class="line"></div>
+            <div v-show="content === 'BasicInfo'" class="line"></div>
           </div>
           &nbsp; &nbsp;
-          <div :class="{btn1:content==='AccountManage',btn2:content!=='AccountManage'}" class="btn2"
-               @click="content='AccountManage'">
+          <div
+            :class="{
+              btn1: content === 'AccountManage',
+              btn2: content !== 'AccountManage',
+            }"
+            class="btn2"
+            @click="content = 'AccountManage'"
+          >
             账号管理
-            <div v-show="content==='AccountManage'" class="line"></div>
+            <div v-show="content === 'AccountManage'" class="line"></div>
           </div>
         </div>
       </template>
@@ -24,30 +40,57 @@
       </template>
     </Card>
     <Card :width="314" style="margin-right: auto" :headerHeight="64">
-      <template v-slot:headerLeft>
-        认证信息
-      </template>
+      <template v-slot:headerLeft> 认证信息 </template>
 
       <template v-slot:content>
-        身份
+        <table
+          style="
+            margin: auto;
+            border-collapse: separate;
+            border-spacing: 20px 30px;
+          "
+        >
+          <tr>
+            <td style="text-align: right; color: rgb(201, 201, 201)">身份</td>
+            <td>学生</td>
+          </tr>
+          <tr>
+            <td style="text-align: right; color: rgb(201, 201, 201)">学号</td>
+            <td>2019329621278</td>
+          </tr>
+          <tr>
+            <td style="text-align: right; color: rgb(201, 201, 201)">学校</td>
+            <td>哈佛大学</td>
+          </tr>
+          <tr>
+            <td style="text-align: right; color: rgb(201, 201, 201)">学院</td>
+            <td>信息学院</td>
+          </tr>
+          <tr>
+            <td style="text-align: right; color: rgb(201, 201, 201)">
+              入学年份
+            </td>
+            <td>2019</td>
+          </tr>
+        </table>
       </template>
     </Card>
   </div>
 </template>
 
 <script lang="ts">
-import Card from '@/components/Card.vue';
-import {defineComponent} from 'vue';
-import AccountManage from '@/views/Personal/AccountManage.vue';
-import BasicInfo from '@/views/Personal/BasicInfo.vue';
+import Card from "@/components/Card.vue";
+import { defineComponent } from "vue";
+import AccountManage from "@/views/Personal/AccountManage.vue";
+import BasicInfo from "@/views/Personal/BasicInfo.vue";
 
 export default defineComponent({
-  components: {Card, BasicInfo, AccountManage},
+  components: { Card, BasicInfo, AccountManage },
   data() {
     return {
-      content: 'BasicInfo'
+      content: "BasicInfo",
     };
-  }
+  },
 });
 </script>
 <style lang="scss" scoped>
@@ -121,7 +164,6 @@ export default defineComponent({
     border: solid 1px rgb(151, 151, 151);
   }
 }
-
 
 .outer {
   display: flex;
