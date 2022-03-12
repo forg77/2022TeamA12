@@ -11,4 +11,5 @@ import java.util.Map;
 @Mapper
 public interface UserMapper {
     User getUserByUsername(String username);
+    Integer addUser(User user);
 }

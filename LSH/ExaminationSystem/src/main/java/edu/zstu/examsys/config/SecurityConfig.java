@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -44,9 +45,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/user/needLogin")
                 .loginProcessingUrl("/formLogin");
 
+        http.logout().logoutUrl("/user/logout").logoutSuccessHandler(logoutSuccessHandler());
+
         http.authorizeRequests()
-                .antMatchers("/user/login", "/user/needLogin").permitAll()
+                .antMatchers("/user/login", "/user/needLogin","/user/register").permitAll()
                 .anyRequest().authenticated();
+
         http.csrf().disable();
         http.cors();
     }
@@ -101,6 +105,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             @Override
             public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
                 CommonData data = new CommonData(ErrorCode.LOGIN_FAILED, "登录失败，" + exception.getMessage());
+                response.setContentType("application/json;charset=UTF-8");
+                response.getWriter().print(JSON.toJSONString(data));
+            }
+        };
+    }
+
+    @Bean
+    public LogoutSuccessHandler logoutSuccessHandler(){
+        return new LogoutSuccessHandler() {
+            @Override
+            public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                CommonData data = new CommonData(ErrorCode.SUCCESS, "退出登录成功");
                 response.setContentType("application/json;charset=UTF-8");
                 response.getWriter().print(JSON.toJSONString(data));
             }

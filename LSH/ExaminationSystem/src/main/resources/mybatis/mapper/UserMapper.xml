@@ -16,4 +16,22 @@
         WHERE
             `username` = #{username};
     </select>
+
+    <insert id="addUser" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `user` (
+            `username`,
+            `password`,
+            `nickname`,
+            `register_time`,
+            `permission`
+        )
+        VALUES
+        (
+            #{username},
+            #{password},
+            #{nickname},
+            #{registerTime},
+            #{permission}
+        );
+    </insert>
 </mapper>

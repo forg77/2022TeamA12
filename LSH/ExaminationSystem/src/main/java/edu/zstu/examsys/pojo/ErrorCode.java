@@ -4,6 +4,9 @@ public class ErrorCode {
     private ErrorCode() {
     }
 
+    //未知错误
+    public static final int UNKNOWN_ERROR = -1;
+
     //成功
     public static final int SUCCESS = 0;
     //1--，用户错误
@@ -11,6 +14,8 @@ public class ErrorCode {
     public static final int NO_LOGIN = 101;
     //登录失败
     public static final int LOGIN_FAILED = 102;
+    //用户已存在
+    public static final int USER_ALREADY_EXISTS = 103;
 
     //2--，数据库错误
     //插入失败
