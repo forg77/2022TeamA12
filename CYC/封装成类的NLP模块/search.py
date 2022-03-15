@@ -5,6 +5,7 @@ BERT_PATH = "/home/chenyuchong/NLP-Series-sentence-embeddings/output/sts-sbert-m
 ARRAY_PATH = "array.npy"
 TEXT_PATH = "news.txt"
 QUERY_PATH = "query.txt"
+ANS_PATH = "ans.txt"
 LAST_COL = 0
 vec_array = numpy.load(ARRAY_PATH)
 print("finished loading vectors")
@@ -51,10 +52,14 @@ while True:
             count += 1
         sim_array.sort(reverse=True)
         count = 1
-        for items in sim_array:
-            if count >= 5:
-                break
-            print(count,items[0],text_array[items[1]])
-            count += 1
+        with open(ANS_PATH,'a+',encoding='utf-8') as writing:
+            for items in sim_array:
+                if count >= 5:
+                    break
+                print(count,items[0],text_array[items[1]])
+
+                count += 1
+                writing.write(str(items[1])+"\n")
+
 
     LAST_COL = CUR_COL
