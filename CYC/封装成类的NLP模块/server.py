@@ -17,5 +17,5 @@ while True:
         conn.sendall(sent)
         if input_str == 'done':
             break
-    ans = conn.recv(1024).decode(encoding='utf-8')
+    ans = conn.recv(4096).decode(encoding='utf-8')
     print(ans)
