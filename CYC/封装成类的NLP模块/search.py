@@ -9,21 +9,17 @@ QUERY_PATH = "query.json"
 ANS_PATH = "ans.txt"
 LAST_PCS = ""
 vec_array = numpy.load(ARRAY_PATH)
-BANNED_LIST = []
 print("finished loading vectors")
 device = torch.device('cpu')
 model = SentenceTransformer(BERT_PATH,device=device)
-text_array = []
-with open(TEXT_PATH,'r+',encoding='utf=8') as reading:
+BANNED_PATH = 'banned_list.txt'
+BANNED_LIST = []
+with open(BANNED_PATH,'r+') as reading:
     while True:
-        line = reading.readline()
-        if not line:
+        x = reading.readline()
+        if not x:
             break
-        else:
-            text_array.append(line)
-
-print("finished reading")
-text_len = len(text_array)
+        BANNED_LIST.append(x)
 while True:
     search_reading = open(QUERY_PATH,'r',encoding='utf-8')
     ftime = search_reading.readline()
@@ -66,9 +62,15 @@ while True:
             for items in sim_array:
                 if count >= 5:
                     break
-                print(count,items[0],text_array[items[1]])
+                #print(count,items[0],text_array[items[1]])
+                check_key = True
+                for banned_item in BANNED_LIST:
+                    if banned_item == items:
+                        check_key = False
+                        break
+                if check_key:
+                    count += 1
+                    writing.write(str(items[1])+",")
 
-                count += 1
-                writing.write(str(items[1])+",")
 
 

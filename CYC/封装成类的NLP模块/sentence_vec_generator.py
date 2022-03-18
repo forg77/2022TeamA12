@@ -4,9 +4,10 @@ import torch
 import numpy
 BERT_PATH = "/home/chenyuchong/NLP-Series-sentence-embeddings/output/sts-sbert-macbert-64-2022-03-05_10-23-37"
 ARRAY_PATH = "array.npy"
+VECTORIZE_PATH = 'news.txt'
 device = torch.device('cpu')
 model = SentenceTransformer(BERT_PATH,device=device)
-with open('news.txt','r+',encoding='utf-8') as reading:
+with open(VECTORIZE_PATH,'r+',encoding='utf-8') as reading:
     while True:
         line = reading.readline()
         if line:
