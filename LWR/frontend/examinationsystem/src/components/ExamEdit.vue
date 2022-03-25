@@ -385,7 +385,7 @@
             <td>
               <div class="exam-content card" style="width: 100%; height: 426px">
                 <div v-if="this.order.part && this.order.part.length > 0">
-                  <div style="width: 100%; height: 40px">
+                  <div style="width: 100%; height: 40px;display: flex">
                     第{{ currentTitleNumber }}题 分数：<input
                       style="height: 25px; width: 40px; text-align: center"
                       class="input"
@@ -403,6 +403,12 @@
                         style="margin-left: 10px"
                         @click="deleteQuestion()"
                     >删除题目</span
+                    >
+                    <span
+                        class="order"
+                        style="margin-left: auto"
+                        @click="deleteQuestion()"
+                    >自动批改</span
                     >
                   </div>
                   <div style="width: 100%">
@@ -1256,6 +1262,7 @@ input[type="radio"]:checked {
   width: 24px;
   height: 24px;
   color: $primary-color;
+  transition: color 0.5s;
 }
 
 .mark-icon-select {
@@ -1276,6 +1283,7 @@ input[type="radio"]:checked {
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  transition: background-color 0.5s;
 }
 
 .mark-circle-select {

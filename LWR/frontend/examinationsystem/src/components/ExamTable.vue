@@ -264,6 +264,8 @@ export default {
       if (key === 'delete') {
         // this.deleteExam(this.selectExam["id"]);
         this.showDeleteDialog = true;
+      } else if (key === 'correct') {
+        this.$router.push('/teacher/examCorrect/' + this.selectExam.id);
       }
     }
   },
