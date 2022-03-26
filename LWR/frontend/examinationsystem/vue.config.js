@@ -1,4 +1,7 @@
 const path = require('path')
+const AutoImport = require('unplugin-auto-import/webpack')
+const Components = require('unplugin-vue-components/webpack')
+const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
 
 module.exports = {
     publicPath: "/web/",
@@ -15,5 +18,4 @@ module.exports = {
           symbolId: 'icon-[name]'  //给 symbo 配置 id
         })
     },
-
 }
