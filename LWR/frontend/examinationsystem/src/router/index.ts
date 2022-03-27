@@ -220,6 +220,16 @@ const routes = [
                     pageTitle: "考试编辑"
                 }
             },
+            {
+                path: 'examCorrect/:examId',
+                name: 'examCorrect',
+                component: () =>
+                    import ('../views/teacher/ExamCorrect.vue'),
+                meta: {
+                    title: "考试批改" + postTitle,
+                    pageTitle: "考试批改"
+                }
+            },
         ]
     },
     {

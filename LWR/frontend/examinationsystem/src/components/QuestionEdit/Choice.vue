@@ -57,7 +57,7 @@
             </td>
             <td>
               <TextEdit deleteString="删除选项" @deleteClick="question.choice.splice(index, 1)"
-                        :deleteMenu="true"></TextEdit>
+                        :deleteMenu="true" v-model:content="question.choice[index]"></TextEdit>
             </td>
             <!--          </div>-->
 
