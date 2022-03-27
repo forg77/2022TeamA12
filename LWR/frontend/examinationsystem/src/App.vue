@@ -8,16 +8,26 @@
       <component :is="Component" />
     </transition>
   </router-view> -->
-  <LoadingFull :show="$store.state.config.showLoading"></LoadingFull>
-  <router-view></router-view>
+
+  <el-config-provider size="large" :locale="locale">
+    <LoadingFull :show="$store.state.config.showLoading"></LoadingFull>
+    <router-view></router-view>
+  </el-config-provider>
 </template>
 
 <script lang="ts">
 import {defineComponent} from "vue";
 import LoadingFull from "@/components/LoadingFull.vue";
+import {ElConfigProvider} from 'element-plus'
+import {zhCn} from "element-plus/es/locale";
 
 export default defineComponent({
-  components: {LoadingFull}
+  components: {LoadingFull, ElConfigProvider},
+  data() {
+    return {
+      locale: zhCn
+    };
+  }
 });
 </script>
 

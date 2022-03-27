@@ -18,4 +18,14 @@ module.exports = {
           symbolId: 'icon-[name]'  //给 symbo 配置 id
         })
     },
+    configureWebpack: {
+        plugins: [
+            AutoImport({
+                resolvers: [ElementPlusResolver()]
+            }),
+            Components({
+                resolvers: [ElementPlusResolver()]
+            })
+        ]
+    }
 }

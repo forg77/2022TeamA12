@@ -171,6 +171,7 @@ const routes = [
                 title: "考试管理",
                 content: [
                     {title: "考试管理", link: "/teacher/examManage"},
+                    {title: "考试监考", link: "/teacher/invigilating"},
                 ],
             }, {
                 title: "题库管理",
@@ -182,7 +183,7 @@ const routes = [
         },
         children: [{
             path: 'questionsManage',
-            name: 'teacherQuestionsManage',
+            name: 'TeacherQuestionsManage',
             component: () =>
                 import ('../views/teacher/QuestionsManage/index.vue'),
             meta: {
@@ -192,7 +193,7 @@ const routes = [
         },
             {
                 path: 'questionManage/:bankId',
-                name: 'teacherQuestionManage',
+                name: 'TeacherQuestionManage',
                 component: () =>
                     import ('../views/teacher/QuestionsManage/QuestionTable.vue'),
                 meta: {
@@ -202,7 +203,7 @@ const routes = [
             },
             {
                 path: 'examManage',
-                name: 'teacherExamManage',
+                name: 'TeacherExamManage',
                 component: () =>
                     import ('../views/teacher/ExamManage.vue'),
                 meta: {
@@ -212,7 +213,7 @@ const routes = [
             },
             {
                 path: 'examEdit/:examId',
-                name: 'teacherExamEdit',
+                name: 'TeacherExamEdit',
                 component: () =>
                     import ('../views/teacher/ExamEdit.vue'),
                 meta: {
@@ -222,12 +223,32 @@ const routes = [
             },
             {
                 path: 'examCorrect/:examId',
-                name: 'examCorrect',
+                name: 'ExamCorrect',
                 component: () =>
                     import ('../views/teacher/ExamCorrect.vue'),
                 meta: {
                     title: "考试批改" + postTitle,
                     pageTitle: "考试批改"
+                }
+            },
+            {
+                path: 'addExam',
+                name: 'AddExam',
+                component: () =>
+                    import ('../views/teacher/AddExam/index.vue'),
+                meta: {
+                    title: "添加考试" + postTitle,
+                    pageTitle: "添加考试"
+                }
+            },
+            {
+                path: 'invigilating',
+                name: 'Invigilating',
+                component: () =>
+                    import ('../views/teacher/Invigilating.vue'),
+                meta: {
+                    title: "考试监考" + postTitle,
+                    pageTitle: "考试监考"
                 }
             },
         ]

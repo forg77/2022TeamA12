@@ -4,17 +4,15 @@ import App from './App.vue'
 import router from './router/index'
 import SvgIcon from '@/components/Svgicon/index.vue'
 import { config } from '@/config.ts'
-import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 
 import * as echarts from 'echarts';
-import './plugins/element.js'
-
 const app = createApp(App);
-app.use(router).use(ElementPlus).use(ElementPlus, { size: 'small', zIndex: 3000 })
+app.use(router)
   .component('svg-icon', SvgIcon);
 
 // app.config.globalProperties.$echarts = echarts
+
 
 const store = createStore({
   state() {
