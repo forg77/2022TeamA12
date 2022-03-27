@@ -70,8 +70,15 @@
           ><button class="BTN">分类:领域</button>
         </template>
         <template v-slot:content>
-          <div ref="point1" style="width: 32%; height: 200px"></div>
-          <div ref="point2" style="width: 32%; height: 200px"></div>
+          <div style="width: 32%">
+            <div ref="point1" style="height: 200px"></div>
+            <div style="text-align: center">知识点1</div>
+          </div>
+
+          <div style="width: 32%">
+            <div ref="point2" style="height: 200px"></div>
+            <div style="text-align: center">知识点2</div>
+          </div>
         </template>
       </Card>
       <div>
@@ -79,19 +86,26 @@
           <template v-slot:headerLeft> 成绩详情 </template>
           <template v-slot:content>
             <div style="display: flex">
-              <div>
-                <span>班级/年级平均分</span>
+              <div style="width: 20%; text-align: right; padding-top: 60px">
+                <div style="color: #9aa2b5; font-size: 14px">
+                  班级/年级平均分
+                </div>
                 <br />
-                <span>77.5</span>
+                <div style="font-size: 22px; font-weight: bold; color: #5470c6">
+                  77.5
+                </div>
                 <br />
-                <span>总分</span>
+                <div style="color: #9aa2b5; font-size: 14px">总分</div>
               </div>
               <div ref="Gauge" style="width: 40%; height: 250px"></div>
-              <div>
-                <div> 试卷难度系数： </div>
-                <div> 班级/年级最高： </div>
-                <div> 班级/年级最高： </div>
-                <div> 班级/年级方差： </div>
+              <div style="padding-top: 40px">
+                <div style="color: #9aa2b5; font-size: 14px">试卷难度系数：<span style="color:#338AFB">0.8</span></div>
+                <br />
+                <div style="color: #9aa2b5; font-size: 14px">班级/年级最高：<span style="color:#338AFB">95/98</span></div>
+                <br />
+                <div style="color: #9aa2b5; font-size: 14px">班级/年级最高：<span style="color:#338AFB">32/25</span></div>
+                <br />
+                <div style="color: #9aa2b5; font-size: 14px">班级/年级方差：<span style="color:#338AFB">15/13</span></div>
               </div>
             </div>
           </template>
@@ -99,6 +113,7 @@
       </div>
     </div>
   </div>
+
   <div class="dialog" v-if="false">
     <Card :width="750" style="margin-right: auto" :headerHeight="64">
       <template v-slot:headerLeft> 考试列表 </template>
@@ -170,7 +185,6 @@ export default defineComponent({
       },
       series: [
         {
-          name: "Access From",
           type: "pie",
           radius: ["40%", "70%"],
           avoidLabelOverlap: false,
@@ -178,22 +192,12 @@ export default defineComponent({
             show: false,
             position: "center",
           },
-          emphasis: {
-            label: {
-              show: true,
-              fontSize: "40",
-              fontWeight: "bold",
-            },
-          },
           labelLine: {
             show: false,
           },
           data: [
-            { value: 1048, name: "Search Engine" },
-            { value: 735, name: "Direct" },
-            { value: 580, name: "Email" },
-            { value: 484, name: "Union Ads" },
-            { value: 300, name: "Video Ads" },
+            { value: 484, itemStyle: { color: "rgb(145,204,117)" } },
+            { value: 300, itemStyle: { color: "rgb(238,102,102)" } },
           ],
         },
       ],
