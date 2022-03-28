@@ -823,16 +823,16 @@ export default {
       data.orderJson = JSON.stringify(this.order);
       data.fullMark = this.fullMark;
 
-      // axios({
-      //   url: "exam/addExam",
-      //   data: data,
-      // })
-      //     .then((res) => {
-      //       if (res.data.errCode != 0) alert("保存失败");
-      //     })
-      //     .catch(() => {
-      //       alert("保存失败");
-      //     });
+      axios({
+        url: "exam/addExam",
+        data: data,
+      })
+          .then((res) => {
+            if (res.data.errCode != 0) alert("保存失败");
+          })
+          .catch(() => {
+            alert("保存失败");
+          });
     },
     onTypeChange(value) {
       this.exam.type = value;

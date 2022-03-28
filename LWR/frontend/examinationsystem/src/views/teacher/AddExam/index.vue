@@ -67,6 +67,7 @@ export default defineComponent({
         repeatTime: 1,
         calGradeAtOnce: true
       } as ExamForm,
+      examBefore: {} as Exam
     };
   },
   methods: {
@@ -85,7 +86,7 @@ export default defineComponent({
           bankId: undefined,
           type: this.form.examType == ExamType.Fixed ? 'fixed' : 'random',
           selectCountJson: undefined,
-          orderJson: '{"part": []}',
+          orderJson: this.examBefore.orderJson ? this.examBefore.orderJson : '{"part": []}',
           repeatTime: this.form.repeatTime,
           calGradeAtOnce: this.form.calGradeAtOnce,
           fullMark: 0
@@ -175,7 +176,8 @@ export default defineComponent({
     if (this.mode == 'edit') {
       // console.log(JSON.parse(this.$route.params['exam'] as string));
       if (this.$route.params['exam']) {
-        this.toForm(JSON.parse(this.$route.params['exam'] as string));
+        this.examBefore = JSON.parse(this.$route.params['exam'] as string);
+        this.toForm(this.examBefore);
       } else {
         this.$store.state.config.showLoading = true;
         const examId = Number.parseInt(this.$route.params['examId'] as string);
@@ -187,7 +189,8 @@ export default defineComponent({
         }).then((res) => {
           const data: Response = res.data;
           if (data.errCode == ErrCode.SUCCESS) {
-            this.toForm(data.data.data[0]);
+            this.examBefore = data.data.data[0];
+            this.toForm(this.examBefore);
           } else {
             alert("获取失败！");
             this.$router.replace("/teacher/examEdit/" + Number.parseInt(this.$route.params['examId'] as string));
