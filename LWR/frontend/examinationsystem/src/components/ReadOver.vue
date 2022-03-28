@@ -10,10 +10,10 @@
     </div>
   </transition> -->
   <table
-    class="exam"
-    cellspacing="0"
-    cellpadding="0"
-    style="width: calc(100% - 150px); max-width: 1300px"
+      class="exam"
+      cellspacing="0"
+      cellpadding="0"
+      style="width: calc(100% - 150px); max-width: 1300px"
   >
     <tr>
       <td style="width: 262px">
@@ -21,21 +21,21 @@
           <tr>
             <td>
               <div class="card" style="height: 84px; margin-top: 0">
-                <table style="margin: auto; margin-top: 15px">
+                <table style="margin: 10px auto auto;">
                   <tr>
-                    <td style="font-weight: bold">本题满分:</td>
-                    <td><span style="color: blue">10</span></td>
-                    <td style="font-weight: bold">分</td>
-                    <td style="font-weight: bold">自动阅卷</td>
+                    <td class="info1">本题满分:</td>
+                    <td><span class="info1 blue">10</span></td>
+                    <td class="info1">分</td>
+                    <td style="padding-left: 17px" class="info1">自动阅卷</td>
                   </tr>
                   <tr>
-                    <td style="font-weight: bold">给分间隔:</td>
+                    <td class="info1">给分间隔:</td>
                     <td>
-                      <span style="color: blue">0.5</span>
+                      <span class="info1 blue">0.5</span>
                     </td>
-                    <td style="font-weight: bold">分</td>
-                    <td>
-                      <input type="checkbox" class="switch" />
+                    <td class="info1">分</td>
+                    <td style="padding-left: 24px">
+                      <input type="checkbox" class="switch"/>
                     </td>
                   </tr>
                 </table>
@@ -45,39 +45,40 @@
           <tr>
             <td>
               <div
-                class="card"
-                style="width: 262px; height: 506px; padding: 20px"
+                  class="card"
+                  style="width: 262px; height: 506px; padding: 20px"
               >
-                <div style="font-weight: bold">题目列表:</div>
-                <br />
+                <div class="info1">题目列表:</div>
+                <br/>
                 <div>
-                  <div style="font-size: 12px">
+                  <div style="font-size: 14px">
                     1.衬衫的价格是不是九磅十五……
                   </div>
                   <table>
                     <tr>
                       <td>
+                        <el-progress style="width:230px" :percentage="50"/>
                         <!-- 进度条 -->
-                        <div
-                          style="
-                            height: 3px;
-                            width: 150px;
-                            background-color: rgb(199, 199, 199);
-                            border-radius: 5px;
-                            margin-right: 20px;
-                          "
-                        >
-                          <div
-                            style="
-                              height: 3px;
-                              width: 50%;
-                              background-color: #338afb;
-                              border-radius: 5px;
-                            "
-                          ></div>
-                        </div>
+                        <!--                        <div-->
+                        <!--                            style="-->
+                        <!--                            height: 3px;-->
+                        <!--                            width: 150px;-->
+                        <!--                            background-color: rgb(199, 199, 199);-->
+                        <!--                            border-radius: 5px;-->
+                        <!--                            margin-right: 20px;-->
+                        <!--                          "-->
+                        <!--                        >-->
+                        <!--                          <div-->
+                        <!--                              style="-->
+                        <!--                              height: 3px;-->
+                        <!--                              width: 50%;-->
+                        <!--                              background-color: #338afb;-->
+                        <!--                              border-radius: 5px;-->
+                        <!--                            "-->
+                        <!--                          ></div>-->
+                        <!--                        </div>-->
                       </td>
-                      <td><span style="font-size: 12px">50%</span></td>
+                      <!--                      <td><span style="font-size: 12px">50%</span></td>-->
                     </tr>
                   </table>
                 </div>
@@ -91,27 +92,27 @@
           <tr>
             <td>
               <div
-                class="card"
-                style="width: 100%; height: 84px; margin-top: 0"
+                  class="card"
+                  style="width: 100%; height: 84px; margin-top: 0"
               >
                 <table
-                  cellpadding="0"
-                  cellspacing="0"
-                  style="height: 100%; width: 100%; color: black; padding: 14px"
+                    cellpadding="0"
+                    cellspacing="0"
+                    style="height: 100%; width: 100%; color: black; padding: 14px"
                 >
                   <tr>
                     <td style="vertical-align: top">
                       <table
-                        cellpadding="0"
-                        cellspacing="0"
-                        style="width: 100%"
+                          cellpadding="0"
+                          cellspacing="0"
+                          style="width: 100%"
                       >
                         <tr>
                           <td>
                             <table cellpadding="0" cellspacing="0">
                               <tr>
                                 <td
-                                  style="
+                                    style="
                                     font-weight: bold;
                                     font-size: 21px;
                                     padding-right: 28px;
@@ -120,7 +121,7 @@
                                   {{ exam.title }}
                                 </td>
                                 <td
-                                  style="
+                                    style="
                                     font-size: 14px;
                                     opacity: 0.7;
                                     vertical-align: bottom;
@@ -142,39 +143,39 @@
                   <tr>
                     <td style="vertical-align: bottom">
                       <table
-                        cellpadding="0"
-                        cellspacing="0"
-                        style="width: 100%; font-size: 14px"
+                          cellpadding="0"
+                          cellspacing="0"
+                          style="width: 100%; font-size: 14px"
                       >
                         <tr>
                           <td>
                             个人任务：<span
                               class="val-text"
                               style="margin-right: 28px"
-                              >{{ exam.questionsCount }}</span
-                            >
+                          >{{ exam.questionsCount }}</span
+                          >
                             个人平均分：<span
                               class="val-text"
                               style="margin-right: 28px"
-                              >{{ exam.fullMark }}</span
-                            >
+                          >{{ exam.fullMark }}</span
+                          >
                             上一份耗时：<span class="val-text">{{
                               stopTimeString
                             }}</span>
                           </td>
                           <td style="text-align: right">
                             <svg-icon
-                              iconName="sandglass"
-                              className="sandglass"
+                                iconName="sandglass"
+                                className="sandglass"
                             ></svg-icon>
                             <span style="vertical-align: middle">
                               总耗时：<span class="val-text">{{
                                 Math.floor(remainingTime / 1000 / 60)
                               }}</span
-                              >分钟<span class="val-text">{{
+                            >分钟<span class="val-text">{{
                                 Math.floor((remainingTime / 1000) % 60)
                               }}</span
-                              >秒
+                            >秒
                             </span>
                           </td>
                         </tr>
@@ -188,27 +189,27 @@
           <tr>
             <td>
               <div
-                class="exam-content card"
-                style="width: 100%; height: 426px; display: flex"
+                  class="exam-content card"
+                  style="width: 100%; height: 426px; display: flex"
               >
                 <div style="height: 100%; width: 45%; padding: 20px">
-                  <div style="height: 50%; width: 100%">当前题目:</div>
-                  <div style="height: 50%; width: 100%">参考答案:</div>
+                  <div class="info1" style="height: 50%; width: 100%">当前题目:</div>
+                  <div class="info1" style="height: 50%; width: 100%">参考答案:</div>
                 </div>
                 <div
-                  class="line"
-                  style="height: 100%; border: solid 0.5px"
+                    class="line"
+                    style="height: 100%; border: 1px solid #707070; width: 0;border-left-style: none"
                 ></div>
                 <div style="height: 100%; width: 55%">
-                  <div style="width: 100%; height: 70%; padding: 20px">
+                  <div class="info1" style="width: 100%; height: 70%; padding: 20px">
                     考生答案:
                   </div>
                   <div
-                    class="line"
-                    style="width: 100%; border: solid 0.5px; height: 0.05%"
+                      class="line"
+                      style="width: 100%; border:1px solid #707070; height: 0;border-bottom-style: none"
                   ></div>
                   <div
-                    style="
+                      style="
                       width: 100%;
                       height: 29.8%;
                       padding: 20px;
@@ -217,41 +218,58 @@
                   >
                     <div>
                       <div>
+                        <span class="info1">
                         分值:
-                        <input
-                          type="text"
-                          placeholder="请输入分值"
-                          style="
-                            width: 95px;
-                            height: 30px;
-                            border-radius: 5px;
-                            border: solid 0.8px;
-                          "
-                        />
+                        </span>
+                        <!--                        <input-->
+                        <!--                            type="text"-->
+                        <!--                            placeholder="请输入分值"-->
+                        <!--                            style="-->
+                        <!--                            width: 95px;-->
+                        <!--                            height: 30px;-->
+                        <!--                            border-radius: 5px;-->
+                        <!--                            border: solid 0.8px;-->
+                        <!--                          "-->
+                        <!--                        />-->
+                        <el-input
+                            clearable
+                            v-model.number="score"
+                            size="small"
+                            placeholder="请输入分值"
+                            input-style="width:95px"/>
                       </div>
-                      <br />
+                      <br/>
                       <div>
                         <button
-                          class="score"
-                          style="background-color: #f0f9ea; color: #67c239;border:solid #67c239 0.5px"
+                            class="score"
+                            style="background-color: #f0f9ea; color: #67c239;border:solid #67c239 0.5px"
                         >
-                          满分</button
-                        ><button class="score"
-                          style="background-color: #FEF0F0; color: #F56C6C;border:solid #F56C6C 0.5px"
-                        >零分</button>
+                          满分
+                        </button
+                        >
+                        <button class="score"
+                                style="background-color: #FEF0F0; color: #F56C6C;border:solid #F56C6C 0.5px"
+                        >零分
+                        </button>
                       </div>
                     </div>
                     <div>
                       <table style="border-collapse: separate">
                         <tr>
-                          <td><button class="score">1分</button></td>
-                          <td><button class="score">3分</button></td>
-                          <td><button class="score">5分</button></td>
+                          <td>
+                            <button class="score">1分</button>
+                          </td>
+                          <td>
+                            <button class="score">3分</button>
+                          </td>
+                          <td>
+                            <button class="score">5分</button>
+                          </td>
                           <td style="width: 40px"></td>
                           <td>
                             <button
-                              class="score"
-                              style="
+                                class="score"
+                                style="
                                 width: 80px;
                                 color: white;
                                 background-color: #f56c6c;
@@ -264,14 +282,20 @@
                         </tr>
                         <div style="height: 10px"></div>
                         <tr>
-                          <td><button class="score">7分</button></td>
-                          <td><button class="score">9分</button></td>
-                          <td><button class="score">10分</button></td>
+                          <td>
+                            <button class="score">7分</button>
+                          </td>
+                          <td>
+                            <button class="score">9分</button>
+                          </td>
+                          <td>
+                            <button class="score">10分</button>
+                          </td>
                           <td style="width: 40px"></td>
                           <td>
                             <button
-                              class="score"
-                              style="
+                                class="score"
+                                style="
                                 width: 80px;
                                 color: white;
                                 background-color: #409eff;
@@ -293,18 +317,18 @@
             <td>
               <div class="card" style="width: 100%; height: 70px">
                 <table
-                  cellpadding="0"
-                  cellspacing="0"
-                  style="width: 100%; height: 100%"
+                    cellpadding="0"
+                    cellspacing="0"
+                    style="width: 100%; height: 100%"
                 >
                   <tr>
                     <td style="width: 33%; text-align: right">
                       <!-- <table border="1" style="vertical-align:middle"> -->
 
                       <span
-                        class="next"
-                        @click="setTitleNumber(currentTitleNumber - 1)"
-                        :class="{ unabled: currentTitleNumber - 1 <= 0 }"
+                          class="next"
+                          @click="setTitleNumber(currentTitleNumber - 1)"
+                          :class="{ unabled: currentTitleNumber - 1 <= 0 }"
                       >
                         <svg-icon className="arrow" iconName="left"></svg-icon>
                         <span style="vertical-align: middle">上一份</span>
@@ -314,9 +338,9 @@
                     <td style="text-align: center">标记</td>
                     <td style="width: 33%">
                       <span
-                        class="next"
-                        @click="setTitleNumber(currentTitleNumber + 1)"
-                        :class="{
+                          class="next"
+                          @click="setTitleNumber(currentTitleNumber + 1)"
+                          :class="{
                           unabled:
                             currentTitleNumber + 1 > titleNumberIndex.length,
                         }"
@@ -339,7 +363,7 @@
 
 <script>
 import axios from "axios";
-import { formatDate } from "@/common.ts";
+import {formatDate} from "@/common.ts";
 import DialogBox from "./DialogBox.vue";
 import Loading from "./Loading.vue";
 // import config from "@/config.js";
@@ -358,7 +382,7 @@ export default {
         completion: {},
         shortAnswer: {},
       },
-      answers: { normal: {} },
+      answers: {normal: {}},
       exam: {},
       examPaper: {},
       order: {},
@@ -380,6 +404,8 @@ export default {
       showJoinDialog: false,
 
       isLoading: false,
+
+      score:0
     };
   },
   methods: {
@@ -409,7 +435,7 @@ export default {
           completion: {},
           shortAnswer: {},
         };
-        this.answers = { normal: {} };
+        this.answers = {normal: {}};
         for (let question of data.questions.choice) {
           question.choice = JSON.parse(question.choice);
           // console.log(question.choice);
@@ -432,7 +458,7 @@ export default {
         if (!this.examPaper) this.showJoinDialog = true;
         else {
           this.stopTime = new Date(
-            this.examPaper.startTime + this.exam.duration
+              this.examPaper.startTime + this.exam.duration
           );
         }
 
@@ -463,7 +489,7 @@ export default {
           completion: {},
           shortAnswer: {},
         };
-        this.answers = { normal: {} };
+        this.answers = {normal: {}};
         for (let question of res.data.data.choice) {
           question.choice = JSON.parse(question.choice);
           // console.log(question.choice);
@@ -590,7 +616,7 @@ export default {
       this.titleNumberIndex = [];
       for (let type of this.order.part) {
         for (let queId of this.order[type]) {
-          this.titleNumberIndex.push({ id: queId, type: type });
+          this.titleNumberIndex.push({id: queId, type: type});
         }
       }
     },
@@ -602,7 +628,7 @@ export default {
     },
     normalQueChange(event, n) {
       let ans =
-        this.answers[this.getAnswerType(this.currentQueType)][this.currentId];
+          this.answers[this.getAnswerType(this.currentQueType)][this.currentId];
       let value = event.target.value;
       if (value == "") {
         if (ans[n]) delete ans[n];
@@ -610,8 +636,8 @@ export default {
         ans[n] = value;
       }
       this.commitAnswer(
-        this.currentId,
-        this.getAnswerType(this.currentQueType)
+          this.currentId,
+          this.getAnswerType(this.currentQueType)
       );
     },
     getObjProCount(obj) {
@@ -634,7 +660,8 @@ export default {
           cancelToken: new axios.CancelToken((c) => {
             this.ajaxCancel = c;
           }),
-        }).then((res) => {});
+        }).then((res) => {
+        });
       }
     },
     async initExam() {
@@ -651,10 +678,10 @@ export default {
       this.currentTime = new Date() + this.correctTimeDiff;
       let interval = setInterval(() => {
         this.currentTime = new Date(
-          new Date().valueOf() + this.correctTimeDiff
+            new Date().valueOf() + this.correctTimeDiff
         );
         this.remainingTime =
-          this.stopTime.valueOf() - this.currentTime.valueOf();
+            this.stopTime.valueOf() - this.currentTime.valueOf();
         // console.log(this.currentTime);
         if (this.remainingTime <= 0 || this.isExamOver) {
           this.remainingTime = 0;
@@ -718,7 +745,9 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "src/styles/variables";
+
 .exam {
   margin-left: auto;
   margin-right: auto;
@@ -849,6 +878,7 @@ export default {
   border-bottom: 1px solid rgba(153, 153, 153, 0.616);
   outline: none;
 }
+
 input[type="radio"] {
   -webkit-appearance: none;
   appearance: none;
@@ -885,6 +915,7 @@ input[type="radio"]:checked {
   background-color: #00000033;
   z-index: 20;
 }
+
 /* Switch开关样式 */
 /* 必须是input为 checkbox class 添加 switch 才能实现以下效果 */
 input[type="checkbox"].switch {
@@ -917,6 +948,7 @@ input[type="checkbox"].switch::after {
 input[type="checkbox"].switch:checked {
   background: #338afb;
 }
+
 /* 当input[type=checkbox]被选中时：伪元素显示下面样式 位置发生变化 */
 input[type="checkbox"].switch:checked::after {
   content: "";
@@ -924,6 +956,7 @@ input[type="checkbox"].switch:checked::after {
   left: 55%;
   top: 2px;
 }
+
 .score {
   height: 30px;
   width: 60px;
@@ -932,5 +965,17 @@ input[type="checkbox"].switch:checked::after {
   border-radius: 5px;
   border: none;
   outline: none;
+}
+
+.info1 {
+  font-size: 17px;
+  font-weight: bold;
+  color: #000000;
+  font-family: Microsoft YaHei, serif;
+
+}
+
+.blue {
+  color: $primary-color;
 }
 </style>
