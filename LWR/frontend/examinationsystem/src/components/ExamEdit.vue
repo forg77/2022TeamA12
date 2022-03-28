@@ -325,7 +325,7 @@
             <td>
               <div class="exam-content card" style="width: 100%; height: 426px">
                 <div v-if="this.order.part && this.order.part.length > 0">
-                  <div style="width: 100%; height: 40px;display: flex">
+                  <div style="width: 100%; height: 40px;display: flex;align-items: center">
                     第{{ currentTitleNumber }}题 分数：<input
                       style="height: 25px; width: 40px; text-align: center"
                       class="input"
@@ -344,12 +344,7 @@
                         @click="deleteQuestion()"
                     >删除题目</span
                     >
-                    <span
-                        class="order"
-                        style="margin-left: auto"
-                        @click="deleteQuestion()"
-                    >自动批改</span
-                    >
+                    <el-checkbox style="margin-left: auto" v-model="autoCorrect">自动批改</el-checkbox>
                   </div>
                   <div style="width: 100%">
                     <QuestionEdit
@@ -453,6 +448,7 @@ export default {
       examPaper: {},
       order: {},
       score: 0,
+      autoCorrect: true,
       questionScores: {},
       currentId: 1,
       currentQueType: "choice",
@@ -568,6 +564,7 @@ export default {
     },
     saveQuestionScore(question) {
       let score = this.score;
+      let autoCorrect = this.autoCorrect;
 
       let before = this.questions[this.currentQueType][this.currentId];
 
@@ -597,6 +594,7 @@ export default {
           questionId: question.id,
           examId: this.examId,
           score: this.score,
+          autoCorrect: this.autoCorrect
         },
       })
           .then((res) => {
@@ -604,6 +602,7 @@ export default {
               alert("修改失败");
             } else {
               this.questionScores[question.id].score = score;
+              this.questionScores[question.id].autoCorrect = autoCorrect;
               if (before.type != question.type) this.commitExam();
             }
           })
@@ -864,6 +863,7 @@ export default {
 
               this.questionScores[question.id] = {};
               this.questionScores[question.id].score = 2;
+              this.questionScores[question.id].autoCorrect = true;
               this.getTitleNumberIndex();
               this.commitExam();
               this.currentTitleNumber =
@@ -878,6 +878,7 @@ export default {
                   questionId: question.id,
                   examId: this.examId,
                   score: this.questionScores[question.id].score,
+                  autoCorrect: this.questionScores[question.id].autoCorrect
                 },
               })
                   .then((res) => {
@@ -972,9 +973,10 @@ export default {
       }
     },
     currentTitleNumber(val) {
-      this.score =
-          this.questionScores[this.currentId] &&
-          this.questionScores[this.currentId].score;
+      if (this.questionScores[this.currentId]) {
+        this.score = this.questionScores[this.currentId].score;
+        this.autoCorrect = this.questionScores[this.currentId].autoCorrect;
+      }
     },
   },
   async mounted() {
@@ -1126,7 +1128,7 @@ export default {
 }
 
 .exam-content {
-  padding: 20px;
+  padding: 10px 20px 20px 20px;
 }
 
 .description {
