@@ -239,6 +239,22 @@ const routes = [
                 meta: {
                     title: "添加考试" + postTitle,
                     pageTitle: "添加考试"
+                },
+                props: {
+                    mode: 'add'
+                }
+            },
+            {
+                path: 'editExamConfig/:examId',
+                name: 'EditExamConfig',
+                component: () =>
+                    import ('../views/teacher/AddExam/index.vue'),
+                meta: {
+                    title: "考试设置" + postTitle,
+                    pageTitle: "考试设置"
+                },
+                props: {
+                    mode: 'edit'
                 }
             },
             {

@@ -5,7 +5,7 @@
       <el-steps style="height: 70px;font-size: 19px" :space="200" :active="step" simple>
         <el-step @click="backTo(0)" style="cursor: pointer;" title="创建方式" :icon="EditPen"/>
         <el-step @click="backTo(1)" style="cursor: pointer;" title="试卷设置" :icon="Setting"/>
-        <el-step style="cursor: pointer;" title="添加考生" :icon="User"/>
+        <el-step @click="backTo(2)" style="cursor: pointer;" title="添加考生" :icon="User"/>
       </el-steps>
     </div>
 
@@ -25,19 +25,20 @@
 
       <div style="width: 190px;margin:35px auto 0 auto">
         <el-button @click="nextStep" type="primary">{{ step &lt; 2 ? '下一步' : '编辑考题' }}</el-button>
-        <el-button @click="$router.push('/teacher/examManage')">取消</el-button>
+        <el-button @click="cancel">取消</el-button>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent} from "vue";
+import {defineComponent, PropType} from "vue";
 import ExamCreation from "@/views/teacher/AddExam/ExamCreation.vue";
 import ExamSettings from "@/views/teacher/AddExam/ExamSettings.vue";
 import AddExaminee from "@/views/teacher/AddExam/AddExaminee.vue";
-import {ExamForm, ExamType, FormationType} from "@/views/teacher/AddExam/ExamConfigSetup";
-import {Exam} from "@/models";
+import {ExamForm, ExamType, FormationType, Platform} from "@/views/teacher/AddExam/ExamConfigSetup";
+import {ErrCode, Exam} from "@/models";
+import {Response} from "@/models";
 import axios from "axios";
 
 export default defineComponent({
@@ -70,6 +71,7 @@ export default defineComponent({
   },
   methods: {
     nextStep() {
+      //完成编辑
       if (this.step >= 2) {
         this.$store.state.config.showLoading = true;
         //构建考试数据
@@ -89,30 +91,47 @@ export default defineComponent({
           fullMark: 0
         } as Exam;
 
-        axios({
-          url: "exam/addNewExam"
-        }).then((res) => {
-          if (res.data["errCode"] != 0) {
+        if (this.mode == 'add') {
+          axios({
+            url: "exam/addNewExam"
+          }).then((res) => {
+            if (res.data["errCode"] != 0) {
+              alert("添加失败");
+            } else {
+              examData.id = res.data.data;
+            }
+            return axios({
+              url: "exam/addExam",
+              data: examData
+            });
+          }).then((res) => {
+            if (res.data["errCode"] != 0) {
+              alert("添加失败");
+            } else {
+              this.$router.replace("/teacher/examEdit/" + examData.id);
+            }
+          }).catch(() => {
             alert("添加失败");
-          } else {
-            examData.id = res.data.data;
-          }
-          return axios({
+          }).finally(() => {
+            this.$store.state.config.showLoading = false;
+          });
+        } else if (this.mode == 'edit') {
+          examData.id = Number.parseInt(this.$route.params['examId'] as string);
+          axios({
             url: "exam/addExam",
             data: examData
-          });
-        }).then((res) => {
-          if (res.data["errCode"] != 0) {
+          }).then((res) => {
+            if (res.data["errCode"] != 0) {
+              alert("添加失败");
+            } else {
+              this.$router.replace("/teacher/examEdit/" + examData.id);
+            }
+          }).catch(() => {
             alert("添加失败");
-          } else {
-            this.$router.replace("/teacher/examEdit/" + examData.id);
-          }
-        }).catch(() => {
-          alert("添加失败");
-        }).finally(() => {
-          this.$store.state.config.showLoading = false;
-        });
-
+          }).finally(() => {
+            this.$store.state.config.showLoading = false;
+          });
+        }
 
         return;
       }
@@ -120,8 +139,66 @@ export default defineComponent({
 
     },
     backTo(val: number) {
-      if (val < this.step)
+      if (this.mode == 'add') {
+        if (val < this.step)
+          this.step = val;
+      } else {
         this.step = val;
+      }
+    },
+    cancel() {
+      if (this.mode == 'add')
+        this.$router.push('/teacher/examManage');
+      else if (this.mode == 'edit')
+        this.$router.push('/teacher/examEdit/' + this.$route.params['examId']);
+    },
+    toForm(exam: Exam) {
+      this.form = {
+        formationType: FormationType.Manual,
+        title: exam.title,
+        subtitle: exam.subtitle,
+        platform: [Platform.Mobile, Platform.Web],
+        year: "2019",
+        difficulty: "简单",
+        time: [new Date(exam.earliestStartTime).toString(), new Date(exam.latestStartTime).toString()],
+        totalScore: exam.fullMark,
+        antiCheat: true,
+        durationMinute: exam.duration / 1000 / 60,
+        durationSecond: exam.duration / 1000 % 60,
+        examType: exam.type == 'fixed' ? ExamType.Fixed : ExamType.Random,
+        repeatTime: exam.repeatTime,
+        calGradeAtOnce: exam.calGradeAtOnce
+      };
+    }
+  },
+  mounted() {
+    if (this.mode == 'edit') {
+      // console.log(JSON.parse(this.$route.params['exam'] as string));
+      if (this.$route.params['exam']) {
+        this.toForm(JSON.parse(this.$route.params['exam'] as string));
+      } else {
+        this.$store.state.config.showLoading = true;
+        const examId = Number.parseInt(this.$route.params['examId'] as string);
+        axios({
+          url: "exam/getExams",
+          data: {
+            id: examId
+          }
+        }).then((res) => {
+          const data: Response = res.data;
+          if (data.errCode == ErrCode.SUCCESS) {
+            this.toForm(data.data.data[0]);
+          } else {
+            alert("获取失败！");
+            this.$router.replace("/teacher/examEdit/" + Number.parseInt(this.$route.params['examId'] as string));
+          }
+        }).catch(() => {
+          alert("获取失败！");
+          this.$router.replace("/teacher/examEdit/" + Number.parseInt(this.$route.params['examId'] as string));
+        }).finally(() => {
+          this.$store.state.config.showLoading = false;
+        });
+      }
     }
   },
   computed: {
@@ -144,6 +221,12 @@ export default defineComponent({
         else
           this.tag = 'AddExaminee';
       }
+    }
+  },
+  props: {
+    mode: {
+      type: String as PropType<string>,
+      default: 'add'
     }
   }
 });
