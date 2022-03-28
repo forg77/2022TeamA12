@@ -1,29 +1,43 @@
 <template>
   <div style="margin-top: 65px">
     <div class="form">
-      <el-form label-width="140px" :model="form1">
+      <el-form label-width="140px" :model="form">
         <el-form-item label="标题：">
           <el-input
-              v-model="form1.title"
+              v-model="form.title"
               clearable
               placeholder="请输入试卷的标题"
               input-style="width:660px"
           />
         </el-form-item>
+        <el-form-item label="全名：">
+          <el-input
+              v-model="form.subtitle"
+              clearable
+              placeholder="请输入试卷的全名"
+              input-style="width:660px"
+          />
+        </el-form-item>
+        <el-form-item label="类型：">
+          <el-select v-model="form.examType" placeholder="选择类型">
+            <el-option label="固定题" :value="0"/>
+            <el-option label="随机抽题" :value="1"/>
+          </el-select>
+        </el-form-item>
         <el-form-item label="学年：">
-          <el-select v-model="form1.year" placeholder="选择学年">
+          <el-select v-model="form.year" placeholder="选择学年">
             <el-option label="2019" value="2019"/>
             <el-option label="2020" value="2020"/>
           </el-select>
         </el-form-item>
         <el-form-item label="平台：">
-          <el-checkbox-group v-model="form1.checklist">
-            <el-checkbox label="移动端"/>
-            <el-checkbox label="WEB端"/>
+          <el-checkbox-group v-model="form.platform">
+            <el-checkbox :label="0">移动端</el-checkbox>
+            <el-checkbox :label="1">WEB端</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="难度：">
-          <el-select v-model="form1.difficulty" placeholder="选择难度">
+          <el-select v-model="form.difficulty" placeholder="选择难度">
             <el-option label="简单" value="easy"/>
             <el-option label="中等" value="normal"/>
             <el-option label="困难" value="difficult"/>
@@ -31,7 +45,7 @@
         </el-form-item>
         <el-form-item label="时间范围：">
           <el-date-picker
-              v-model="form1.time"
+              v-model="form.time"
               type="datetimerange"
               start-placeholder="最早开始时间"
               end-placeholder="最晚开始时间"
@@ -45,20 +59,20 @@
           </el-tooltip>
           <!--              <el-icon color="#338AFB" :size="20"><Timer/></el-icon>-->
 
-<!--          <span class="total">共计：<span class="time-highlight">&nbsp;{{ Math.floor(duration / 1000 / 60) }}&nbsp;</span>分钟<span-->
-<!--              class="time-highlight">&nbsp;{{ Math.floor(duration / 1000) % 60 }}&nbsp;</span>秒</span>-->
+          <!--          <span class="total">共计：<span class="time-highlight">&nbsp;{{ Math.floor(duration / 1000 / 60) }}&nbsp;</span>分钟<span-->
+          <!--              class="time-highlight">&nbsp;{{ Math.floor(duration / 1000) % 60 }}&nbsp;</span>秒</span>-->
         </el-form-item>
         <el-form-item label="考试时间：">
           <svg-icon className="icon" iconName="sandglass"></svg-icon>
           <el-input
-              v-model="form1.title"
+              v-model.number="form.durationMinute"
               clearable
               placeholder="分钟"
               input-style="width:100px"
           />
           <span class="total" style="margin: 0 10px">分钟</span>
           <el-input
-              v-model="form1.title"
+              v-model.number="form.durationSecond"
               clearable
               placeholder="秒"
               input-style="width:100px"
@@ -67,14 +81,14 @@
         </el-form-item>
         <el-form-item v-show="showAuto" label="总分：">
           <el-input
-              v-model="form1.totalscore"
+              v-model="form.totalScore"
               clearable
               style="width: 200px"
               placeholder="请输入试卷的总分"
           />
         </el-form-item>
         <el-form-item label="作弊：">
-          <el-switch v-model="form1.switch"/>
+          <el-switch v-model="form.antiCheat"/>
           <span style="font-size: 24px;color:#606266;margin-left: 6px">&nbsp;开启反作弊</span>
         </el-form-item>
       </el-form>
@@ -195,35 +209,35 @@
         </div>
       </el-card>
     </div>
-
-    <div style="width: 190px; margin: auto">
-      <el-button type="primary">下一步</el-button>
-      <el-button>取消</el-button>
-    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import {Delete, QuestionFilled} from "@element-plus/icons-vue";
-import SvgIcon from "@/components/Svgicon/index.vue";</script>
+import SvgIcon from "@/components/Svgicon/index.vue";
+</script>
 
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
-import {ExamConfig, FormationType} from "@/views/teacher/AddExam/ExamConfigSetup";
+import {ExamForm, ExamType, FormationType} from "@/views/teacher/AddExam/ExamConfigSetup";
 
 export default defineComponent({
   name: "Creation",
   data() {
     return {
-      form1: {
-        title: "",
-        year: "",
-        checklist: [],
-        difficulty: "",
-        time: [] as string[],
-        totalscore: "",
-        switch: false,
-      },
+      // form1: {
+      //   title: "",
+      //   subtitle: "",
+      //   examType: ExamType.Fixed,
+      //   year: "2019",
+      //   checklist: [],
+      //   difficulty: "",
+      //   time: [] as string[],
+      //   totalscore: "",
+      //   switch: false,
+      //   durationMinute: 60,
+      //   durationSecond: 0
+      // },
       fill: {
         total: "",
         describe: "",
@@ -238,24 +252,33 @@ export default defineComponent({
       }
     };
   },
+  emits: ['nextStep'],
   props: {
-    examConfig: {
-      type: Object as PropType<ExamConfig>,
+    form: {
+      type: Object as PropType<ExamForm>,
       required: true
     },
   },
   computed: {
     showAuto() {
-      return this.examConfig.formationType == FormationType.Auto;
+      return this.form.formationType == FormationType.Auto;
     },
-    duration() {
-      const start = new Date(this.form1.time[0]);
-      const end = new Date(this.form1.time[1]);
-      if (!start.valueOf() || !end.valueOf())
-        return 0;
-      return end.valueOf() - start.valueOf();
-    }
-  }
+    // duration() {
+    //   const start = new Date(this.form1.time[0]);
+    //   const end = new Date(this.form1.time[1]);
+    //   if (!start.valueOf() || !end.valueOf())
+    //     return 0;
+    //   return end.valueOf() - start.valueOf();
+    // }
+  },
+  // watch: {
+  //   form1: {
+  //     handler(val) {
+  //       console.log(val);
+  //     },
+  //     deep: true
+  //   }
+  // }
 });
 </script>
 

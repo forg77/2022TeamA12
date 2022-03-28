@@ -17,11 +17,16 @@
         </el-icon>
         <el-divider style="margin:10px 0"/>
       </div>
-      <transition :examConfig="config" name="fade" mode="out-in">
-        <component @nextStep="nextStep" :is="tag">
+      <transition name="fade" mode="out-in">
+        <component :form="form" @nextStep="nextStep" :is="tag">
 
         </component>
       </transition>
+
+      <div style="width: 190px;margin:35px auto 0 auto">
+        <el-button @click="nextStep" type="primary">{{ step &lt; 2 ? '下一步' : '编辑考题' }}</el-button>
+        <el-button @click="$router.push('/teacher/examManage')">取消</el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -31,7 +36,9 @@ import {defineComponent} from "vue";
 import ExamCreation from "@/views/teacher/AddExam/ExamCreation.vue";
 import ExamSettings from "@/views/teacher/AddExam/ExamSettings.vue";
 import AddExaminee from "@/views/teacher/AddExam/AddExaminee.vue";
-import {ExamConfig, FormationType} from "@/views/teacher/AddExam/ExamConfigSetup";
+import {ExamForm, ExamType, FormationType} from "@/views/teacher/AddExam/ExamConfigSetup";
+import {Exam} from "@/models";
+import axios from "axios";
 
 export default defineComponent({
   components: {
@@ -43,14 +50,74 @@ export default defineComponent({
     return {
       tag: 'ExamCreation',
       title: ['选择创建方式', '试卷设置', '添加考生'],
-      config: {
-        formationType: FormationType.Manual
-      } as ExamConfig
+      form: {
+        formationType: FormationType.Manual,
+        title: "",
+        subtitle: "",
+        examType: ExamType.Fixed,
+        year: "2019",
+        platform: [],
+        difficulty: "",
+        time: [],
+        totalScore: 0,
+        antiCheat: false,
+        durationMinute: 60,
+        durationSecond: 0,
+        repeatTime: 1,
+        calGradeAtOnce: true
+      } as ExamForm,
     };
   },
   methods: {
     nextStep() {
+      if (this.step >= 2) {
+        this.$store.state.config.showLoading = true;
+        //构建考试数据
+        const examData = {
+          id: undefined,
+          title: this.form.title,
+          subtitle: this.form.subtitle,
+          earliestStartTime: new Date(this.form.time[0]).valueOf(),
+          latestStartTime: new Date(this.form.time[1]).valueOf(),
+          duration: (this.form.durationMinute * 60 + this.form.durationSecond) * 1000,
+          bankId: undefined,
+          type: this.form.examType == ExamType.Fixed ? 'fixed' : 'random',
+          selectCountJson: undefined,
+          orderJson: '{"part": []}',
+          repeatTime: this.form.repeatTime,
+          calGradeAtOnce: this.form.calGradeAtOnce,
+          fullMark: 0
+        } as Exam;
+
+        axios({
+          url: "exam/addNewExam"
+        }).then((res) => {
+          if (res.data["errCode"] != 0) {
+            alert("添加失败");
+          } else {
+            examData.id = res.data.data;
+          }
+          return axios({
+            url: "exam/addExam",
+            data: examData
+          });
+        }).then((res) => {
+          if (res.data["errCode"] != 0) {
+            alert("添加失败");
+          } else {
+            this.$router.replace("/teacher/examEdit/" + examData.id);
+          }
+        }).catch(() => {
+          alert("添加失败");
+        }).finally(() => {
+          this.$store.state.config.showLoading = false;
+        });
+
+
+        return;
+      }
       this.step++;
+
     },
     backTo(val: number) {
       if (val < this.step)

@@ -64,3 +64,20 @@ export interface Pair {
     key: string;
     value: string;
 }
+
+//考试数据
+export interface Exam {
+    id?: number;
+    title: string;
+    subtitle: string;
+    earliestStartTime: number;
+    latestStartTime: number;
+    duration: number;
+    bankId?: number;
+    type: string;
+    selectCountJson?: string;
+    orderJson: string;
+    repeatTime: number;
+    calGradeAtOnce: boolean;
+    fullMark: number;
+}
