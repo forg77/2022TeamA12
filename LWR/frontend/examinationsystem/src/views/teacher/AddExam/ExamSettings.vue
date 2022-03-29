@@ -97,11 +97,13 @@
     <el-divider>自动组卷设定</el-divider>
 
     <div v-show="showAuto" style="display: flex;align-items: center;flex-direction: column;">
-      <el-card v-for="(formation,index) in formations" :key="index" shadow="never" style="width:95%">
+      <el-card v-for="(formation,index) in formations" :key="index" shadow="never"
+               style="width:95%;margin-bottom: 38px">
         <template #header>
           <div>
-            <span class="tag" style="vertical-align: middle">{{getTypeName(formation.type)}} </span>
-            <el-icon @click="formations.splice()" class="delete-icon" style="vertical-align: middle;margin-left: 30px" size="31px">
+            <span class="tag" style="vertical-align: middle">{{ getTypeName(formation.type) }} </span>
+            <el-icon @click="formations.splice(index,1)" class="delete-icon"
+                     style="vertical-align: middle;margin-left: 30px" size="31px">
               <Delete/>
             </el-icon>
           </div>
@@ -170,12 +172,25 @@
         </div>
       </el-card>
     </div>
-    <el-button style="margin: 19px 0 0 25px" type="primary">更多题型></el-button>
+    <el-dropdown>
+      <el-button style="margin: 0 0 0 25px" type="primary">更多题型
+        <el-icon class="el-icon--right">
+          <arrow-down/>
+        </el-icon>
+      </el-button>
+      <template #dropdown>
+        <el-dropdown-menu>
+          <el-dropdown-item @click="formations.push({type: dropDown.key, score: 2, description: '', choose: 0})"
+                            v-for="dropDown in addDropdown" :key="dropDown.key">{{ dropDown.value }}
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </template>
+    </el-dropdown>
   </div>
 </template>
 
 <script lang="ts" setup>
-import {Delete, QuestionFilled} from "@element-plus/icons-vue";
+import {Delete, QuestionFilled, ArrowDown} from "@element-plus/icons-vue";
 import SvgIcon from "@/components/Svgicon/index.vue";
 </script>
 
@@ -183,6 +198,7 @@ import SvgIcon from "@/components/Svgicon/index.vue";
 import {defineComponent, PropType} from "vue";
 import {ExamForm, ExamType, FormationType} from "@/views/teacher/AddExam/ExamConfigSetup";
 import {getQuestionTypeName} from "@/common";
+import {Pair} from "@/models";
 
 export default defineComponent({
   name: "Creation",
@@ -220,7 +236,11 @@ export default defineComponent({
           description: "",
           choose: 0
         }
-      ]
+      ],
+      addDropdown: [
+        {key: 'choice', value: '单选题'},
+        {key: 'completion', value: '填空题'},
+      ] as Pair[]
     };
   },
   emits: ['nextStep'],

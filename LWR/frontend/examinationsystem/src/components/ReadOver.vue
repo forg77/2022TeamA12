@@ -10,10 +10,10 @@
     </div>
   </transition> -->
   <table
-    class="exam"
-    cellspacing="0"
-    cellpadding="0"
-    style="width: calc(100% - 150px); max-width: 1300px"
+      class="exam"
+      cellspacing="0"
+      cellpadding="0"
+      style="width: calc(100% - 150px); max-width: 1300px"
   >
     <tr>
       <td style="width: 262px">
@@ -45,8 +45,8 @@
           <tr>
             <td>
               <div
-                class="card"
-                style="width: 262px; height: 506px; padding: 20px"
+                  class="card"
+                  style="width: 262px; height: 506px; padding: 20px"
               >
                 <div class="info1">题目列表:</div>
                 <br />
@@ -66,7 +66,7 @@
                         <!--                            background-color: rgb(199, 199, 199);-->
                         <!--                            border-radius: 5px;-->
                         <!--                            margin-right: 20px;-->
-                        <!--                           "-->
+                        <!--                          "-->
                         <!--                        >-->
                         <!--                          <div-->
                         <!--                              style="-->
@@ -92,27 +92,27 @@
           <tr>
             <td>
               <div
-                class="card"
-                style="width: 100%; height: 84px; margin-top: 0"
+                  class="card"
+                  style="width: 100%; height: 84px; margin-top: 0"
               >
                 <table
-                  cellpadding="0"
-                  cellspacing="0"
-                  style="height: 100%; width: 100%; color: black; padding: 14px"
+                    cellpadding="0"
+                    cellspacing="0"
+                    style="height: 100%; width: 100%; color: black; padding: 14px"
                 >
                   <tr>
                     <td style="vertical-align: top">
                       <table
-                        cellpadding="0"
-                        cellspacing="0"
-                        style="width: 100%"
+                          cellpadding="0"
+                          cellspacing="0"
+                          style="width: 100%"
                       >
                         <tr>
                           <td>
                             <table cellpadding="0" cellspacing="0">
                               <tr>
                                 <td
-                                  style="
+                                    style="
                                     font-weight: bold;
                                     font-size: 21px;
                                     padding-right: 28px;
@@ -121,7 +121,7 @@
                                   {{ exam.title }}
                                 </td>
                                 <td
-                                  style="
+                                    style="
                                     font-size: 14px;
                                     opacity: 0.7;
                                     vertical-align: bottom;
@@ -143,39 +143,39 @@
                   <tr>
                     <td style="vertical-align: bottom">
                       <table
-                        cellpadding="0"
-                        cellspacing="0"
-                        style="width: 100%; font-size: 14px"
+                          cellpadding="0"
+                          cellspacing="0"
+                          style="width: 100%; font-size: 14px"
                       >
                         <tr>
                           <td>
                             个人任务：<span
                               class="val-text"
                               style="margin-right: 28px"
-                              >{{ exam.questionsCount }}</span
-                            >
+                          >{{ exam.questionsCount }}</span
+                          >
                             个人平均分：<span
                               class="val-text"
                               style="margin-right: 28px"
-                              >{{ exam.fullMark }}</span
-                            >
+                          >{{ exam.fullMark }}</span
+                          >
                             上一份耗时：<span class="val-text">{{
                               stopTimeString
                             }}</span>
                           </td>
                           <td style="text-align: right">
                             <svg-icon
-                              iconName="sandglass"
-                              className="sandglass"
+                                iconName="sandglass"
+                                className="sandglass"
                             ></svg-icon>
                             <span style="vertical-align: middle">
                               总耗时：<span class="val-text">{{
                                 Math.floor(remainingTime / 1000 / 60)
                               }}</span
-                              >分钟<span class="val-text">{{
+                            >分钟<span class="val-text">{{
                                 Math.floor((remainingTime / 1000) % 60)
                               }}</span
-                              >秒
+                            >秒
                             </span>
                           </td>
                         </tr>
@@ -189,8 +189,8 @@
           <tr>
             <td>
               <div
-                class="exam-content card"
-                style="width: 100%; height: 426px; display: flex"
+                  class="exam-content card"
+                  style="width: 100%; height: 426px; display: flex"
               >
                 <div style="height: 100%; width: 45%; padding: 20px">
                   <div class="info1" style="height: 50%; width: 100%">
@@ -201,8 +201,8 @@
                   </div>
                 </div>
                 <div
-                  class="line"
-                  style="
+                    class="line"
+                    style="
                     height: 100%;
                     border: 1px solid #707070;
                     width: 0;
@@ -211,14 +211,14 @@
                 ></div>
                 <div style="height: 100%; width: 55%">
                   <div
-                    class="info1"
-                    style="width: 100%; height: 70%; padding: 20px"
+                      class="info1"
+                      style="width: 100%; height: 70%; padding: 20px"
                   >
                     考生答案:
                   </div>
                   <div
-                    class="line"
-                    style="
+                      class="line"
+                      style="
                       width: 100%;
                       border: 1px solid #707070;
                       height: 0;
@@ -226,7 +226,7 @@
                     "
                   ></div>
                   <div
-                    style="
+                      style="
                       width: 100%;
                       height: 29.8%;
                       padding: 20px;
@@ -238,50 +238,50 @@
                         <el-col :span="8">
                           <span class="info1"> 分值: </span>
                           <el-input
-                            clearable
-                            v-model.number="score"
-                            size="small"
-                            placeholder="请输入分值"
-                            input-style="width:95px"
-                        /></el-col>
+                              clearable
+                              v-model.number="score"
+                              size="small"
+                              placeholder="请输入分值"
+                              input-style="width:95px"
+                          /></el-col>
                         <el-col :span="3">
                           <el-button
-                            type="info"
-                            plain
-                            style="height: 30px; width: 60px"
-                            size="small"
-                            >1分</el-button
+                              type="info"
+                              plain
+                              style="height: 30px; width: 60px"
+                              size="small"
+                          >1分</el-button
                           >
                         </el-col>
                         <el-col :span="3">
                           <el-button
-                            type="info"
-                            plain
-                            style="height: 30px; width: 60px"
-                            size="small"
-                            >3分</el-button
+                              type="info"
+                              plain
+                              style="height: 30px; width: 60px"
+                              size="small"
+                          >3分</el-button
                           >
                         </el-col>
                         <el-col :span="3">
                           <el-button
-                            type="info"
-                            plain
-                            style="height: 30px; width: 60px"
-                            size="small"
-                            >5分</el-button
+                              type="info"
+                              plain
+                              style="height: 30px; width: 60px"
+                              size="small"
+                          >5分</el-button
                           >
                         </el-col>
                         <el-col :span="7">
                           <el-button
-                            style="
+                              style="
                               height: 30px;
                               width: 80px;
                               display: block;
                               margin: auto;
                             "
-                            size="small"
-                            type="danger"
-                            >推出</el-button
+                              size="small"
+                              type="danger"
+                          >推出</el-button
                           >
                         </el-col>
                       </el-row>
@@ -289,60 +289,60 @@
                       <el-row>
                         <el-col :span="4">
                           <el-button
-                            style="height: 30px; width: 60px"
-                            size="small"
-                            plain
-                            type="success"
-                            >满分</el-button
+                              style="height: 30px; width: 60px"
+                              size="small"
+                              plain
+                              type="success"
+                          >满分</el-button
                           >
                         </el-col>
                         <el-col :span="4">
                           <el-button
-                            style="height: 30px; width: 60px"
-                            size="small"
-                            plain
-                            type="danger"
-                            >零分</el-button
+                              style="height: 30px; width: 60px"
+                              size="small"
+                              plain
+                              type="danger"
+                          >零分</el-button
                           >
                         </el-col>
                         <el-col :span="3">
                           <el-button
-                            type="info"
-                            plain
-                            style="height: 30px; width: 60px"
-                            size="small"
-                            >7分</el-button
+                              type="info"
+                              plain
+                              style="height: 30px; width: 60px"
+                              size="small"
+                          >7分</el-button
                           >
                         </el-col>
                         <el-col :span="3">
                           <el-button
-                            type="info"
-                            plain
-                            style="height: 30px; width: 60px"
-                            size="small"
-                            >9分</el-button
+                              type="info"
+                              plain
+                              style="height: 30px; width: 60px"
+                              size="small"
+                          >9分</el-button
                           >
                         </el-col>
                         <el-col :span="3">
                           <el-button
-                            type="info"
-                            plain
-                            style="height: 30px; width: 60px"
-                            size="small"
-                            >10分</el-button
+                              type="info"
+                              plain
+                              style="height: 30px; width: 60px"
+                              size="small"
+                          >10分</el-button
                           >
                         </el-col>
                         <el-col :span="7">
                           <el-button
-                            style="
+                              style="
                               height: 30px;
                               width: 80px;
                               display: block;
                               margin: auto;
                             "
-                            size="small"
-                            type="primary"
-                            >提交</el-button
+                              size="small"
+                              type="primary"
+                          >提交</el-button
                           >
                         </el-col>
                       </el-row>
@@ -356,18 +356,18 @@
             <td>
               <div class="card" style="width: 100%; height: 70px">
                 <table
-                  cellpadding="0"
-                  cellspacing="0"
-                  style="width: 100%; height: 100%"
+                    cellpadding="0"
+                    cellspacing="0"
+                    style="width: 100%; height: 100%"
                 >
                   <tr>
                     <td style="width: 33%; text-align: right">
                       <!-- <table border="1" style="vertical-align:middle"> -->
 
                       <span
-                        class="next"
-                        @click="setTitleNumber(currentTitleNumber - 1)"
-                        :class="{ unabled: currentTitleNumber - 1 <= 0 }"
+                          class="next"
+                          @click="setTitleNumber(currentTitleNumber - 1)"
+                          :class="{ unabled: currentTitleNumber - 1 <= 0 }"
                       >
                         <svg-icon className="arrow" iconName="left"></svg-icon>
                         <span style="vertical-align: middle">上一份</span>
@@ -377,9 +377,9 @@
                     <td style="text-align: center">标记</td>
                     <td style="width: 33%">
                       <span
-                        class="next"
-                        @click="setTitleNumber(currentTitleNumber + 1)"
-                        :class="{
+                          class="next"
+                          @click="setTitleNumber(currentTitleNumber + 1)"
+                          :class="{
                           unabled:
                             currentTitleNumber + 1 > titleNumberIndex.length,
                         }"
