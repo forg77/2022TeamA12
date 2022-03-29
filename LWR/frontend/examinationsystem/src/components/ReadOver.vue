@@ -10,10 +10,10 @@
     </div>
   </transition> -->
   <table
-      class="exam"
-      cellspacing="0"
-      cellpadding="0"
-      style="width: calc(100% - 150px); max-width: 1300px"
+    class="exam"
+    cellspacing="0"
+    cellpadding="0"
+    style="width: calc(100% - 150px); max-width: 1300px"
   >
     <tr>
       <td style="width: 262px">
@@ -21,7 +21,7 @@
           <tr>
             <td>
               <div class="card" style="height: 84px; margin-top: 0">
-                <table style="margin: 10px auto auto;">
+                <table style="margin: 10px auto auto">
                   <tr>
                     <td class="info1">本题满分:</td>
                     <td><span class="info1 blue">10</span></td>
@@ -35,7 +35,7 @@
                     </td>
                     <td class="info1">分</td>
                     <td style="padding-left: 24px">
-                      <input type="checkbox" class="switch"/>
+                      <input type="checkbox" class="switch" />
                     </td>
                   </tr>
                 </table>
@@ -45,11 +45,11 @@
           <tr>
             <td>
               <div
-                  class="card"
-                  style="width: 262px; height: 506px; padding: 20px"
+                class="card"
+                style="width: 262px; height: 506px; padding: 20px"
               >
                 <div class="info1">题目列表:</div>
-                <br/>
+                <br />
                 <div>
                   <div style="font-size: 14px">
                     1.衬衫的价格是不是九磅十五……
@@ -57,7 +57,7 @@
                   <table>
                     <tr>
                       <td>
-                        <el-progress style="width:230px" :percentage="50"/>
+                        <el-progress style="width: 230px" :percentage="50" />
                         <!-- 进度条 -->
                         <!--                        <div-->
                         <!--                            style="-->
@@ -92,27 +92,27 @@
           <tr>
             <td>
               <div
-                  class="card"
-                  style="width: 100%; height: 84px; margin-top: 0"
+                class="card"
+                style="width: 100%; height: 84px; margin-top: 0"
               >
                 <table
-                    cellpadding="0"
-                    cellspacing="0"
-                    style="height: 100%; width: 100%; color: black; padding: 14px"
+                  cellpadding="0"
+                  cellspacing="0"
+                  style="height: 100%; width: 100%; color: black; padding: 14px"
                 >
                   <tr>
                     <td style="vertical-align: top">
                       <table
-                          cellpadding="0"
-                          cellspacing="0"
-                          style="width: 100%"
+                        cellpadding="0"
+                        cellspacing="0"
+                        style="width: 100%"
                       >
                         <tr>
                           <td>
                             <table cellpadding="0" cellspacing="0">
                               <tr>
                                 <td
-                                    style="
+                                  style="
                                     font-weight: bold;
                                     font-size: 21px;
                                     padding-right: 28px;
@@ -121,7 +121,7 @@
                                   {{ exam.title }}
                                 </td>
                                 <td
-                                    style="
+                                  style="
                                     font-size: 14px;
                                     opacity: 0.7;
                                     vertical-align: bottom;
@@ -143,39 +143,39 @@
                   <tr>
                     <td style="vertical-align: bottom">
                       <table
-                          cellpadding="0"
-                          cellspacing="0"
-                          style="width: 100%; font-size: 14px"
+                        cellpadding="0"
+                        cellspacing="0"
+                        style="width: 100%; font-size: 14px"
                       >
                         <tr>
                           <td>
                             个人任务：<span
                               class="val-text"
                               style="margin-right: 28px"
-                          >{{ exam.questionsCount }}</span
-                          >
+                              >{{ exam.questionsCount }}</span
+                            >
                             个人平均分：<span
                               class="val-text"
                               style="margin-right: 28px"
-                          >{{ exam.fullMark }}</span
-                          >
+                              >{{ exam.fullMark }}</span
+                            >
                             上一份耗时：<span class="val-text">{{
                               stopTimeString
                             }}</span>
                           </td>
                           <td style="text-align: right">
                             <svg-icon
-                                iconName="sandglass"
-                                className="sandglass"
+                              iconName="sandglass"
+                              className="sandglass"
                             ></svg-icon>
                             <span style="vertical-align: middle">
                               总耗时：<span class="val-text">{{
                                 Math.floor(remainingTime / 1000 / 60)
                               }}</span
-                            >分钟<span class="val-text">{{
+                              >分钟<span class="val-text">{{
                                 Math.floor((remainingTime / 1000) % 60)
                               }}</span
-                            >秒
+                              >秒
                             </span>
                           </td>
                         </tr>
@@ -189,124 +189,163 @@
           <tr>
             <td>
               <div
-                  class="exam-content card"
-                  style="width: 100%; height: 426px; display: flex"
+                class="exam-content card"
+                style="width: 100%; height: 426px; display: flex"
               >
                 <div style="height: 100%; width: 45%; padding: 20px">
-                  <div class="info1" style="height: 50%; width: 100%">当前题目:</div>
-                  <div class="info1" style="height: 50%; width: 100%">参考答案:</div>
+                  <div class="info1" style="height: 50%; width: 100%">
+                    当前题目:
+                  </div>
+                  <div class="info1" style="height: 50%; width: 100%">
+                    参考答案:
+                  </div>
                 </div>
                 <div
-                    class="line"
-                    style="height: 100%; border: 1px solid #707070; width: 0;border-left-style: none"
+                  class="line"
+                  style="
+                    height: 100%;
+                    border: 1px solid #707070;
+                    width: 0;
+                    border-left-style: none;
+                  "
                 ></div>
                 <div style="height: 100%; width: 55%">
-                  <div class="info1" style="width: 100%; height: 70%; padding: 20px">
+                  <div
+                    class="info1"
+                    style="width: 100%; height: 70%; padding: 20px"
+                  >
                     考生答案:
                   </div>
                   <div
-                      class="line"
-                      style="width: 100%; border:1px solid #707070; height: 0;border-bottom-style: none"
+                    class="line"
+                    style="
+                      width: 100%;
+                      border: 1px solid #707070;
+                      height: 0;
+                      border-bottom-style: none;
+                    "
                   ></div>
                   <div
-                      style="
+                    style="
                       width: 100%;
                       height: 29.8%;
                       padding: 20px;
                       display: flex;
                     "
                   >
-                    <div>
-                      <div>
-                        <span class="info1">
-                        分值:
-                        </span>
-                        <!--                        <input-->
-                        <!--                            type="text"-->
-                        <!--                            placeholder="请输入分值"-->
-                        <!--                            style="-->
-                        <!--                            width: 95px;-->
-                        <!--                            height: 30px;-->
-                        <!--                            border-radius: 5px;-->
-                        <!--                            border: solid 0.8px;-->
-                        <!--                          "-->
-                        <!--                        />-->
-                        <el-input
+                    <div style="width: 100%">
+                      <el-row>
+                        <el-col :span="8">
+                          <span class="info1"> 分值: </span>
+                          <el-input
                             clearable
                             v-model.number="score"
                             size="small"
                             placeholder="请输入分值"
-                            input-style="width:95px"/>
-                      </div>
-                      <br/>
-                      <div>
-                        <button
-                            class="score"
-                            style="background-color: #f0f9ea; color: #67c239;border:solid #67c239 0.5px"
-                        >
-                          满分
-                        </button
-                        >
-                        <button class="score"
-                                style="background-color: #FEF0F0; color: #F56C6C;border:solid #F56C6C 0.5px"
-                        >零分
-                        </button>
-                      </div>
-                    </div>
-                    <div>
-                      <table style="border-collapse: separate">
-                        <tr>
-                          <td>
-                            <button class="score">1分</button>
-                          </td>
-                          <td>
-                            <button class="score">3分</button>
-                          </td>
-                          <td>
-                            <button class="score">5分</button>
-                          </td>
-                          <td style="width: 40px"></td>
-                          <td>
-                            <button
-                                class="score"
-                                style="
-                                width: 80px;
-                                color: white;
-                                background-color: #f56c6c;
-                                border: none;
-                              "
-                            >
-                              退出
-                            </button>
-                          </td>
-                        </tr>
-                        <div style="height: 10px"></div>
-                        <tr>
-                          <td>
-                            <button class="score">7分</button>
-                          </td>
-                          <td>
-                            <button class="score">9分</button>
-                          </td>
-                          <td>
-                            <button class="score">10分</button>
-                          </td>
-                          <td style="width: 40px"></td>
-                          <td>
-                            <button
-                                class="score"
-                                style="
-                                width: 80px;
-                                color: white;
-                                background-color: #409eff;
-                                border: none;
-                              "
-                            >
-                              提交
-                            </button>
-                          </td>
-                        </tr>
-                      </table>
+                            input-style="width:95px"
+                        /></el-col>
+                        <el-col :span="3">
+                          <el-button
+                            type="info"
+                            plain
+                            style="height: 30px; width: 60px"
+                            size="small"
+                            >1分</el-button
+                          >
+                        </el-col>
+                        <el-col :span="3">
+                          <el-button
+                            type="info"
+                            plain
+                            style="height: 30px; width: 60px"
+                            size="small"
+                            >3分</el-button
+                          >
+                        </el-col>
+                        <el-col :span="3">
+                          <el-button
+                            type="info"
+                            plain
+                            style="height: 30px; width: 60px"
+                            size="small"
+                            >5分</el-button
+                          >
+                        </el-col>
+                        <el-col :span="7">
+                          <el-button
+                            style="
+                              height: 30px;
+                              width: 80px;
+                              display: block;
+                              margin: auto;
+                            "
+                            size="small"
+                            type="danger"
+                            >推出</el-button
+                          >
+                        </el-col>
+                      </el-row>
+                      <el-row style="height: 5px" />
+                      <el-row>
+                        <el-col :span="4">
+                          <el-button
+                            style="height: 30px; width: 60px"
+                            size="small"
+                            plain
+                            type="success"
+                            >满分</el-button
+                          >
+                        </el-col>
+                        <el-col :span="4">
+                          <el-button
+                            style="height: 30px; width: 60px"
+                            size="small"
+                            plain
+                            type="danger"
+                            >零分</el-button
+                          >
+                        </el-col>
+                        <el-col :span="3">
+                          <el-button
+                            type="info"
+                            plain
+                            style="height: 30px; width: 60px"
+                            size="small"
+                            >7分</el-button
+                          >
+                        </el-col>
+                        <el-col :span="3">
+                          <el-button
+                            type="info"
+                            plain
+                            style="height: 30px; width: 60px"
+                            size="small"
+                            >9分</el-button
+                          >
+                        </el-col>
+                        <el-col :span="3">
+                          <el-button
+                            type="info"
+                            plain
+                            style="height: 30px; width: 60px"
+                            size="small"
+                            >10分</el-button
+                          >
+                        </el-col>
+                        <el-col :span="7">
+                          <el-button
+                            style="
+                              height: 30px;
+                              width: 80px;
+                              display: block;
+                              margin: auto;
+                            "
+                            size="small"
+                            type="primary"
+                            >提交</el-button
+                          >
+                        </el-col>
+                      </el-row>
                     </div>
                   </div>
                 </div>
@@ -317,18 +356,18 @@
             <td>
               <div class="card" style="width: 100%; height: 70px">
                 <table
-                    cellpadding="0"
-                    cellspacing="0"
-                    style="width: 100%; height: 100%"
+                  cellpadding="0"
+                  cellspacing="0"
+                  style="width: 100%; height: 100%"
                 >
                   <tr>
                     <td style="width: 33%; text-align: right">
                       <!-- <table border="1" style="vertical-align:middle"> -->
 
                       <span
-                          class="next"
-                          @click="setTitleNumber(currentTitleNumber - 1)"
-                          :class="{ unabled: currentTitleNumber - 1 <= 0 }"
+                        class="next"
+                        @click="setTitleNumber(currentTitleNumber - 1)"
+                        :class="{ unabled: currentTitleNumber - 1 <= 0 }"
                       >
                         <svg-icon className="arrow" iconName="left"></svg-icon>
                         <span style="vertical-align: middle">上一份</span>
@@ -338,9 +377,9 @@
                     <td style="text-align: center">标记</td>
                     <td style="width: 33%">
                       <span
-                          class="next"
-                          @click="setTitleNumber(currentTitleNumber + 1)"
-                          :class="{
+                        class="next"
+                        @click="setTitleNumber(currentTitleNumber + 1)"
+                        :class="{
                           unabled:
                             currentTitleNumber + 1 > titleNumberIndex.length,
                         }"
@@ -361,7 +400,7 @@
 </template>
 
 
-<script>
+<script lang="js">
 import axios from "axios";
 import {formatDate} from "@/common.ts";
 import DialogBox from "./DialogBox.vue";
@@ -972,7 +1011,6 @@ input[type="checkbox"].switch:checked::after {
   font-weight: bold;
   color: #000000;
   font-family: Microsoft YaHei, serif;
-
 }
 
 .blue {
