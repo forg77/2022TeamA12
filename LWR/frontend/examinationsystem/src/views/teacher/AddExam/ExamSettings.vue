@@ -1,5 +1,5 @@
 <template>
-  <div style="margin-top: 65px">
+  <div class="outer" style="margin-top: 65px">
     <div class="form">
       <el-form label-width="140px" :model="form">
         <el-form-item label="标题：">
@@ -79,7 +79,7 @@
           />
           <span class="total" style="margin: 0 10px">秒</span>
         </el-form-item>
-        <el-form-item v-show="showAuto" label="总分：">
+        <el-form-item v-show="false" label="总分：">
           <el-input
               v-model="form.totalScore"
               clearable
@@ -94,121 +94,83 @@
       </el-form>
     </div>
 
-    <div v-show="showAuto" style="margin-left: 60px; margin-right: 60px">
-      <el-card shadow="never">
+    <el-divider>自动组卷设定</el-divider>
+
+    <div v-show="showAuto" style="display: flex;align-items: center;flex-direction: column;">
+      <el-card v-for="(formation,index) in formations" :key="index" shadow="never" style="width:95%">
         <template #header>
           <div>
-            <span>单选题 </span>
-            <el-icon>
+            <span class="tag" style="vertical-align: middle">{{getTypeName(formation.type)}} </span>
+            <el-icon @click="formations.splice()" class="delete-icon" style="vertical-align: middle;margin-left: 30px" size="31px">
               <Delete/>
             </el-icon>
           </div>
         </template>
         <div>
-          <el-form :model="choice">
-            <el-form-item label="总分：">
-              <el-input clearable style="width: 200px" v-model="choice.total"/>
+          <el-form :model="formations[index]">
+            <el-form-item label="每题分数：">
+              <el-input v-model.number="formation.score" clearable style="width: 168px" v-model="choice.total"/>
+              <el-form-item v-model="formation.description" style="margin-left:60px" label="题型说明：">
+                <el-input
+                    clearable
+                    style="width: 168px"
+                    v-model="choice.describe"
+                />
+              </el-form-item>
             </el-form-item>
-            <el-form-item label="题型说明：">
-              <el-input
-                  clearable
-                  style="width: 172px"
-                  v-model="choice.describe"
-              />
-            </el-form-item>
+
             <el-form-item>
-              <el-radio v-model="choice.select" label="1" size="large"
-              >从题库选题
-                <span>
-                    共 999+ 道 抽
-                    <input
-                        type="number"
-                        style="
+              <el-radio @change="changeChoose(index,formation.choose)" v-model="formation.choose" :label="0"
+                        size="large"
+              >
+                <span style="font-size:21px">
+                  从题库选题
+                  </span>
+              </el-radio>
+            </el-form-item>
+            <div :ref="'c0-'+index">
+              <div :ref="'choose-'+index" class="choose">
+                共 <span style="font-weight: bold">999+</span> 道
+                抽
+                <input
+                    type="number"
+                    style="
                         border-radius: 5px;
                         width: 30px;
                         border: solid rgb(220, 223, 230) 0.7px;
                         outline: none;
                         height: 25px;
                       "
-                        v-model="choice.number"
-                    />
-                    道
-                  </span>
-              </el-radio>
-            </el-form-item>
+                    v-model="choice.number"
+                />
+                道
+              </div>
+            </div>
             <el-form-item>
-              <el-radio v-model="choice.select" label="2" size="large"
-              >从题库指定目录选题
+              <el-radio @change="changeChoose(index,formation.choose)" v-model="formation.choose" :label="1"
+                        size="large"
+              ><span style="font-size:21px">从题库指定目录选题</span>
               </el-radio
               >
             </el-form-item>
+            <div :ref="'c1-'+index">
+
+            </div>
             <el-form-item>
-              <el-radio v-model="choice.select" label="3" size="large"
-              >从题库按照难以度选题
+              <el-radio @change="changeChoose(index,formation.choose)" v-model="formation.choose" :label="2"
+                        size="large"
+              ><span style="font-size:21px">从题库按照难以度选题</span>
               </el-radio
               >
             </el-form-item>
-          </el-form>
-        </div>
-      </el-card>
-      <br/>
-      <el-card shadow="never">
-        <template #header>
-          <div>
-            <span>填空题 </span>
-            <el-icon>
-              <Delete/>
-            </el-icon>
-          </div>
-        </template>
-        <div>
-          <el-form :model="fill">
-            <el-form-item label="总分：">
-              <el-input clearable style="width: 200px" v-model="fill.total"/>
-            </el-form-item>
-            <el-form-item label="题型说明：">
-              <el-input
-                  clearable
-                  style="width: 172px"
-                  v-model="fill.describe"
-              />
-            </el-form-item>
-            <el-form-item>
-              <el-radio v-model="fill.select" label="1" size="large"
-              >从题库选题
-                <span>
-                    共 999+ 道 抽
-                    <input
-                        type="number"
-                        style="
-                        border-radius: 5px;
-                        width: 30px;
-                        border: solid rgb(220, 223, 230) 0.7px;
-                        outline: none;
-                        height: 25px;
-                      "
-                        v-model="fill.number"
-                    />
-                    道
-                  </span>
-              </el-radio>
-            </el-form-item>
-            <el-form-item>
-              <el-radio v-model="fill.select" label="2" size="large"
-              >从题库指定目录选题
-              </el-radio
-              >
-            </el-form-item>
-            <el-form-item>
-              <el-radio v-model="fill.select" label="3" size="large"
-              >从题库按照难以度选题
-              </el-radio
-              >
-            </el-form-item>
+            <div :ref="'c2-'+index">
+
+            </div>
           </el-form>
         </div>
       </el-card>
     </div>
+    <el-button style="margin: 19px 0 0 25px" type="primary">更多题型></el-button>
   </div>
 </template>
 
@@ -220,6 +182,7 @@ import SvgIcon from "@/components/Svgicon/index.vue";
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
 import {ExamForm, ExamType, FormationType} from "@/views/teacher/AddExam/ExamConfigSetup";
+import {getQuestionTypeName} from "@/common";
 
 export default defineComponent({
   name: "Creation",
@@ -249,7 +212,15 @@ export default defineComponent({
         describe: "",
         select: "",
         number: "",
-      }
+      },
+      formations: [
+        {
+          type: "choice",
+          score: 2,
+          description: "",
+          choose: 0
+        }
+      ]
     };
   },
   emits: ['nextStep'],
@@ -258,6 +229,18 @@ export default defineComponent({
       type: Object as PropType<ExamForm>,
       required: true
     },
+  },
+  methods: {
+    changeChoose(index: number, label: number) {
+      (this.$refs['c' + label + '-' + index] as HTMLDivElement[])[0].appendChild((this.$refs['choose-' + index] as HTMLDivElement[])[0]);
+    },
+    getTypeName(name: string) {
+      return getQuestionTypeName(name);
+    }
+  },
+  mounted() {
+    // (this.$refs.c1 as HTMLDivElement).appendChild(this.$refs.choose as HTMLDivElement);
+    // console.log((this.$refs['c1-0'] as HTMLDivElement));
   },
   computed: {
     showAuto() {
@@ -287,7 +270,9 @@ export default defineComponent({
 
 .form {
   padding: 0 20px;
+}
 
+.outer {
   :deep(.el-form-item__label) {
     font-size: 24px;
     font-family: Microsoft YaHei, serif;
@@ -332,6 +317,16 @@ export default defineComponent({
   :deep(.el-range-input) {
     font-size: 19px;
   }
+
+  :deep(.el-radio__inner) {
+    width: 25px;
+    height: 25px;
+
+    &::after {
+      width: 8px;
+      height: 8px;
+    }
+  }
 }
 
 .icon {
@@ -352,5 +347,29 @@ export default defineComponent({
 
 .time-highlight {
   color: $primary-color;
+}
+
+.tag {
+  font-size: 24px;
+  font-family: Microsoft YaHei, serif;
+  color: #000000;
+  font-weight: 400;
+}
+
+.delete-icon {
+  color: #666666;
+  cursor: pointer;
+  transition: color 0.5s;
+
+  &:hover {
+    color: $primary-color;
+  }
+}
+
+.choose {
+  font-size: 21px;
+  margin-left: 33px;
+  margin-bottom: 20px;
+  color: #606266;
 }
 </style>

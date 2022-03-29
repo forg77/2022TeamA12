@@ -57,7 +57,6 @@ export default defineComponent({
       position: absolute;
       left: 50%;
       top: 50%;
-      //transform: translate(-50%,-50%) scale(0);
       transition: transform .15s ease-in;
     }
   }

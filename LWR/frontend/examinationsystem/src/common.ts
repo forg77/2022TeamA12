@@ -1,10 +1,10 @@
-function addZero(value:number) {
+function addZero(value: number) {
     if (value < 10)
         return "0" + value;
     return value.toString();
 }
 
-function formatDate(date:Date) {
+function formatDate(date: Date) {
     const year = date.getFullYear();
     const month = addZero(date.getMonth() + 1);
     const day = addZero(date.getDate());
@@ -15,4 +15,12 @@ function formatDate(date:Date) {
     return year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
 }
 
-export { formatDate };
+export {formatDate};
+
+export function getQuestionTypeName(type: string) {
+    if (type === "choice") return "单选题";
+    else if (type === "multi_choice") return "多选题";
+    else if (type === "completion") return "填空题";
+    else if (type === "short_answer") return "简答题";
+    return "";
+}
