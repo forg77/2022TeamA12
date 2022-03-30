@@ -96,7 +96,7 @@
             <template v-slot:headerLeft> 成绩详情</template>
             <template v-slot:content>
               <div style="display: flex">
-                <div style="width: 20%; text-align: right; padding-top: 60px">
+                <div style="width: 25%; text-align: right; padding-top: 60px">
                   <div style="color: #9aa2b5; font-size: 14px">
                     班级/年级平均分
                   </div>
@@ -182,11 +182,39 @@ export default defineComponent({
 
     // 基于准备好的dom，初始化echarts实例
     var gradeChart = echarts.init(g);
-    var pointChart = echarts.init(p1);
+    var pointChart1 = echarts.init(p1);
+    var pointChart2 = echarts.init(p2);
     var GaugeChart = echarts.init(G);
 
     // 绘制图表
-    pointChart.setOption({
+    pointChart1.setOption({
+      tooltip: {
+        trigger: "item",
+      },
+      legend: {
+        top: "5%",
+        left: "center",
+      },
+      series: [
+        {
+          type: "pie",
+          radius: ["40%", "70%"],
+          avoidLabelOverlap: false,
+          label: {
+            show: false,
+            position: "center",
+          },
+          labelLine: {
+            show: false,
+          },
+          data: [
+            {value: 484, itemStyle: {color: "rgb(145,204,117)"}},
+            {value: 300, itemStyle: {color: "rgb(238,102,102)"}},
+          ],
+        },
+      ],
+    });
+    pointChart2.setOption({
       tooltip: {
         trigger: "item",
       },
