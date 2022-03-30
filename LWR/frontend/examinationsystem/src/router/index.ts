@@ -179,6 +179,9 @@ const routes = [
                     {title: "题库查询", link: "/teacher/questionsManage"},
                     {title: "题库录入", link: "/teacher/questionsInput"},
                 ],
+            },{
+                title: "成绩管理",
+                link: "/teacher/gradeManage"
             }],
         },
         children: [{
@@ -267,6 +270,16 @@ const routes = [
                     pageTitle: "考试监考"
                 }
             },
+            {
+                path:'gradeManage',
+                name:'GradeManage',
+                component: () =>
+                    import ('../views/teacher/Analysis.vue'),
+                meta: {
+                    title: "成绩管理" + postTitle,
+                    pageTitle: "成绩管理"
+                }
+            }
         ]
     },
     {

@@ -16,6 +16,7 @@ declare global {
   const ElFormItem: typeof import('element-plus/es')['ElFormItem']
   const ElIcon: typeof import('element-plus/es')['ElIcon']
   const ElInput: typeof import('element-plus/es')['ElInput']
+  const ElInputNumber: typeof import('element-plus/es')['ElInputNumber']
   const ElOption: typeof import('element-plus/es')['ElOption']
   const ElProgress: typeof import('element-plus/es')['ElProgress']
   const ElRadio: typeof import('element-plus/es')['ElRadio']

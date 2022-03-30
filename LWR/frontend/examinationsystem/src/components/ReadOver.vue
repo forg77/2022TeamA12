@@ -59,9 +59,16 @@
                        v-for="(question,index) in questions" :key="question.id"
                        @click="currentQuestionNumber=index">
                     <div
-                        style="font-size: 14px;text-overflow:ellipsis;white-space: nowrap;overflow-x: hidden;width: 220px"
-                        :class="{blue:index===currentQuestionNumber}">
-                      {{ index + 1 }}.{{ question.description }}
+                        style="display: flex;font-size: 14px;width: 210px">
+                      <span :class="{blue:index===currentQuestionNumber}"
+                            style="text-overflow:ellipsis;white-space: nowrap;overflow-x: hidden;width: 180px">
+                        {{ index + 1 }}.{{ question.description }}</span>
+                      <span
+                          v-if="answers[questions[index].id]&&answers[questions[index].id].score"
+                          style="color:#67C23A;margin-left: auto;font-size: 12px">
+                          {{ answers[questions[index].id].score }}分
+                        </span>
+                      <span v-else style="color: #F56C6C;margin-left: auto;font-size: 12px">未批</span>
                     </div>
                     <el-progress style="width: 235px" :percentage="50"/>
                   </div>
@@ -193,7 +200,9 @@
                         <template v-if="getQuestionType(questions[currentQuestionNumber].type)==='choice'">
                           {{ getChoiceCorrectAnswer(questions[currentQuestionNumber].answer) }}
                         </template>
+                        <div v-else v-html="getNormalCorrectAnswer(questions[currentQuestionNumber].answer)">
 
+                        </div>
                       </template>
                     </div>
                   </div>
@@ -208,11 +217,24 @@
                   "
                 ></div>
                 <div style="height: 100%; width: 55%">
-                  <div
-                      class="info1"
-                      style="width: 100%; height: 70%; padding: 20px"
-                  >
-                    考生答案:
+                  <div style="width: 100%; height: 70%; padding: 20px">
+                    <div
+                        class="info1"
+                    >
+                      考生答案:
+                    </div>
+                    <div>
+                      <template v-if="questions[currentQuestionNumber]">
+                        <template v-if="getQuestionType(questions[currentQuestionNumber].type)==='choice'">
+                          {{
+                            getChoiceCorrectAnswer(answers[questions[currentQuestionNumber].id] ? answers[questions[currentQuestionNumber].id].answer : undefined)
+                          }}
+                        </template>
+                        <div v-else
+                             v-html="getNormalCorrectAnswer(answers[questions[currentQuestionNumber].id] ? answers[questions[currentQuestionNumber].id].answer : undefined)">
+                        </div>
+                      </template>
+                    </div>
                   </div>
                   <div
                       class="line"
@@ -235,45 +257,36 @@
                       <el-row>
                         <el-col :span="8">
                           <span class="info1"> 分值: </span>
-                          <el-input
-                              clearable
-                              v-model.number="score"
-                              size="small"
-                              placeholder="请输入分值"
-                              input-style="width:95px"
+                          <!--                          <el-input-->
+                          <!--                              clearable-->
+                          <!--                              v-model.number="score"-->
+                          <!--                              size="default"-->
+                          <!--                              placeholder="请输入分值"-->
+                          <!--                              input-style="width:110px"-->
+                          <!--                          />-->
+                          <el-input-number
+                              v-model="score"
+                              size="default"
+                              :min="0"
+                              :max="questions[currentQuestionNumber]?questionScores[questions[currentQuestionNumber].id].score:10"
+                              controls-position="right"
+                              style="width:110px"
+                              :step="0.5"
                           />
                         </el-col>
-                        <el-col :span="3">
+                        <el-col v-for="n in 3" :span="4" :key="n">
                           <el-button
                               type="info"
                               plain
-                              style="height: 30px; width: 60px"
+                              style="height: 30px; width: 67px"
                               size="small"
-                          >1分
+                              @click="score=2*n-1"
+                              :disabled="questions[currentQuestionNumber]&&2*n-1>questionScores[questions[currentQuestionNumber].id].score"
+                          >{{ 2 * n - 1 }}分
                           </el-button
                           >
                         </el-col>
-                        <el-col :span="3">
-                          <el-button
-                              type="info"
-                              plain
-                              style="height: 30px; width: 60px"
-                              size="small"
-                          >3分
-                          </el-button
-                          >
-                        </el-col>
-                        <el-col :span="3">
-                          <el-button
-                              type="info"
-                              plain
-                              style="height: 30px; width: 60px"
-                              size="small"
-                          >5分
-                          </el-button
-                          >
-                        </el-col>
-                        <el-col :span="7">
+                        <el-col :span="4">
                           <el-button
                               style="
                               height: 30px;
@@ -283,7 +296,7 @@
                             "
                               size="small"
                               type="danger"
-                          >推出
+                          >退出
                           </el-button
                           >
                         </el-col>
@@ -292,55 +305,39 @@
                       <el-row>
                         <el-col :span="4">
                           <el-button
-                              style="height: 30px; width: 60px"
+                              style="height: 30px; width: 67px"
                               size="small"
                               plain
                               type="success"
+                              @click="score=questionScores[questions[currentQuestionNumber].id].score"
                           >满分
                           </el-button
                           >
                         </el-col>
                         <el-col :span="4">
                           <el-button
-                              style="height: 30px; width: 60px"
+                              style="height: 30px; width: 67px"
                               size="small"
                               plain
                               type="danger"
+                              @click="score=0"
                           >零分
                           </el-button
                           >
                         </el-col>
-                        <el-col :span="3">
+                        <el-col v-for="n in 3" :span="4" :key="n">
                           <el-button
                               type="info"
                               plain
-                              style="height: 30px; width: 60px"
+                              style="height: 30px; width: 67px"
                               size="small"
-                          >7分
+                              @click="score=2*n+5"
+                              :disabled="questions[currentQuestionNumber]&&2*n+5>questionScores[questions[currentQuestionNumber].id].score"
+                          >{{ 2 * n + 5 }}分
                           </el-button
                           >
                         </el-col>
-                        <el-col :span="3">
-                          <el-button
-                              type="info"
-                              plain
-                              style="height: 30px; width: 60px"
-                              size="small"
-                          >9分
-                          </el-button
-                          >
-                        </el-col>
-                        <el-col :span="3">
-                          <el-button
-                              type="info"
-                              plain
-                              style="height: 30px; width: 60px"
-                              size="small"
-                          >10分
-                          </el-button
-                          >
-                        </el-col>
-                        <el-col :span="7">
+                        <el-col :span="4">
                           <el-button
                               style="
                               height: 30px;
@@ -350,6 +347,7 @@
                             "
                               size="small"
                               type="primary"
+                              @click="commitScore"
                           >提交
                           </el-button
                           >
@@ -376,7 +374,7 @@
                       <span
                           class="next"
                           @click="setTitleNumber(currentTitleNumber - 1)"
-                          :class="{ unabled: currentTitleNumber - 1 <= 0 }"
+                          :class="{ unabled: currentTitleNumber - 1 < 0 }"
                       >
                         <svg-icon className="arrow" iconName="left"></svg-icon>
                         <span style="vertical-align: middle">上一份</span>
@@ -390,7 +388,7 @@
                           @click="setTitleNumber(currentTitleNumber + 1)"
                           :class="{
                           unabled:
-                            currentTitleNumber + 1 > titleNumberIndex.length,
+                            currentTitleNumber+1 >= correctInfo.data.length,
                         }"
                       >
                         <span style="vertical-align: middle">下一份</span>
@@ -422,10 +420,11 @@ export default {
   },
   data() {
     return {
-      // examId: 1,
+      examId: 1,
       bankId: 1,
       questions: [],
-      answers: {normal: {}},
+      answers: {},
+      currentAnswer: {},
       exam: {},
       correctInfo: {data: [], count: 0, corrected: new Set()},
       examPaper: {},
@@ -436,7 +435,7 @@ export default {
       // config:config
       // user: null,
       titleNumberIndex: [],
-      currentTitleNumber: 1,
+      currentTitleNumber: 0,
       currentQuestionNumber: 0,
       // mark:{},
 
@@ -445,17 +444,13 @@ export default {
       remainingTime: 0,
       correctTimeDiff: 0,
 
-      showOverDialog: false,
-      showJoinDialog: false,
-
-      isLoading: false,
-
       score: 0
     };
   },
   methods: {
     async getAllInfo() {
       this.$store.state.config.showLoading = true;
+      this.examId = this.$route.params['examId'];
       return axios({
         url: "examCorrect/getAllCorrectInfo",
         data: {
@@ -511,9 +506,71 @@ export default {
           this.questionScores[score.questionId] = score;
         }
 
+        this.getAnswers();
+
       }).finally(() => {
         this.$store.state.config.showLoading = false;
       });
+    },
+    getAnswers() {
+      this.$store.state.config.showLoading = true;
+      return axios({
+        url: "/exam/getAllAnswers",
+        data: {
+          examinee: this.correctInfo.data[this.currentTitleNumber].examinee,
+          examId: this.examId,
+        },
+      }).then((res) => {
+        let data = res.data.data;
+
+        this.answers = {};
+        for (let ans of data.normal) {
+          this.answers[ans.questionId] = ans;
+          this.answers[ans.questionId].answer = JSON.parse(ans.answer);
+        }
+        this.updateCurrentAnswer(this.currentQuestionNumber);
+      }).finally(() => {
+        this.$store.state.config.showLoading = false;
+      });
+    },
+    commitScore() {
+      this.$store.state.config.showLoading = true;
+      axios({
+        url: "examCorrect/setScore",
+        data: {
+          questionId: this.questions[this.currentQuestionNumber].id,
+          examId: this.examId,
+          examinee: this.correctInfo.data[this.currentTitleNumber].examinee,
+          score: this.score,
+          corrector: this.user.id
+        }
+      }).then((res) => {
+        if (res.data.errCode !== 0) {
+          throw new Error();
+        }else{
+
+        }
+      }).catch(() => {
+        alert("提交失败");
+      }).finally(() => {
+        this.$store.state.config.showLoading = false;
+      });
+    },
+    updateCurrentAnswer(val) {
+      if (this.answers[this.questions[val].id]) {
+        this.currentAnswer = this.answers[this.questions[val].id];
+      } else {
+        this.currentAnswer = {
+          examId: this.examId,
+          examinee: this.correctInfo.data[this.currentTitleNumber].examinee,
+          questionId: this.questions[val].id,
+        };
+        this.answers[this.questions[val].id] = this.currentAnswer;
+      }
+      if (this.currentAnswer.score)
+        this.score = this.currentAnswer.score;
+      else
+        this.score = 0;
     },
     async getQuestions() {
       return axios({
@@ -573,21 +630,6 @@ export default {
         // console.log(this.exam);
       });
     },
-    getAnswers() {
-      axios({
-        url: "/exam/getAllAnswers",
-        data: {
-          examinee: 1,
-          examId: this.examId,
-        },
-      }).then((res) => {
-        let data = res.data.data;
-
-        for (let ans of data.normal) {
-          this.answers.normal[ans.questionId] = JSON.parse(ans.answer);
-        }
-      });
-    },
     getQuestionScores() {
       axios({
         url: "/exam/getQuestionScores",
@@ -599,28 +641,6 @@ export default {
         for (let score of data) {
           this.questionScores[score.id] = score;
         }
-      });
-    },
-    joinExam() {
-      axios({
-        url: "/exam/joinExam",
-        data: {
-          examId: this.examId,
-          examinee: this.user.id,
-        },
-      }).then((res) => {
-        this.initExam();
-      });
-    },
-    stopExam() {
-      axios({
-        url: "/exam/stopExam",
-        data: {
-          examId: this.examId,
-          examinee: this.user.id,
-        },
-      }).then((res) => {
-        this.initExam();
       });
     },
     getScore() {
@@ -660,10 +680,12 @@ export default {
       }
     },
     setTitleNumber(number) {
-      if (number <= 0 || number > this.titleNumberIndex.length) return;
-      this.currentId = this.titleNumberIndex[number - 1].id;
-      this.currentQueType = this.titleNumberIndex[number - 1].type;
+      if (number < 0 || number >= this.correctInfo.data.length) return;
       this.currentTitleNumber = number;
+      this.getAnswers();
+      // this.currentId = this.titleNumberIndex[number - 1].id;
+      // this.currentQueType = this.titleNumberIndex[number - 1].type;
+      // this.currentTitleNumber = number;
     },
     normalQueChange(event, n) {
       let ans =
@@ -685,23 +707,6 @@ export default {
         if (obj[p]) count++;
       }
       return count;
-    },
-    commitAnswer(queId, type) {
-      if (type == "normal") {
-        axios({
-          url: "/exam/addNormalAnswer",
-          data: {
-            questionId: queId,
-            examinee: this.user.id,
-            examId: this.examId,
-            answer: JSON.stringify(this.answers[type][queId]),
-          },
-          cancelToken: new axios.CancelToken((c) => {
-            this.ajaxCancel = c;
-          }),
-        }).then((res) => {
-        });
-      }
     },
     async initExam() {
       // await this.getQuestions();
@@ -730,12 +735,37 @@ export default {
     },
     getChoiceCorrectAnswer(answer) {
       let result = "";
+      let keys = [];
       for (const key in answer) {
         const index = Number.parseInt(key);
-        if (!isNaN(index) && answer[key]) {
+        if (!isNaN(index))
+          keys.push(index);
+      }
+      keys.sort();
+      for (const index of keys) {
+        if (answer[index]) {
           if (result !== "")
             result += ",";
           result += String.fromCharCode(65 + index);
+        }
+      }
+      return result;
+    },
+    getNormalCorrectAnswer(answer) {
+      let result = "";
+      let keys = [];
+      for (const key in answer) {
+        const index = Number.parseInt(key);
+        if (!isNaN(index))
+          keys.push(index);
+      }
+      keys.sort();
+      for (const index of keys) {
+        if (result !== "")
+          result += "<br/>";
+        result += `(${index + 1})`;
+        if (answer[index]) {
+          result += answer[index];
         }
       }
       return result;
@@ -756,7 +786,7 @@ export default {
     },
     isExamNotStarted() {
       return this.currentTime < this.exam.earliestStartTime;
-    },
+    }
   },
   watch: {
     user() {
@@ -764,16 +794,25 @@ export default {
         this.initExam();
       }
     },
+    currentQuestionNumber(val) {
+      // let answer;
+      this.updateCurrentAnswer(val);
+    },
+    // score(val) {
+    //   if (val > this.answers[this.questions[index].id].score) {
+    //     this.score = this.answers[this.questions[index].id].score;
+    //   }
+    // }
   },
   async mounted() {
     if (this.user != null) this.initExam();
   },
-  props: {
-    examId: {
-      type: Number,
-      default: 1,
-    },
-  },
+  // props: {
+  //   examId: {
+  //     type: Number,
+  //     default: 1,
+  //   },
+  // },
 };
 </script>
 
@@ -1012,7 +1051,7 @@ input[type="checkbox"].switch:checked::after {
 
 .question {
   margin-bottom: 9px;
-  width: 220px;
+  width: 225px;
   cursor: pointer;
   transition: background-color 0.5s;
   padding: 5px;
