@@ -29,6 +29,7 @@ module.exports = {
         "vue/no-v-model-argument":"off",
         "vue/no-multiple-template-root":"off",
         "vue/no-v-for-template-key":"off",
-        "no-undef":"off"
+        "no-undef":"off",
+        "no-empty":"off"
     }
 };

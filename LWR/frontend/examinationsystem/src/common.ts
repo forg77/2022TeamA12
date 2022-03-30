@@ -24,3 +24,12 @@ export function getQuestionTypeName(type: string) {
     else if (type === "short_answer") return "简答题";
     return "";
 }
+
+//获取题型大分类
+export function getQuestionGeneralType(type: string) {
+    if (type == "choice" || type == "multi_choice")
+        return "choice";
+    if (type == "completion" || type == "short_answer")
+        return "normal";
+    return "";
+}

@@ -24,7 +24,11 @@
                 <table style="margin: 10px auto auto">
                   <tr>
                     <td class="info1">本题满分:</td>
-                    <td><span class="info1 blue">10</span></td>
+                    <td><span
+                        class="info1 blue">{{
+                        questions[currentQuestionNumber] && questionScores[questions[currentQuestionNumber].id].score
+                      }}</span>
+                    </td>
                     <td class="info1">分</td>
                     <td style="padding-left: 17px" class="info1">自动阅卷</td>
                   </tr>
@@ -35,7 +39,7 @@
                     </td>
                     <td class="info1">分</td>
                     <td style="padding-left: 24px">
-                      <input type="checkbox" class="switch" />
+                      <input type="checkbox" class="switch"/>
                     </td>
                   </tr>
                 </table>
@@ -46,42 +50,22 @@
             <td>
               <div
                   class="card"
-                  style="width: 262px; height: 506px; padding: 20px"
+                  style="width: 262px; height: 506px; padding:20px 0 20px 20px"
               >
-                <div class="info1">题目列表:</div>
-                <br />
-                <div>
-                  <div style="font-size: 14px">
-                    1.衬衫的价格是不是九磅十五……
+                <el-scrollbar>
+                  <div class="info1">题目列表:</div>
+                  <br/>
+                  <div class="question" :class="{'question-selected':index===currentQuestionNumber}"
+                       v-for="(question,index) in questions" :key="question.id"
+                       @click="currentQuestionNumber=index">
+                    <div
+                        style="font-size: 14px;text-overflow:ellipsis;white-space: nowrap;overflow-x: hidden;width: 220px"
+                        :class="{blue:index===currentQuestionNumber}">
+                      {{ index + 1 }}.{{ question.description }}
+                    </div>
+                    <el-progress style="width: 235px" :percentage="50"/>
                   </div>
-                  <table>
-                    <tr>
-                      <td>
-                        <el-progress style="width: 230px" :percentage="50" />
-                        <!-- 进度条 -->
-                        <!--                        <div-->
-                        <!--                            style="-->
-                        <!--                            height: 3px;-->
-                        <!--                            width: 150px;-->
-                        <!--                            background-color: rgb(199, 199, 199);-->
-                        <!--                            border-radius: 5px;-->
-                        <!--                            margin-right: 20px;-->
-                        <!--                          "-->
-                        <!--                        >-->
-                        <!--                          <div-->
-                        <!--                              style="-->
-                        <!--                              height: 3px;-->
-                        <!--                              width: 50%;-->
-                        <!--                              background-color: #338afb;-->
-                        <!--                              border-radius: 5px;-->
-                        <!--                            "-->
-                        <!--                          ></div>-->
-                        <!--                        </div>-->
-                      </td>
-                      <!--                      <td><span style="font-size: 12px">50%</span></td>-->
-                    </tr>
-                  </table>
-                </div>
+                </el-scrollbar>
               </div>
             </td>
           </tr>
@@ -151,9 +135,8 @@
                           <td>
                             个人任务：<span
                               class="val-text"
-                              style="margin-right: 28px"
-                          >{{ exam.questionsCount }}</span
-                          >
+                          >{{ correctInfo.corrected.size }}</span>
+                            <span style="color:black;margin-right: 28px">/{{ correctInfo.count }}</span>
                             个人平均分：<span
                               class="val-text"
                               style="margin-right: 28px"
@@ -193,11 +176,26 @@
                   style="width: 100%; height: 426px; display: flex"
               >
                 <div style="height: 100%; width: 45%; padding: 20px">
-                  <div class="info1" style="height: 50%; width: 100%">
-                    当前题目:
+                  <div style="height: 50%;width: 100%">
+                    <div class="info1">
+                      当前题目:
+                    </div>
+                    <div>
+                      {{ questions[currentQuestionNumber] && questions[currentQuestionNumber].description }}
+                    </div>
                   </div>
-                  <div class="info1" style="height: 50%; width: 100%">
-                    参考答案:
+                  <div style="height: 50%; width: 100%">
+                    <div class="info1">
+                      参考答案:
+                    </div>
+                    <div>
+                      <template v-if="questions[currentQuestionNumber]">
+                        <template v-if="getQuestionType(questions[currentQuestionNumber].type)==='choice'">
+                          {{ getChoiceCorrectAnswer(questions[currentQuestionNumber].answer) }}
+                        </template>
+
+                      </template>
+                    </div>
                   </div>
                 </div>
                 <div
@@ -243,14 +241,16 @@
                               size="small"
                               placeholder="请输入分值"
                               input-style="width:95px"
-                          /></el-col>
+                          />
+                        </el-col>
                         <el-col :span="3">
                           <el-button
                               type="info"
                               plain
                               style="height: 30px; width: 60px"
                               size="small"
-                          >1分</el-button
+                          >1分
+                          </el-button
                           >
                         </el-col>
                         <el-col :span="3">
@@ -259,7 +259,8 @@
                               plain
                               style="height: 30px; width: 60px"
                               size="small"
-                          >3分</el-button
+                          >3分
+                          </el-button
                           >
                         </el-col>
                         <el-col :span="3">
@@ -268,7 +269,8 @@
                               plain
                               style="height: 30px; width: 60px"
                               size="small"
-                          >5分</el-button
+                          >5分
+                          </el-button
                           >
                         </el-col>
                         <el-col :span="7">
@@ -281,11 +283,12 @@
                             "
                               size="small"
                               type="danger"
-                          >推出</el-button
+                          >推出
+                          </el-button
                           >
                         </el-col>
                       </el-row>
-                      <el-row style="height: 5px" />
+                      <el-row style="height: 5px"/>
                       <el-row>
                         <el-col :span="4">
                           <el-button
@@ -293,7 +296,8 @@
                               size="small"
                               plain
                               type="success"
-                          >满分</el-button
+                          >满分
+                          </el-button
                           >
                         </el-col>
                         <el-col :span="4">
@@ -302,7 +306,8 @@
                               size="small"
                               plain
                               type="danger"
-                          >零分</el-button
+                          >零分
+                          </el-button
                           >
                         </el-col>
                         <el-col :span="3">
@@ -311,7 +316,8 @@
                               plain
                               style="height: 30px; width: 60px"
                               size="small"
-                          >7分</el-button
+                          >7分
+                          </el-button
                           >
                         </el-col>
                         <el-col :span="3">
@@ -320,7 +326,8 @@
                               plain
                               style="height: 30px; width: 60px"
                               size="small"
-                          >9分</el-button
+                          >9分
+                          </el-button
                           >
                         </el-col>
                         <el-col :span="3">
@@ -329,7 +336,8 @@
                               plain
                               style="height: 30px; width: 60px"
                               size="small"
-                          >10分</el-button
+                          >10分
+                          </el-button
                           >
                         </el-col>
                         <el-col :span="7">
@@ -342,7 +350,8 @@
                             "
                               size="small"
                               type="primary"
-                          >提交</el-button
+                          >提交
+                          </el-button
                           >
                         </el-col>
                       </el-row>
@@ -402,7 +411,7 @@
 
 <script lang="js">
 import axios from "axios";
-import {formatDate} from "@/common.ts";
+import {formatDate, getQuestionGeneralType} from "@/common.ts";
 import DialogBox from "./DialogBox.vue";
 import Loading from "./Loading.vue";
 // import config from "@/config.js";
@@ -415,14 +424,10 @@ export default {
     return {
       // examId: 1,
       bankId: 1,
-      questions: {
-        choice: {},
-        multiChoice: {},
-        completion: {},
-        shortAnswer: {},
-      },
+      questions: [],
       answers: {normal: {}},
       exam: {},
+      correctInfo: {data: [], count: 0, corrected: new Set()},
       examPaper: {},
       order: {},
       questionScores: {},
@@ -432,6 +437,7 @@ export default {
       // user: null,
       titleNumberIndex: [],
       currentTitleNumber: 1,
+      currentQuestionNumber: 0,
       // mark:{},
 
       stopTime: new Date(),
@@ -444,75 +450,69 @@ export default {
 
       isLoading: false,
 
-      score:0
+      score: 0
     };
   },
   methods: {
-    async getAllExamInfo() {
-      this.isLoading = true;
+    async getAllInfo() {
+      this.$store.state.config.showLoading = true;
       return axios({
-        url: "exam/getAllExamInfo",
+        url: "examCorrect/getAllCorrectInfo",
         data: {
           examId: this.examId,
-          examinee: this.user.id,
+          correctorId: this.user.id,
         },
       }).then((res) => {
         let data = res.data.data;
 
         //初始化考试信息
         this.exam = data.exam;
-        if (this.exam.type == "fixed")
-          this.order = JSON.parse(this.exam.orderJson);
-        else if (this.exam.type == "random")
-          this.order = JSON.parse(this.examPaper.orderJson);
-        this.getTitleNumberIndex();
+
+        //初始化考试批阅信息
+        this.correctInfo = data.correctInfo;
+        this.correctInfo.corrected = new Set();
+        for (let info of this.correctInfo.data) {
+          if (info['grade']) {
+            this.correctInfo.corrected.add(info.id);
+          }
+        }
 
         //初始化问题信息
-        this.questions = {
-          choice: {},
-          multiChoice: {},
-          completion: {},
-          shortAnswer: {},
-        };
-        this.answers = {normal: {}};
+        this.questions = [];
+        // this.answers = {normal: {}};
+        const regex = /<\/?.+?\/?>/gm;
         for (let question of data.questions.choice) {
           question.choice = JSON.parse(question.choice);
+          question.answer = JSON.parse(question.answer);
+          question.description = question.description.replace(regex, "").replace(/&nbsp;/gi, "");
           // console.log(question.choice);
-          this.answers.normal[question.id] = {};
-          if (question.type === "choice")
-            this.questions.choice[question.id] = question;
-          else if (question.type === "multi_choice")
-            this.questions.multiChoice[question.id] = question;
+          // this.answers.normal[question.id] = {};
+          // if (question.type === "choice")
+          //   this.questions.choice[question.id] = question;
+          // else if (question.type === "multi_choice")
+          //   this.questions.multiChoice[question.id] = question;
+          this.questions.push(question);
         }
         for (let question of data.questions.normal) {
-          this.answers.normal[question.id] = {};
-          if (question.type === "completion")
-            this.questions.completion[question.id] = question;
-          else if (question.type === "short_answer")
-            this.questions.shortAnswer[question.id] = question;
+          question.description = question.description.replace(regex, "").replace(/&nbsp;/gi, "");
+          question.answer = JSON.parse(question.answer);
+          // this.answers.normal[question.id] = {};
+          // if (question.type === "completion")
+          //   this.questions.completion[question.id] = question;
+          // else if (question.type === "short_answer")
+          //   this.questions.shortAnswer[question.id] = question;
+          this.questions.push(question);
         }
 
-        //初始化试卷信息
-        this.examPaper = data.examPaper;
-        if (!this.examPaper) this.showJoinDialog = true;
-        else {
-          this.stopTime = new Date(
-              this.examPaper.startTime + this.exam.duration
-          );
-        }
-
-        //初始化考生回答信息
-        for (let ans of data.answers.normal) {
-          this.answers.normal[ans.questionId] = JSON.parse(ans.answer);
-        }
+        // console.log(this.questions);
 
         //初始化题目分数信息
         for (let score of data.questionScores) {
           this.questionScores[score.questionId] = score;
         }
 
-        this.setTitleNumber(1);
-        this.isLoading = false;
+      }).finally(() => {
+        this.$store.state.config.showLoading = false;
       });
     },
     async getQuestions() {
@@ -709,25 +709,9 @@ export default {
       // this.getExamPaper();
       // this.getAnswers();
       // this.getQuestionScores();
-      await this.getAllExamInfo();
+      await this.getAllInfo();
 
-      if (!this.examPaper) return;
-      this.correctTime();
 
-      this.currentTime = new Date() + this.correctTimeDiff;
-      let interval = setInterval(() => {
-        this.currentTime = new Date(
-            new Date().valueOf() + this.correctTimeDiff
-        );
-        this.remainingTime =
-            this.stopTime.valueOf() - this.currentTime.valueOf();
-        // console.log(this.currentTime);
-        if (this.remainingTime <= 0 || this.isExamOver) {
-          this.remainingTime = 0;
-          clearInterval(interval);
-          this.showOverDialog = true;
-        }
-      }, 500);
     },
     async correctTime() {
       let before = new Date();
@@ -741,6 +725,21 @@ export default {
         // console.log(this.correctTimeDiff);
       });
     },
+    getQuestionType(name) {
+      return getQuestionGeneralType(name);
+    },
+    getChoiceCorrectAnswer(answer) {
+      let result = "";
+      for (const key in answer) {
+        const index = Number.parseInt(key);
+        if (!isNaN(index) && answer[key]) {
+          if (result !== "")
+            result += ",";
+          result += String.fromCharCode(65 + index);
+        }
+      }
+      return result;
+    }
   },
   computed: {
     user() {
@@ -767,13 +766,7 @@ export default {
     },
   },
   async mounted() {
-    // console.log(this.config);
-    // console.log(this.questions.choice, this.questions.completion);
-    // console.log(this.config);
     if (this.user != null) this.initExam();
-    setInterval(() => {
-      this.correctTime();
-    }, 60000);
   },
   props: {
     examId: {
@@ -1015,5 +1008,22 @@ input[type="checkbox"].switch:checked::after {
 
 .blue {
   color: $primary-color;
+}
+
+.question {
+  margin-bottom: 9px;
+  width: 220px;
+  cursor: pointer;
+  transition: background-color 0.5s;
+  padding: 5px;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: #d0e4fc;
+  }
+}
+
+.question-selected {
+  background-color: #d0e4fc;
 }
 </style>
