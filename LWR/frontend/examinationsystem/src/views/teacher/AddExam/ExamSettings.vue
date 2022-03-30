@@ -94,98 +94,100 @@
       </el-form>
     </div>
 
-    <el-divider>自动组卷设定</el-divider>
+    <div v-show="showAuto">
+      <el-divider>自动组卷设定</el-divider>
 
-    <div v-show="showAuto" style="display: flex;align-items: center;flex-direction: column;">
-      <el-card v-for="(formation,index) in formations" :key="index" shadow="never"
-               style="width:95%;margin-bottom: 38px">
-        <template #header>
+      <div style="display: flex;align-items: center;flex-direction: column;">
+        <el-card v-for="(formation,index) in formations" :key="index" shadow="never"
+                 style="width:95%;margin-bottom: 38px">
+          <template #header>
+            <div>
+              <span class="tag" style="vertical-align: middle">{{ getTypeName(formation.type) }} </span>
+              <el-icon @click="formations.splice(index,1)" class="delete-icon"
+                       style="vertical-align: middle;margin-left: 30px" size="31px">
+                <Delete/>
+              </el-icon>
+            </div>
+          </template>
           <div>
-            <span class="tag" style="vertical-align: middle">{{ getTypeName(formation.type) }} </span>
-            <el-icon @click="formations.splice(index,1)" class="delete-icon"
-                     style="vertical-align: middle;margin-left: 30px" size="31px">
-              <Delete/>
-            </el-icon>
-          </div>
-        </template>
-        <div>
-          <el-form :model="formations[index]">
-            <el-form-item label="每题分数：">
-              <el-input v-model.number="formation.score" clearable style="width: 168px" v-model="choice.total"/>
-              <el-form-item v-model="formation.description" style="margin-left:60px" label="题型说明：">
-                <el-input
-                    clearable
-                    style="width: 168px"
-                    v-model="choice.describe"
-                />
+            <el-form :model="formations[index]">
+              <el-form-item label="每题分数：">
+                <el-input v-model.number="formation.score" clearable style="width: 168px" v-model="choice.total"/>
+                <el-form-item v-model="formation.description" style="margin-left:60px" label="题型说明：">
+                  <el-input
+                      clearable
+                      style="width: 168px"
+                      v-model="choice.describe"
+                  />
+                </el-form-item>
               </el-form-item>
-            </el-form-item>
 
-            <el-form-item>
-              <el-radio @change="changeChoose(index,formation.choose)" v-model="formation.choose" :label="0"
-                        size="large"
-              >
+              <el-form-item>
+                <el-radio @change="changeChoose(index,formation.choose)" v-model="formation.choose" :label="0"
+                          size="large"
+                >
                 <span style="font-size:21px">
                   从题库选题
                   </span>
-              </el-radio>
-            </el-form-item>
-            <div :ref="'c0-'+index">
-              <div :ref="'choose-'+index" class="choose">
-                共 <span style="font-weight: bold">999+</span> 道
-                抽
-                <input
-                    type="number"
-                    style="
+                </el-radio>
+              </el-form-item>
+              <div :ref="'c0-'+index">
+                <div :ref="'choose-'+index" class="choose">
+                  共 <span style="font-weight: bold">999+</span> 道
+                  抽
+                  <input
+                      type="number"
+                      style="
                         border-radius: 5px;
                         width: 30px;
                         border: solid rgb(220, 223, 230) 0.7px;
                         outline: none;
                         height: 25px;
                       "
-                    v-model="choice.number"
-                />
-                道
+                      v-model="choice.number"
+                  />
+                  道
+                </div>
               </div>
-            </div>
-            <el-form-item>
-              <el-radio @change="changeChoose(index,formation.choose)" v-model="formation.choose" :label="1"
-                        size="large"
-              ><span style="font-size:21px">从题库指定目录选题</span>
-              </el-radio
-              >
-            </el-form-item>
-            <div :ref="'c1-'+index">
+              <el-form-item>
+                <el-radio @change="changeChoose(index,formation.choose)" v-model="formation.choose" :label="1"
+                          size="large"
+                ><span style="font-size:21px">从题库指定目录选题</span>
+                </el-radio
+                >
+              </el-form-item>
+              <div :ref="'c1-'+index">
 
-            </div>
-            <el-form-item>
-              <el-radio @change="changeChoose(index,formation.choose)" v-model="formation.choose" :label="2"
-                        size="large"
-              ><span style="font-size:21px">从题库按照难以度选题</span>
-              </el-radio
-              >
-            </el-form-item>
-            <div :ref="'c2-'+index">
+              </div>
+              <el-form-item>
+                <el-radio @change="changeChoose(index,formation.choose)" v-model="formation.choose" :label="2"
+                          size="large"
+                ><span style="font-size:21px">从题库按照难以度选题</span>
+                </el-radio
+                >
+              </el-form-item>
+              <div :ref="'c2-'+index">
 
-            </div>
-          </el-form>
-        </div>
-      </el-card>
+              </div>
+            </el-form>
+          </div>
+        </el-card>
+      </div>
+      <el-dropdown>
+        <el-button style="margin: 0 0 0 25px" type="primary">更多题型
+          <el-icon class="el-icon--right">
+            <arrow-down/>
+          </el-icon>
+        </el-button>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item @click="formations.push({type: dropDown.key, score: 2, description: '', choose: 0})"
+                              v-for="dropDown in addDropdown" :key="dropDown.key">{{ dropDown.value }}
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
     </div>
-    <el-dropdown>
-      <el-button style="margin: 0 0 0 25px" type="primary">更多题型
-        <el-icon class="el-icon--right">
-          <arrow-down/>
-        </el-icon>
-      </el-button>
-      <template #dropdown>
-        <el-dropdown-menu>
-          <el-dropdown-item @click="formations.push({type: dropDown.key, score: 2, description: '', choose: 0})"
-                            v-for="dropDown in addDropdown" :key="dropDown.key">{{ dropDown.value }}
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </template>
-    </el-dropdown>
   </div>
 </template>
 
