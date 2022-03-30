@@ -5,6 +5,7 @@ public class QuestionScore {
     private Integer examId;
     private Integer questionId;
     private Float score;
+    private Boolean autoCorrect;
 
     public Integer getId() {
         return id;
@@ -36,6 +37,14 @@ public class QuestionScore {
 
     public void setScore(Float score) {
         this.score = score;
+    }
+
+    public Boolean getAutoCorrect() {
+        return autoCorrect;
+    }
+
+    public void setAutoCorrect(Boolean autoCorrect) {
+        this.autoCorrect = autoCorrect;
     }
 
     @Override

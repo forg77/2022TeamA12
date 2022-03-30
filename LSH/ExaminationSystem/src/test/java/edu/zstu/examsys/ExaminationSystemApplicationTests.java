@@ -1,7 +1,10 @@
 package edu.zstu.examsys;
 
 import com.alibaba.fastjson.JSON;
+import edu.zstu.examsys.mapper.ExamCorrectMapper;
+import edu.zstu.examsys.pojo.CorrectInfo;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +16,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 @SpringBootTest
@@ -23,11 +28,25 @@ class ExaminationSystemApplicationTests {
 
     }
 
+    @Autowired
+    ExamCorrectMapper examCorrectMapper;
+
     @Test
     void test() {
-        BCryptPasswordEncoder encoder=new BCryptPasswordEncoder();
-        System.out.println(encoder.encode("123"));
+//        BCryptPasswordEncoder encoder=new BCryptPasswordEncoder();
+//        System.out.println(encoder.encode("123"));
+        List<CorrectInfo> list = new LinkedList<>();
+        CorrectInfo info = new CorrectInfo();
+        info.setCorrectorId(1);
+        info.setPaperId(12);
+        list.add(info);
+        info = new CorrectInfo();
+        info.setCorrectorId(1);
+        info.setPaperId(13);
+        list.add(info);
+        examCorrectMapper.addCorrectInfo(list);
     }
+
 
 //    @Test
 //    void requestTest() {

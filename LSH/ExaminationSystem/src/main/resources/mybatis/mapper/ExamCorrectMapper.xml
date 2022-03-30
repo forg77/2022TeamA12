@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.zstu.examsys.mapper.ExamCorrectMapper">
+    <select id="getCorrectInfo" resultType="CorrectInfo">
+        SELECT `correct_info`.*,
+               `exam_id`,
+               `exam_paper`.`grade`,
+               `examinee`
+        FROM `correct_info`
+                 INNER JOIN `exam_paper` ON `paper_id` = `exam_paper`.`id`
+                 INNER JOIN `exam` ON `exam_id` = `exam`.`id`
+        WHERE `corrector_id` = #{info.correctorId}
+          AND `exam_id` = #{info.examId}
+          AND (`finish_time` IS NOT NULL OR #{now} >= `exam_paper`.`start_time` + `duration`)
+        ORDER BY `correct_info`.`id`;
+    </select>
+
+    <select id="getCorrectInfoCount" resultType="int">
+        SELECT COUNT(*) AS `count`
+        FROM `correct_info`
+                 INNER JOIN `exam_paper` ON `paper_id` = `exam_paper`.`id`
+                 INNER JOIN `exam` ON `exam_id` = `exam`.`id`
+        WHERE `corrector_id` = #{info.correctorId}
+          AND `exam_id` = #{info.examId}
+          AND (`finish_time` IS NOT NULL OR #{now} >= `exam_paper`.`start_time` + `duration`);
+    </select>
+
+    <insert id="addCorrectInfo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `correct_info` (
+        `id`,
+        `corrector_id`,
+        `paper_id`,
+        `time`
+        )
+        VALUES
+        <foreach collection="info" item="item" separator=",">
+            (
+            #{item.id},
+            #{item.correctorId},
+            #{item.paperId},
+            #{item.time}
+            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        `time` = VALUES(`time`)
+        ;
+    </insert>
+
+    <insert id="updateAnswerScore">
+        INSERT INTO `examsys`.`exam_answer` (`exam_id`,
+                                             `examinee`,
+                                             `question_id`,
+                                             `score`,
+                                             `corrector`)
+        VALUES (#{examId},
+                #{examinee},
+                #{questionId},
+                #{score},
+                #{corrector})
+        ON DUPLICATE KEY UPDATE `score`     = VALUES(`score`),
+                                `corrector` = VALUES(`corrector`)
+        ;
+    </insert>
+</mapper>

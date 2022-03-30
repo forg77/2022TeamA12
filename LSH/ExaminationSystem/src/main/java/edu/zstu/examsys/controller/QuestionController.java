@@ -35,7 +35,7 @@ public class QuestionController {
 
         Map<String, Object> data = new HashMap<>();
         data.put("count", questionService.getBanksCount(author, search));
-        data.put("data", questionService.getBanks(author, search, con));
+        data.put("data", questionService.getBanks(null, author, search, con));
 
         CommonData res = new CommonData(ErrorCode.SUCCESS, "成功", data);
 

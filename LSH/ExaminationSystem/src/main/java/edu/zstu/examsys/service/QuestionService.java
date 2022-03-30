@@ -17,8 +17,8 @@ public class QuestionService {
         this.questionMapper = questionMapper;
     }
 
-    public List<QuestionBank> getBanks(Integer author, String search, Condition con) {
-        return questionMapper.getBanks(author, search, con);
+    public List<QuestionBank> getBanks(Integer id, Integer author, String search, Condition con) {
+        return questionMapper.getBanks(id, author, search, con);
     }
 
     public Integer getBanksCount(Integer author, String search) {

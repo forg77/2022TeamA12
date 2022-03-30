@@ -15,6 +15,9 @@
         FROM `question_bank`
         INNER JOIN `user` ON `user`.`id` = `author`
         <where>
+            <if test="id != null">
+                AND `question_bank`.`id` = #{id}
+            </if>
             <if test="author != null">
                 AND `author` = #{author}
             </if>

@@ -1,0 +1,89 @@
+package edu.zstu.examsys.controller;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import edu.zstu.examsys.pojo.*;
+import edu.zstu.examsys.service.ExamCorrectService;
+import edu.zstu.examsys.service.ExamService;
+import edu.zstu.examsys.service.QuestionService;
+import edu.zstu.examsys.util.JSONUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.*;
+
+@RestController
+@RequestMapping("/examCorrect")
+public class ExamCorrectController {
+    private ExamService examService;
+    private QuestionService questionService;
+    private ExamCorrectService examCorrectService;
+
+    @Autowired
+    public void setExamCorrectService(ExamCorrectService examCorrectService) {
+        this.examCorrectService = examCorrectService;
+    }
+
+    @Autowired
+    public void setExamService(ExamService examService) {
+        this.examService = examService;
+    }
+
+    @Autowired
+    public void setQuestionService(QuestionService questionService) {
+        this.questionService = questionService;
+    }
+
+    @PostMapping("/getAllCorrectInfo")
+    public String getAllCorrectInfo(@RequestBody String requestBody) {
+        JSONObject body = JSON.parseObject(requestBody);
+        Integer correctorId = body.getInteger("correctorId");
+        Integer examId = body.getInteger("examId");
+
+        Map<String, Object> data = new HashMap<>();
+
+        List<CorrectInfo> info = examCorrectService.getCorrectInfo(new CorrectInfo(correctorId, examId));
+        Map<String, Object> correctInfo = new HashMap<>();
+        correctInfo.put("data", info);
+        correctInfo.put("count", examCorrectService.getCorrectInfoCount(new CorrectInfo(correctorId, examId)));
+        data.put("correctInfo", correctInfo);
+
+        Exam exam = examService.getExams(examId, null, null, new Condition()).get(0);
+        data.put("exam", exam);
+
+        Map<String, Object> questions = new HashMap<>();
+        questions.put("choice", questionService.getChoiceQuestions(null, exam.getBankId(), null, new Condition()));
+        questions.put("normal", questionService.getNormalQuestions(null, exam.getBankId(), null, new Condition()));
+        data.put("questions", questions);
+
+        //获取题目的分数信息
+        List<QuestionScore> questionScores = examService.getQuestionScores(examId);
+        data.put("questionScores", questionScores);
+
+        CommonData res = new CommonData(ErrorCode.SUCCESS, "成功", data);
+
+        return JSON.toJSONString(res);
+    }
+
+    //批改某一题
+    @PostMapping("/setScore")
+    public String getAllAnswers(@RequestBody String requestBody) {
+        JSONObject body = JSON.parseObject(requestBody);
+        Integer examId = body.getInteger("examId");
+        Integer examinee = body.getInteger("examinee");
+        Integer questionId = body.getInteger("questionId");
+        Float score = body.getFloat("score");
+        Integer corrector = body.getInteger("corrector");
+
+        examCorrectService.updateAnswerScore(examId, examinee, questionId, score, corrector);
+
+        CommonData res = new CommonData(ErrorCode.SUCCESS, "成功");
+
+        return JSON.toJSONString(res);
+    }
+}
