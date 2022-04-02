@@ -64,13 +64,14 @@
                             style="text-overflow:ellipsis;white-space: nowrap;overflow-x: hidden;width: 180px">
                         {{ index + 1 }}.{{ question.description }}</span>
                       <span
-                          v-if="answers[questions[index].id]&&answers[questions[index].id].score"
+                          v-if="answers[questions[index].id]&&answers[questions[index].id].score!=null"
                           style="color:#67C23A;margin-left: auto;font-size: 12px">
                           {{ answers[questions[index].id].score }}分
                         </span>
                       <span v-else style="color: #F56C6C;margin-left: auto;font-size: 12px">未批</span>
                     </div>
-                    <el-progress style="width: 235px" :percentage="50"/>
+                    <el-progress style="width: 235px"
+                                 :percentage="Math.ceil(correctedNum[questions[index].id]/correctInfo.data.length*100)"/>
                   </div>
                 </el-scrollbar>
               </div>
@@ -144,6 +145,8 @@
                               class="val-text"
                           >{{ correctInfo.corrected.size }}</span>
                             <span style="color:black;margin-right: 28px">/{{ correctInfo.count }}</span>
+                            当前：<span class="val-text">{{ currentTitleNumber + 1 }}</span><span
+                              style="color:black;margin-right: 28px">/{{ correctInfo.count }}</span>
                             个人平均分：<span
                               class="val-text"
                               style="margin-right: 28px"
@@ -412,6 +415,7 @@ import axios from "axios";
 import {formatDate, getQuestionGeneralType} from "@/common.ts";
 import DialogBox from "./DialogBox.vue";
 import Loading from "./Loading.vue";
+import {ElMessage} from "element-plus";
 // import config from "@/config.js";
 export default {
   components: {
@@ -437,12 +441,14 @@ export default {
       titleNumberIndex: [],
       currentTitleNumber: 0,
       currentQuestionNumber: 0,
+      remainingNum: 0,
       // mark:{},
 
       stopTime: new Date(),
       currentTime: new Date(),
       remainingTime: 0,
       correctTimeDiff: 0,
+      correctedNum: {},
 
       score: 0
     };
@@ -498,6 +504,8 @@ export default {
           //   this.questions.shortAnswer[question.id] = question;
           this.questions.push(question);
         }
+        console.log(data.questions.correctedNum)
+        this.correctedNum = data.questions.correctedNum;
 
         // console.log(this.questions);
 
@@ -523,10 +531,20 @@ export default {
       }).then((res) => {
         let data = res.data.data;
 
+        this.remainingNum = this.questions.length;
         this.answers = {};
         for (let ans of data.normal) {
           this.answers[ans.questionId] = ans;
           this.answers[ans.questionId].answer = JSON.parse(ans.answer);
+          if (ans.score !== undefined)
+            this.remainingNum--;
+        }
+        for (let ans of data.answers) {
+          if (!this.answers[ans.questionId]) {
+            this.answers[ans.questionId] = ans;
+            if (ans.score !== undefined)
+              this.remainingNum--;
+          }
         }
         this.updateCurrentAnswer(this.currentQuestionNumber);
       }).finally(() => {
@@ -535,23 +553,52 @@ export default {
     },
     commitScore() {
       this.$store.state.config.showLoading = true;
+      const score = this.score;
       axios({
         url: "examCorrect/setScore",
         data: {
           questionId: this.questions[this.currentQuestionNumber].id,
           examId: this.examId,
           examinee: this.correctInfo.data[this.currentTitleNumber].examinee,
-          score: this.score,
+          score: score,
           corrector: this.user.id
         }
       }).then((res) => {
         if (res.data.errCode !== 0) {
           throw new Error();
-        }else{
-
+        } else {
+          this.answers[this.questions[this.currentQuestionNumber].id].score = score;
+          this.remainingNum--;
+          if (this.remainingNum <= 0) {
+            this.remainingNum = 0;
+            this.calculateGrade();
+          }
+          this.correctedNum[this.questions[this.currentQuestionNumber].id]++;
         }
       }).catch(() => {
-        alert("提交失败");
+        ElMessage({message: '提交失败，请重试', type: 'error'});
+      }).finally(() => {
+        this.$store.state.config.showLoading = false;
+      });
+    },
+    calculateGrade() {
+      this.$store.state.config.showLoading = true;
+      axios({
+        url: "examCorrect/calculateScore",
+        data: {
+          examId: this.examId,
+          examinee: this.correctInfo.data[this.currentTitleNumber].examinee,
+        }
+      }).then((res) => {
+        if (res.data.errCode !== 0) {
+          throw new Error();
+        } else {
+          ElMessage({message: '试卷批改完成', type: 'success'});
+          this.correctInfo.data[this.currentTitleNumber].grade = res.data.data;
+          this.correctInfo.corrected.add(this.correctInfo.data[this.currentTitleNumber].id);
+        }
+      }).catch(() => {
+        ElMessage({message: '计算分数失败', type: 'error'});
       }).finally(() => {
         this.$store.state.config.showLoading = false;
       });
@@ -577,6 +624,7 @@ export default {
         url: "question/getAllQuestions",
         data: {
           bankId: this.bankId,
+          examId: this.examId
         },
       }).then((res) => {
         this.questions = {
