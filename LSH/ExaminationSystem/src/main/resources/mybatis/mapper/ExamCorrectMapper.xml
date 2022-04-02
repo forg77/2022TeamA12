@@ -49,11 +49,11 @@
     </insert>
 
     <insert id="updateAnswerScore">
-        INSERT INTO `examsys`.`exam_answer` (`exam_id`,
-                                             `examinee`,
-                                             `question_id`,
-                                             `score`,
-                                             `corrector`)
+        INSERT INTO `exam_answer` (`exam_id`,
+                                   `examinee`,
+                                   `question_id`,
+                                   `score`,
+                                   `corrector`)
         VALUES (#{examId},
                 #{examinee},
                 #{questionId},
@@ -63,4 +63,11 @@
                                 `corrector` = VALUES(`corrector`)
         ;
     </insert>
+
+    <select id="getCorrectedNum" resultType="int">
+        SELECT COUNT(score)
+        FROM exam_answer
+        WHERE exam_id = #{examId}
+          AND question_id = #{questionId};
+    </select>
 </mapper>

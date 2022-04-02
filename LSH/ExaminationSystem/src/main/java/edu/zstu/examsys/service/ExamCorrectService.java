@@ -27,11 +27,15 @@ public class ExamCorrectService {
         return examCorrectMapper.getCorrectInfoCount(info, new Date());
     }
 
-    public Integer addCorrectInfo(List<CorrectInfo> info){
+    public Integer addCorrectInfo(List<CorrectInfo> info) {
         return examCorrectMapper.addCorrectInfo(info);
     }
 
-    public Integer updateAnswerScore(Integer examId, Integer examinee, Integer questionId, Float score, Integer corrector){
+    public Integer updateAnswerScore(Integer examId, Integer examinee, Integer questionId, Float score, Integer corrector) {
         return examCorrectMapper.updateAnswerScore(examId, examinee, questionId, score, corrector);
+    }
+
+    public Integer getCorrectedNum(Integer examId, Integer questionId) {
+        return examCorrectMapper.getCorrectedNum(examId, questionId);
     }
 }

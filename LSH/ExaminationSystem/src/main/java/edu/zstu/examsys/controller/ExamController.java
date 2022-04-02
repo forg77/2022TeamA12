@@ -108,6 +108,7 @@ public class ExamController {
 
         Map<String, Object> data = new HashMap<>();
         data.put("normal", examService.getNormalAnswers(examinee, examId));
+        data.put("answers",examService.getExamAnswers(examinee, examId));
 
         CommonData res = new CommonData(ErrorCode.SUCCESS, "成功", data);
 

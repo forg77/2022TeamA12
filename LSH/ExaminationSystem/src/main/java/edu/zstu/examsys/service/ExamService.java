@@ -97,31 +97,35 @@ public class ExamService {
         }
     }
 
-    public List<GradeInfo> getGradesInfo(Integer examinee, String search, Condition con){
+    public List<GradeInfo> getGradesInfo(Integer examinee, String search, Condition con) {
         return examMapper.getGradesInfo(examinee, search, con);
     }
 
-    public Integer getGradesInfoCount(Integer examinee, String search){
+    public Integer getGradesInfoCount(Integer examinee, String search) {
         return examMapper.getGradesInfoCount(examinee);
     }
 
-    public Integer addQuestionScore(QuestionScore score){
+    public Integer addQuestionScore(QuestionScore score) {
         return examMapper.addQuestionScore(score);
     }
 
-    public Integer updateQuestionScore(QuestionScore score){
+    public Integer updateQuestionScore(QuestionScore score) {
         return examMapper.updateQuestionScore(score);
     }
 
-    public QuestionScore getQuestionScore(Integer examId,Integer questionId){
+    public QuestionScore getQuestionScore(Integer examId, Integer questionId) {
         return examMapper.getQuestionScore(examId, questionId);
     }
 
-    public Integer addExam(Exam exam){
+    public Integer addExam(Exam exam) {
         return examMapper.addExam(exam);
     }
 
-    public Integer deleteExam(Integer id){
+    public Integer deleteExam(Integer id) {
         return examMapper.deleteExam(id);
+    }
+
+    public List<ExamAnswer> getExamAnswers(Integer examinee, Integer examId) {
+        return examMapper.getExamAnswers(examinee, examId);
     }
 }

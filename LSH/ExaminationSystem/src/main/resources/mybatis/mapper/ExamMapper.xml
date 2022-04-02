@@ -384,4 +384,10 @@
         FROM `question_bank`
         WHERE `id` = (SELECT `bank_id` FROM `exam` WHERE `id` = #{id});
     </delete>
+
+    <select id="getExamAnswers" resultType="ExamAnswer">
+        SELECT * FROM exam_answer
+        WHERE `examinee` = #{examinee}
+          AND `exam_id` = #{examId};
+    </select>
 </mapper>

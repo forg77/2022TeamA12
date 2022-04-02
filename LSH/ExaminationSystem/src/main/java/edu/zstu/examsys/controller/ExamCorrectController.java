@@ -57,8 +57,21 @@ public class ExamCorrectController {
         data.put("exam", exam);
 
         Map<String, Object> questions = new HashMap<>();
-        questions.put("choice", questionService.getChoiceQuestions(null, exam.getBankId(), null, new Condition()));
-        questions.put("normal", questionService.getNormalQuestions(null, exam.getBankId(), null, new Condition()));
+        List<ChoiceQuestion> choiceQuestions = questionService.getChoiceQuestions(null, exam.getBankId(), null, new Condition());
+        List<NormalQuestion> normalQuestions = questionService.getNormalQuestions(null, exam.getBankId(), null, new Condition());
+
+        questions.put("choice", choiceQuestions);
+        questions.put("normal", normalQuestions);
+
+        Map<String, Object> correctedNum = new HashMap<>();
+        for (ChoiceQuestion choiceQuestion : choiceQuestions) {
+            correctedNum.put(String.valueOf(choiceQuestion.getId()), examCorrectService.getCorrectedNum(examId, choiceQuestion.getId()));
+        }
+        for (NormalQuestion normalQuestion : normalQuestions) {
+            correctedNum.put(String.valueOf(normalQuestion.getId()), examCorrectService.getCorrectedNum(examId, normalQuestion.getId()));
+        }
+        questions.put("correctedNum", correctedNum);
+
         data.put("questions", questions);
 
         //获取题目的分数信息
@@ -80,9 +93,70 @@ public class ExamCorrectController {
         Float score = body.getFloat("score");
         Integer corrector = body.getInteger("corrector");
 
-        examCorrectService.updateAnswerScore(examId, examinee, questionId, score, corrector);
+//        System.out.println(examId + " " + examinee + " " + questionId + " " + score + " " + corrector);
+        Integer lines = examCorrectService.updateAnswerScore(examId, examinee, questionId, score, corrector);
+//        if (lines == 1) {
+//            NormalAnswer answer = new NormalAnswer();
+//            answer.setExamId(examId);
+//            answer.setExaminee(examinee);
+//            answer.setQuestionId(questionId);
+//            answer.setScore(score);
+//            answer.setCorrector(corrector);
+//            answer.setAnswer(null);
+//            examService.addNormalAnswer(answer);
+//        }
+//
+//        examService.addOrUpdateNormalAnswer(answer);
 
         CommonData res = new CommonData(ErrorCode.SUCCESS, "成功");
+
+        return JSON.toJSONString(res);
+    }
+
+    //提交考试，计算分数
+    @PostMapping("/calculateScore")
+    public String calculateScore(@RequestBody String requestBody) {
+        JSONObject body = JSON.parseObject(requestBody);
+        Integer examId = body.getInteger("examId");
+        Integer examinee = body.getInteger("examinee");
+
+        Float score = 0f;
+        List<NormalAnswer> normalAnswers = examService.getNormalAnswers(examinee, examId);
+        for (NormalAnswer answer : normalAnswers) {
+            if (answer.getScore() != null)
+                score += answer.getScore();
+        }
+        examService.updateGrade(examId, examinee, score);
+
+        CommonData res = new CommonData(ErrorCode.SUCCESS, "成功", score);
+
+        return JSON.toJSONString(res);
+    }
+
+    @PostMapping("/getAllQuestions")
+    public String getAllQuestions(@RequestBody String requestBody) {
+        JSONObject body = JSON.parseObject(requestBody);
+        Condition con = JSONUtils.setCondition(body);
+        Integer bankId = body.getInteger("bankId");
+        Integer examId = body.getInteger("examId");
+
+        Map<String, Object> data = new HashMap<>();
+        List<ChoiceQuestion> choiceQuestions = questionService.getChoiceQuestions(null, bankId, null, con);
+        List<NormalQuestion> normalQuestions = questionService.getNormalQuestions(null, bankId, null, con);
+
+        data.put("choice", choiceQuestions);
+        data.put("normal", normalQuestions);
+
+        Map<String, Object> correctedNum = new HashMap<>();
+        for (ChoiceQuestion choiceQuestion : choiceQuestions) {
+            correctedNum.put(String.valueOf(choiceQuestion.getId()), examCorrectService.getCorrectedNum(examId, choiceQuestion.getId()));
+        }
+        for (NormalQuestion normalQuestion : normalQuestions) {
+            correctedNum.put(String.valueOf(normalQuestion.getId()), examCorrectService.getCorrectedNum(examId, normalQuestion.getId()));
+        }
+        data.put("correctedNum", correctedNum);
+
+        CommonData res = new CommonData(ErrorCode.SUCCESS, "成功", data);
 
         return JSON.toJSONString(res);
     }

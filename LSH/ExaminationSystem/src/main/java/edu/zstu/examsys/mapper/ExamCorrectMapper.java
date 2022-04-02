@@ -17,4 +17,6 @@ public interface ExamCorrectMapper {
     Integer addCorrectInfo(List<CorrectInfo> info);
 
     Integer updateAnswerScore(Integer examId, Integer examinee, Integer questionId, Float score, Integer corrector);
+
+    Integer getCorrectedNum(Integer examId, Integer questionId);
 }
