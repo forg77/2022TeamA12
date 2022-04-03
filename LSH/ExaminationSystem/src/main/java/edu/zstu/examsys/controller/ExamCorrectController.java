@@ -133,6 +133,7 @@ public class ExamCorrectController {
         return JSON.toJSONString(res);
     }
 
+    //
     @PostMapping("/getAllQuestions")
     public String getAllQuestions(@RequestBody String requestBody) {
         JSONObject body = JSON.parseObject(requestBody);
@@ -159,5 +160,98 @@ public class ExamCorrectController {
         CommonData res = new CommonData(ErrorCode.SUCCESS, "成功", data);
 
         return JSON.toJSONString(res);
+    }
+
+    //自动批改
+    @PostMapping("/autoCorrectObjective")
+    @Transactional
+    public String autoCorrectObjective(@RequestBody String requestBody) {
+        JSONObject body = JSON.parseObject(requestBody);
+        Integer examId = body.getInteger("examId");
+        Integer examinee = body.getInteger("examinee");
+
+        Exam exam = examService.getExams(examId, null, null, new Condition()).get(0);
+        List<ChoiceQuestion> choiceQuestions = questionService.getChoiceQuestions(null, exam.getBankId(), null, new Condition());
+        List<NormalQuestion> normalQuestions = questionService.getNormalQuestions(null, exam.getBankId(), null, new Condition());
+
+        Map<Integer, JSONObject> correctNormalAnswers = new HashMap<>();
+        Set<Integer> objective = new HashSet<>();
+        for (ChoiceQuestion que : choiceQuestions) {
+            correctNormalAnswers.put(que.getId(), JSON.parseObject(que.getAnswer()));
+            String type = que.getType();
+            if ("choice".equals(type) || "multi_choice".equals(type) || "completion".equals(type)) {
+                objective.add(que.getId());
+            }
+        }
+        for (NormalQuestion que : normalQuestions) {
+            correctNormalAnswers.put(que.getId(), JSON.parseObject(que.getAnswer()));
+            String type = que.getType();
+            if ("choice".equals(type) || "multi_choice".equals(type) || "completion".equals(type)) {
+                objective.add(que.getId());
+            }
+        }
+
+        List<QuestionScore> questionScores = examService.getQuestionScores(examId);
+        Map<Integer, QuestionScore> scores = new HashMap<>();
+        for (QuestionScore score : questionScores) {
+            scores.put(score.getQuestionId(), score);
+        }
+
+        float totalScore = 0;
+        List<NormalAnswer> normalAnswers = examService.getNormalAnswers(examinee, examId);
+        Map<Integer, NormalAnswer> normalAnswersIndex = new HashMap<>();
+        for (NormalAnswer answer : normalAnswers) {
+            normalAnswersIndex.put(answer.getQuestionId(), answer);
+        }
+
+//        for (NormalAnswer answer : normalAnswers) {
+//            if (!scores.get(answer.getQuestionId()).getAutoCorrect())
+//                continue;
+//            if (!objective.contains(answer.getQuestionId()))
+//                continue;
+//            if (answer.getScore() != null)
+//                continue;
+//            float score = scores.get(answer.getQuestionId()).getScore() * normalCorrect(JSON.parseObject(answer.getAnswer()), correctNormalAnswers.get(answer.getQuestionId()));
+//            answer.setScore(score);
+//            examService.updateNormalAnswer(answer);
+//            totalScore += score;
+//        }
+
+        List<Integer> correctedId = new LinkedList<>();
+
+        for (Integer id : objective) {
+            if (!scores.get(id).getAutoCorrect())
+                continue;
+            NormalAnswer answer = normalAnswersIndex.get(id);
+            if (answer != null) {
+                if (answer.getScore() != null)
+                    continue;
+                float score = scores.get(answer.getQuestionId()).getScore() * normalCorrect(JSON.parseObject(answer.getAnswer()), correctNormalAnswers.get(answer.getQuestionId()));
+                answer.setScore(score);
+                examService.updateNormalAnswer(answer);
+                totalScore += score;
+            } else {
+                examCorrectService.updateAnswerScore(examId, examinee, id, 0f, null);
+            }
+            correctedId.add(id);
+        }
+//        examService.updateGrade(examId, examinee, totalScore);
+
+        Integer paperId = examService.getExamPapers(examinee, examId, new Condition()).get(0).getId();
+        examCorrectService.setObjectiveAutoCorrected(paperId, true);
+        CommonData res = new CommonData(ErrorCode.SUCCESS, "成功", correctedId);
+
+        return JSON.toJSONString(res);
+    }
+
+    private float normalCorrect(JSONObject answer, JSONObject correctAnswer) {
+        Set<String> keys = correctAnswer.keySet();
+        int correctNum = 0;
+        for (String key : keys) {
+            if (answer.containsKey(key) && answer.get(key).equals(correctAnswer.get(key))) {
+                correctNum++;
+            }
+        }
+        return (float) correctNum / keys.size();
     }
 }

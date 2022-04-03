@@ -19,4 +19,6 @@ public interface ExamCorrectMapper {
     Integer updateAnswerScore(Integer examId, Integer examinee, Integer questionId, Float score, Integer corrector);
 
     Integer getCorrectedNum(Integer examId, Integer questionId);
+
+    Integer setObjectiveAutoCorrected(Integer paperId,Boolean corrected);
 }

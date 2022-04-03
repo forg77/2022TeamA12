@@ -28,11 +28,12 @@
     </select>
 
     <insert id="addCorrectInfo" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO `correct_info` (
+        INSERT INTO examsys.`correct_info` (
         `id`,
         `corrector_id`,
         `paper_id`,
-        `time`
+        `time`,
+        `objective_auto_corrected`
         )
         VALUES
         <foreach collection="info" item="item" separator=",">
@@ -40,13 +41,21 @@
             #{item.id},
             #{item.correctorId},
             #{item.paperId},
-            #{item.time}
+            #{item.time},
+            #{item.objectiveAutoCorrected}
             )
         </foreach>
         ON DUPLICATE KEY UPDATE
-        `time` = VALUES(`time`)
+        `time` = VALUES(`time`),
+        `objective_auto_corrected`=VALUES(`objective_auto_corrected`)
         ;
     </insert>
+
+    <update id="setObjectiveAutoCorrected">
+        UPDATE examsys.correct_info
+        SET objective_auto_corrected=#{corrected}
+        WHERE paper_id = #{paperId}
+    </update>
 
     <insert id="updateAnswerScore">
         INSERT INTO `exam_answer` (`exam_id`,

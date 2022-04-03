@@ -9,6 +9,7 @@ public class CorrectInfo {
     private Integer examinee;
     private Long time;
     private Float grade;
+    private Boolean objectiveAutoCorrected;
 
     public CorrectInfo(Integer correctorId, Integer examId) {
         this.correctorId = correctorId;
@@ -74,6 +75,14 @@ public class CorrectInfo {
         this.examinee = examinee;
     }
 
+    public Boolean getObjectiveAutoCorrected() {
+        return objectiveAutoCorrected;
+    }
+
+    public void setObjectiveAutoCorrected(Boolean objectiveAutoCorrected) {
+        this.objectiveAutoCorrected = objectiveAutoCorrected;
+    }
+
     @Override
     public String toString() {
         return "CorrectInfo{" +
@@ -84,6 +93,7 @@ public class CorrectInfo {
                 ", examinee=" + examinee +
                 ", time=" + time +
                 ", grade=" + grade +
+                ", objectiveAutoCorrected=" + objectiveAutoCorrected +
                 '}';
     }
 }

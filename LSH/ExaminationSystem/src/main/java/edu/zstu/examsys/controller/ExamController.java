@@ -175,6 +175,7 @@ public class ExamController {
             item.setCorrectorId(bank.getAuthor());
             item.setPaperId(examPaper.getId());
             item.setTime(null);
+            item.setObjectiveAutoCorrected(false);
             info.add(item);
             examCorrectService.addCorrectInfo(info);
 

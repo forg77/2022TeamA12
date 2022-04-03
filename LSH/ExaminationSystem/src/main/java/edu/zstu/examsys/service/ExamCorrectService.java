@@ -38,4 +38,8 @@ public class ExamCorrectService {
     public Integer getCorrectedNum(Integer examId, Integer questionId) {
         return examCorrectMapper.getCorrectedNum(examId, questionId);
     }
+
+    public Integer setObjectiveAutoCorrected(Integer paperId, Boolean corrected) {
+        return examCorrectMapper.setObjectiveAutoCorrected(paperId, corrected);
+    }
 }
