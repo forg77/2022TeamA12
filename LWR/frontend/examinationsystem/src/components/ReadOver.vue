@@ -38,8 +38,9 @@
                       <span class="info1 blue">0.5</span>
                     </td>
                     <td class="info1">分</td>
-                    <td style="padding-left: 24px">
-                      <input type="checkbox" class="switch"/>
+                    <td style="padding-left: 28px">
+                      <!--                      <input type="checkbox" class="switch"/>-->
+                      <el-switch v-model="isAutoCorrect"/>
                     </td>
                   </tr>
                 </table>
@@ -450,12 +451,15 @@ export default {
       correctTimeDiff: 0,
       correctedNum: {},
 
-      score: 0
+      score: 0,
+      isAutoCorrect: false,
+      loadingNum: 0
     };
   },
   methods: {
     async getAllInfo() {
-      this.$store.state.config.showLoading = true;
+      // this.$store.state.config.showLoading = true;
+      this.loadingNum++;
       this.examId = this.$route.params['examId'];
       return axios({
         url: "examCorrect/getAllCorrectInfo",
@@ -504,7 +508,7 @@ export default {
           //   this.questions.shortAnswer[question.id] = question;
           this.questions.push(question);
         }
-        console.log(data.questions.correctedNum)
+        // console.log(data.questions.correctedNum)
         this.correctedNum = data.questions.correctedNum;
 
         // console.log(this.questions);
@@ -517,11 +521,13 @@ export default {
         this.getAnswers();
 
       }).finally(() => {
-        this.$store.state.config.showLoading = false;
+        // this.$store.state.config.showLoading = false;
+        this.loadingNum--;
       });
     },
     getAnswers() {
-      this.$store.state.config.showLoading = true;
+      // this.$store.state.config.showLoading = true;
+      this.loadingNum++;
       return axios({
         url: "/exam/getAllAnswers",
         data: {
@@ -546,13 +552,16 @@ export default {
               this.remainingNum--;
           }
         }
+        this.autoCorrectObjective();
         this.updateCurrentAnswer(this.currentQuestionNumber);
       }).finally(() => {
-        this.$store.state.config.showLoading = false;
+        // this.$store.state.config.showLoading = false;
+        this.loadingNum--;
       });
     },
     commitScore() {
-      this.$store.state.config.showLoading = true;
+      // this.$store.state.config.showLoading = true;
+      this.loadingNum++;
       const score = this.score;
       axios({
         url: "examCorrect/setScore",
@@ -578,11 +587,13 @@ export default {
       }).catch(() => {
         ElMessage({message: '提交失败，请重试', type: 'error'});
       }).finally(() => {
-        this.$store.state.config.showLoading = false;
+        // this.$store.state.config.showLoading = false;
+        this.loadingNum--;
       });
     },
     calculateGrade() {
-      this.$store.state.config.showLoading = true;
+      // this.$store.state.config.showLoading = true;
+      this.loadingNum++;
       axios({
         url: "examCorrect/calculateScore",
         data: {
@@ -600,8 +611,46 @@ export default {
       }).catch(() => {
         ElMessage({message: '计算分数失败', type: 'error'});
       }).finally(() => {
-        this.$store.state.config.showLoading = false;
+        // this.$store.state.config.showLoading = false;
+        this.loadingNum--;
       });
+    },
+    //自动批阅客观题
+    autoCorrectObjective() {
+      if (!this.isAutoCorrect)
+        return;
+      if (!this.correctInfo.data[this.currentTitleNumber].objectiveAutoCorrected) {
+        // this.$store.state.config.showLoading = true;
+        this.loadingNum++;
+        axios({
+          url: "examCorrect/autoCorrectObjective",
+          data: {
+            examId: this.examId,
+            examinee: this.correctInfo.data[this.currentTitleNumber].examinee,
+          }
+        }).then((res) => {
+          if (res.data.errCode !== 0) {
+            throw new Error();
+          } else {
+            ElMessage({message: '客观题自动批改完成', type: 'success'});
+            this.correctInfo.data[this.currentTitleNumber].objectiveAutoCorrected = true;
+            this.getAnswers();
+            for (const id of res.data.data) {
+              this.correctedNum[id]++;
+            }
+            this.remainingNum -= res.data.data.length;
+            if (this.remainingNum <= 0) {
+              this.remainingNum = 0;
+              this.calculateGrade();
+            }
+          }
+        }).catch(() => {
+          ElMessage({message: '客观题自动批改失败', type: 'error'});
+        }).finally(() => {
+          // this.$store.state.config.showLoading = false;
+          this.loadingNum--;
+        });
+      }
     },
     updateCurrentAnswer(val) {
       if (this.answers[this.questions[val].id]) {
@@ -845,7 +894,14 @@ export default {
     currentQuestionNumber(val) {
       // let answer;
       this.updateCurrentAnswer(val);
+      this.autoCorrectObjective();
     },
+    isAutoCorrect() {
+      this.autoCorrectObjective();
+    },
+    loadingNum(val) {
+      this.$store.state.config.showLoading = val > 0;
+    }
     // score(val) {
     //   if (val > this.answers[this.questions[index].id].score) {
     //     this.score = this.answers[this.questions[index].id].score;
