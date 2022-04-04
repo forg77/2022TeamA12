@@ -3,6 +3,8 @@ package edu.zstu.examsys;
 import com.alibaba.fastjson.JSON;
 import edu.zstu.examsys.mapper.ExamCorrectMapper;
 import edu.zstu.examsys.pojo.CorrectInfo;
+import org.apache.tomcat.util.buf.Utf8Decoder;
+import org.apache.tomcat.util.buf.Utf8Encoder;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +16,8 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.*;
+import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -47,6 +51,39 @@ class ExaminationSystemApplicationTests {
         examCorrectMapper.addCorrectInfo(list);
     }
 
+    @Test
+    void supervisionTest() {
+        Socket socket = null;
+        try {
+            socket = new Socket("localhost", 9000);
+            OutputStream os = socket.getOutputStream();
+            OutputStreamWriter osw = new OutputStreamWriter(os, new Utf8Encoder());
+            HashMap<String, Object> send = new HashMap<>();
+//            List<String> paths = new LinkedList<>();
+//            paths.add("D:\\python1\\GazeTracking-master\\GazeTracking-master\\imgs\\1.jpeg");
+//            paths.add("D:\\python1\\GazeTracking-master\\GazeTracking-master\\imgs\\2.jpeg");
+//            paths.add("D:\\python1\\GazeTracking-master\\GazeTracking-master\\imgs\\3.jpeg");
+//            paths.add("D:\\python1\\GazeTracking-master\\GazeTracking-master\\imgs\\4.jpg");
+//            paths.add("D:\\python1\\GazeTracking-master\\GazeTracking-master\\imgs\\5.jpg");
+//            paths.add("D:\\python1\\GazeTracking-master\\GazeTracking-master\\imgs\\6.jpg");
+//            paths.add("D:\\python1\\GazeTracking-master\\GazeTracking-master\\imgs\\7.jpg");
+
+            send.put("path", "D:\\python1\\GazeTracking-master\\GazeTracking-master\\imgs\\11.jpg");
+            osw.append(JSON.toJSONString(send));
+            osw.flush();
+
+            InputStream inputStream = socket.getInputStream();
+            InputStreamReader reader = new InputStreamReader(inputStream, new Utf8Decoder());
+            char[] buffer = new char[4096];
+            int read = reader.read(buffer, 0, 4096);
+            String response = new String(buffer, 0, read);
+            System.out.println(response);
+
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 //    @Test
 //    void requestTest() {

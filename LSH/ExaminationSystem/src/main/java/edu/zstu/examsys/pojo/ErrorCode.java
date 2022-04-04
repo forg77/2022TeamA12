@@ -36,4 +36,10 @@ public class ErrorCode {
     public static final int EXAM_MISSING_LATEST_TIME = 304;
     //考试未开始
     public static final int EXAM_NOT_STARTED = 305;
+
+    //4--，IO错误
+    //文件为空
+    public static final int EMPTY_FILE = 401;
+    //服务器文件错误
+    public static final int SERVER_FILE_ERROR = 402;
 }
