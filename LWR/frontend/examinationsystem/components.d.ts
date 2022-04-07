@@ -37,6 +37,7 @@ declare module 'vue' {
     ElSteps: typeof import('element-plus/es')['ElSteps']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
+    ElUpload: typeof import('element-plus/es')['ElUpload']
     Exam: typeof import('./src/components/Exam.vue')['default']
     ExamCard: typeof import('./src/components/ExamCard.vue')['default']
     ExamCardAdd: typeof import('./src/components/ExamCardAdd.vue')['default']

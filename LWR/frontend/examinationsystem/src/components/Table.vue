@@ -320,7 +320,8 @@ export default {
       for (let pro in this.extraData) {
         data[pro] = this.extraData[pro];
       }
-      
+
+      console.log(this.urls.queryUrl)
       axios({
         url: this.urls.queryUrl,
         cancelToken: new axios.CancelToken((c) => {

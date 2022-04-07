@@ -40,7 +40,8 @@
         <table>
           <tr>
             <td style="font-size: 0">
-              <SearchBox v-model:text="searchText" placeholder="按标题搜索"></SearchBox>
+              <el-checkbox v-model="advancedSearch" style="vertical-align: middle;margin-right: 20px;" label="高级搜索"/>
+              <SearchBox v-model:text="searchText" :placeholder="advancedSearch?'输入问题':'按标题搜索'"></SearchBox>
             </td>
             <td>
               <button class="btn" style="margin-left: 30px" @click="onSearchButtonClick()">{{
@@ -88,6 +89,7 @@ export default {
       // extraData: {
       //   bankId: null,
       // },
+      advancedSearch: false,
       urls: {
         queryUrl: "question/getQuestions",
       },
@@ -120,6 +122,15 @@ export default {
       ],
     };
   },
+  watch: {
+    advancedSearch(val) {
+      if (val === true) {
+        this.urls.queryUrl = "algorithm/search";
+      } else {
+        this.urls.queryUrl = "question/getQuestions";
+      }
+    }
+  },
   methods: {
     clickItem(item) {
       this.selectId = item.id;
@@ -131,6 +142,20 @@ export default {
       this.showQuestionEdit = true;
       this.editKey++;
     },
+    // onSearchButtonClickAdvanced() {
+    //   if (this.extraData.search == null) {
+    //     if (this.searchText !== "") {
+    //       this.extraData.search = this.searchText;
+    //       this.searchButtonString = this.cancelString;
+    //       // this.$refs.examTable.getExams(); l
+    //       this.searchCallback();
+    //     }
+    //   } else {
+    //     this.extraData.search = null;
+    //     this.searchButtonString = this.searchString;
+    //     this.searchCallback();
+    //   }
+    // }
   },
   components: {
     Card,

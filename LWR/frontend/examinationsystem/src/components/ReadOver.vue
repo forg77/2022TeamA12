@@ -552,6 +552,10 @@ export default {
               this.remainingNum--;
           }
         }
+        // if (this.remainingNum <= 0) {
+        //   this.remainingNum = 0;
+        //   this.calculateGrade();
+        // }
         this.autoCorrectObjective();
         this.updateCurrentAnswer(this.currentQuestionNumber);
       }).finally(() => {
