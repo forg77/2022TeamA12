@@ -11,10 +11,16 @@ import java.util.List;
 @Service
 public class QuestionService {
     private QuestionMapper questionMapper;
+    private AlgorithmService algorithmService;
 
     @Autowired
     public void setQuestionMapper(QuestionMapper questionMapper) {
         this.questionMapper = questionMapper;
+    }
+
+    @Autowired
+    public void setAlgorithmService(AlgorithmService algorithmService) {
+        this.algorithmService = algorithmService;
     }
 
     public List<QuestionBank> getBanks(Integer id, Integer author, String search, Condition con) {
@@ -29,8 +35,16 @@ public class QuestionService {
         return questionMapper.getQuestions(bankId, search, con);
     }
 
+    public List<Question> getQuestionsByIds(Integer bankId, List<Integer> ids, Condition con) {
+        return questionMapper.getQuestionsByIds(bankId, ids, con);
+    }
+
     public Integer getQuestionsCount(Integer bankId, String search) {
         return questionMapper.getQuestionsCount(bankId, search);
+    }
+
+    public Integer getQuestionsByIdsCount(Integer bankId, List<Integer> ids) {
+        return questionMapper.getQuestionsByIdsCount(bankId, ids);
     }
 
     public List<ChoiceQuestion> getChoiceQuestions(Integer questionId, Integer bankId, String type, Condition con) {
@@ -46,7 +60,9 @@ public class QuestionService {
     }
 
     public Integer addQuestion(Question question) {
-        return questionMapper.addQuestion(question);
+        Integer lines = questionMapper.addQuestion(question);
+        algorithmService.addQuestion(question.getId(), question.getDescription());
+        return lines;
     }
 
     public Integer updateQuestion(Question question) {

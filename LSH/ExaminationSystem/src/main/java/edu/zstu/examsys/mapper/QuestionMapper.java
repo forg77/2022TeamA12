@@ -16,6 +16,10 @@ public interface QuestionMapper {
 
     List<Question> getQuestions(Integer bankId, String search, Condition con);
 
+    List<Question> getQuestionsByIds(Integer bankId, List<Integer> ids,Condition con);
+
+    Integer getQuestionsByIdsCount(Integer bankId, List<Integer> ids);
+
     Integer getQuestionsCount(Integer bankId, String search);
 
     List<ChoiceQuestion> getChoiceQuestions(Integer questionId, Integer bankId, String type, Condition con);

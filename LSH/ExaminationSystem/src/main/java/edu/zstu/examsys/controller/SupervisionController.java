@@ -47,6 +47,7 @@ public class SupervisionController {
             e.printStackTrace();
             return JSON.toJSONString(new CommonData(ErrorCode.SERVER_FILE_ERROR, "服务器文件错误"));
         }
+        logger.info(runPath);
         String fileName = file.getOriginalFilename();  // 文件名
         String suffixName = fileName.substring(fileName.lastIndexOf("."));  // 后缀名
         String filePath = runPath + "/supervision/" + examId + "/"; // 上传后的路径
@@ -64,6 +65,7 @@ public class SupervisionController {
             e.printStackTrace();
         }
 
+        Boolean warn = null;
         //创建Socket，获取监考数据
         Socket socket = null;
         try {
@@ -93,11 +95,12 @@ public class SupervisionController {
                 setWarn(res.getBoolean("warning"));
             }});
 
+            warn = res.getBoolean("warning");
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return JSON.toJSONString(new CommonData(ErrorCode.SUCCESS, "上传成功"));
+        return JSON.toJSONString(new CommonData(ErrorCode.SUCCESS, "上传成功", warn));
     }
 }
