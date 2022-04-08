@@ -126,11 +126,11 @@ export default {
   },
   methods: {
     saveQuestion() {
-      let data = Object.assign({}, this.question);
-      data.answer = {};
-      for (let index in data.answerArray) {
-        data.answer[index] = data.answerArray[index];
+      this.question.answer = {};
+      for (let index in this.question.answerArray) {
+        this.question.answer[index]= this.question.answerArray[index];
       }
+      let data = Object.assign({}, this.question);
       data.answer = JSON.stringify(data.answer);
       this.isLoading = true;
       axios({
