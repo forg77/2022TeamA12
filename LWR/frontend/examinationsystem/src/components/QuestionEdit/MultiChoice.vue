@@ -44,16 +44,17 @@
             <!--              style="display: inline-block; vertical-align: middle"-->
             <!--          >-->
             <td style="width:50px">
-              <input
-                  type="radio"
-                  name="rd"
-                  :value="String.fromCharCode(65 + index)"
-                  @click="
-                question.answer = {};
-                question.answer[index] = true;
-              "
-                  :checked="question.answer[index]"
-              />{{ String.fromCharCode(65 + index) }}
+<!--              <input-->
+<!--                  type="radio"-->
+<!--                  name="rd"-->
+<!--                  :value="String.fromCharCode(65 + index)"-->
+<!--                  @click="-->
+<!--                question.answer = {};-->
+<!--                question.answer[index] = true;-->
+<!--              "-->
+<!--                  :checked="question.answer[index]"-->
+<!--              />{{ String.fromCharCode(65 + index) }}-->
+              <el-checkbox v-model="question.answer[index]" :label="String.fromCharCode(65 + index)"/>
             </td>
             <td>
               <TextEdit deleteString="删除选项" @deleteClick="question.choice.splice(index, 1)"
@@ -116,8 +117,9 @@ export default {
     // console.log(this.id);
   },
   mounted() {
-    if (this.questionBefore != null && this.questionBefore.type == "choice")
+    if (this.questionBefore != null && this.questionBefore.type == "multi_choice")
       this.question = this.questionBefore;
+    // console.log(this.questionBefore);
   },
   watch: {
     questionBefore: {
@@ -127,6 +129,8 @@ export default {
         } else this.question = val;
       },
     },
+    // question.answer = {};
+    // question.answer[index] = true;
   },
   methods: {
     saveQuestion() {
@@ -153,7 +157,7 @@ export default {
     getInitQuestion() {
       let question = {
         description: "",
-        type: "choice",
+        type: "multi_choice",
         choice: ["", "", "", ""],
         answer: {0: true},
       };
@@ -164,6 +168,7 @@ export default {
         question.id = this.id;
         question.bankId = this.bankId;
       }
+      // console.log(question.choice[0]);
       return question;
     },
     reset() {

@@ -16,7 +16,7 @@
                 <QuestionEdit
                     :id="selectId"
                     :bankId="extraData.bankId"
-                    @save="$refs.table.getItems()"
+                    @saveDone="$refs.table.getItems()"
                     :key="editKey"
                 ></QuestionEdit>
               </div>

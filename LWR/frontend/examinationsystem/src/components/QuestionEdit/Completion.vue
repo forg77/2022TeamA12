@@ -85,7 +85,7 @@ export default {
     TextEdit,
     Loading,
   },
-  emits: ["save"],
+  emits: ["save","saveDone"],
   data() {
     return {
       question: this.getInitQuestion(),
@@ -141,6 +141,7 @@ export default {
             if (res.data.errCode != 0) {
               alert("保存失败");
             }
+            this.$emit('saveDone');
             this.isLoading = false;
           })
           .catch(() => {

@@ -46,6 +46,7 @@ declare module 'vue' {
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     Loading: typeof import('./src/components/Loading.vue')['default']
     LoadingFull: typeof import('./src/components/LoadingFull.vue')['default']
+    MultiChoice: typeof import('./src/components/QuestionEdit/MultiChoice.vue')['default']
     NavBar: typeof import('./src/components/NavBar.vue')['default']
     QuestionEdit: typeof import('./src/components/QuestionEdit/index.vue')['default']
     ReadOver: typeof import('./src/components/ReadOver.vue')['default']

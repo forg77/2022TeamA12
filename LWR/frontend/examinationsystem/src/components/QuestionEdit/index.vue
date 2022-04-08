@@ -11,6 +11,13 @@
             >
               单选题
             </button>
+            <button
+                class="BTN"
+                @click="tag = 'MultiChoice'"
+                :class="{ 'BTN-select': tag == 'MultiChoice' }"
+            >
+              多选题
+            </button>
             <!-- <button class="BTN">多选题</button> -->
             <button
               class="BTN"
@@ -18,6 +25,13 @@
               :class="{ 'BTN-select': tag == 'Completion' }"
             >
               填空题
+            </button>
+            <button
+                class="BTN"
+                @click="tag = 'ShortAnswer'"
+                :class="{ 'BTN-select': tag == 'ShortAnswer' }"
+            >
+              简答题
             </button>
             <button
                 class="BTN"
@@ -47,6 +61,7 @@
             :questionBefore="question"
             :is="tag"
             @save="onSaveQuestion"
+            @saveDone="$emit('saveDone')"
           >
           </component>
         </transition>
@@ -105,6 +120,8 @@ import DropDown from "@/components/DropDown.vue";
 
 import Choice from "./Choice.vue";
 import Completion from "./Completion.vue";
+import MultiChoice from "@/components/QuestionEdit/MultiChoice";
+import ShortAnswer from "@/components/QuestionEdit/ShortAnswer";
 
 import axios from "axios";
 export default {
@@ -113,8 +130,10 @@ export default {
     DropDown,
     Choice,
     Completion,
+    MultiChoice,
+    ShortAnswer
   },
-  emits: ["save"],
+  emits: ["save","saveDone"],
   data() {
     return {
       tag: "Choice",
@@ -123,7 +142,7 @@ export default {
         { value: "middle", text: "中等" },
         { value: "easy", text: "易" },
       ],
-      question: {},
+      question: null,
     };
   },
   props: {
@@ -159,6 +178,13 @@ export default {
         } else if (this.tag == "completion") {
           this.tag = "Completion";
           this.question.answer = JSON.parse(this.question.answer);
+        }else if (this.tag == "multi_choice") {
+          this.tag = "MultiChoice";
+          this.question.choice = JSON.parse(this.question.choice);
+          this.question.answer = JSON.parse(this.question.answer);
+        }else if (this.tag == "short_answer") {
+          this.tag = "ShortAnswer";
+          this.question.answer = JSON.parse(this.question.answer);
         }
       });
     },
@@ -173,6 +199,10 @@ export default {
       } else if (this.tag == "completion") {
         this.tag = "Completion";
         // this.question.answer = JSON.parse(this.question.answer);
+      }else if (this.tag == "multi_choice") {
+        this.tag = "MultiChoice";
+      }else if (this.tag == "short_answer") {
+        this.tag = "ShortAnswer";
       }
     },
     onSaveQuestion(question) {
