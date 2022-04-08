@@ -61,7 +61,7 @@ public class QuestionService {
 
     public Integer addQuestion(Question question) {
         Integer lines = questionMapper.addQuestion(question);
-        algorithmService.addQuestion(question.getId(), question.getDescription());
+//        algorithmService.addQuestion(question.getId(), question.getDescription());
         return lines;
     }
 

@@ -247,8 +247,13 @@ public class ExamCorrectController {
     private float normalCorrect(JSONObject answer, JSONObject correctAnswer) {
         Set<String> keys = correctAnswer.keySet();
         int correctNum = 0;
+        String a;
         for (String key : keys) {
-            if (answer.containsKey(key) && answer.get(key).equals(correctAnswer.get(key))) {
+            Object correctAnswerProcess =  correctAnswer.get(key);
+            if (correctAnswerProcess.getClass().equals(String.class)) {
+                correctAnswerProcess = ((String) correctAnswerProcess).replaceAll("\\&[a-zA-Z]{1,10};", "").replaceAll("<[^>]*>", "").replaceAll("[(/>)<]", "");
+            }
+            if (answer.containsKey(key) && correctAnswerProcess.equals(answer.get(key))) {
                 correctNum++;
             }
         }

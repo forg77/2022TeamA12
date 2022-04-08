@@ -92,6 +92,6 @@ public class AlgorithmController {
         String content = body.getString("content");
         String answer = body.getString("answer");
 
-        return algorithmService.getSimilarity(answer, content);
+        return JSON.toJSONString(new CommonData(ErrorCode.SUCCESS, "成功", JSON.parse(algorithmService.getSimilarity(answer, content))));
     }
 }
