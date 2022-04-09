@@ -439,9 +439,9 @@ export default {
       bankId: 1,
       questions: {
         choice: {},
-        multiChoice: {},
+        "multi_choice": {},
         completion: {},
-        shortAnswer: {},
+        "short_answer": {},
       },
       answers: {normal: {}},
       exam: {},
@@ -511,9 +511,9 @@ export default {
         //初始化问题信息
         this.questions = {
           choice: {},
-          multiChoice: {},
+          "multi_choice": {},
           completion: {},
-          shortAnswer: {},
+          "short_answer": {},
         };
         this.answers = {normal: {}};
         for (let question of data.questions.choice) {
@@ -524,7 +524,7 @@ export default {
           if (question.type == "choice")
             this.questions.choice[question.id] = question;
           else if (question.type == "multi_choice")
-            this.questions.multiChoice[question.id] = question;
+            this.questions["multi_choice"][question.id] = question;
         }
         for (let question of data.questions.normal) {
           question.answer = JSON.parse(question.answer);
@@ -532,7 +532,7 @@ export default {
           if (question.type == "completion")
             this.questions.completion[question.id] = question;
           else if (question.type == "short_answer")
-            this.questions.shortAnswer[question.id] = question;
+            this.questions["short_answer"][question.id] = question;
         }
 
         //初始化试卷信息
@@ -587,6 +587,8 @@ export default {
       }
 
       this.questions[this.currentQueType][this.currentId] = question;
+      console.log(question);
+      console.log(this.questions[this.currentQueType][this.currentId]);
 
       axios({
         url: "exam/addQuestionScore",

@@ -38,6 +38,7 @@ declare module 'vue' {
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     ElTransfer: typeof import('element-plus/es')['ElTransfer']
+    ElUpload: typeof import('element-plus/es')['ElUpload']
     Exam: typeof import('./src/components/Exam.vue')['default']
     ExamCard: typeof import('./src/components/ExamCard.vue')['default']
     ExamCardAdd: typeof import('./src/components/ExamCardAdd.vue')['default']

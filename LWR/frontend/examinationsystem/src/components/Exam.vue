@@ -329,32 +329,38 @@
                       ].choice"
                         :key="index"
                     >
-                      <input
-                          :id="'choice' + index"
-                          name="choice"
-                          :value="index"
-                          type="radio"
+                      <el-radio
+                          v-model="choiceCheck"
                           :disabled="isExamOver"
-                          @click="
-                          answers[getAnswerType(currentQueType)][currentId] =
-                            {};
-                          answers[getAnswerType(currentQueType)][currentId][
-                            index
-                          ] = true;
-                          commitAnswer(
-                            currentId,
-                            getAnswerType(currentQueType)
-                          );
-                        "
-                          :checked="
-                          answers[getAnswerType(currentQueType)][currentId][
-                            index
-                          ] == true
-                        "
-                      />
-                      <label :for="'choice' + index"
-                      ><span class="choice" v-html="choice"></span></label
-                      >
+                          :label="index"
+
+                      >{{ String.fromCharCode(65 + index) }}.<span v-html="choice"></span></el-radio>
+<!--                      <input-->
+<!--                          :id="'choice' + index"-->
+<!--                          name="choice"-->
+<!--                          :value="index"-->
+<!--                          type="radio"-->
+<!--                          :disabled="isExamOver"-->
+<!--                          @click="-->
+<!--                          answers[getAnswerType(currentQueType)][currentId] =-->
+<!--                            {};-->
+<!--                          answers[getAnswerType(currentQueType)][currentId][-->
+<!--                            index-->
+<!--                          ] = true;-->
+<!--                          commitAnswer(-->
+<!--                            currentId,-->
+<!--                            getAnswerType(currentQueType)-->
+<!--                          );-->
+<!--                        "-->
+<!--                          :checked="-->
+<!--                          answers[getAnswerType(currentQueType)][currentId][-->
+<!--                            index-->
+<!--                          ] == true-->
+<!--                        "-->
+<!--                      />-->
+                      <!--                      <label :for="'choice' + index"-->
+                      <!--                      ><span class="choice" v-html="choice"></span></label-->
+                      <!--                      >-->
                       <div style="height: 5px"></div>
                     </template>
                   </template>
@@ -375,6 +381,55 @@
                           ]
                         "
                           @change="normalQueChange($event, n - 1)"
+                      />
+                    </template>
+                  </template>
+                  <template v-if="currentQueType == 'multi_choice'">
+                    <template
+                        v-for="(choice, index) in questions[currentQueType][
+                        currentId
+                      ].choice"
+                        :key="index"
+                    >
+                      <el-checkbox
+                          v-model="answers[getAnswerType(currentQueType)][currentId][index]"
+                          :disabled="isExamOver"
+                          :label="index"
+                          @change="commitAnswer(
+                            currentId,
+                            getAnswerType(currentQueType)
+                          );"
+                      >{{ String.fromCharCode(65 + index) }}.<span v-html="choice"></span></el-checkbox>
+                      <div style="height: 5px"></div>
+                    </template>
+                  </template>
+                  <template v-else-if="currentQueType == 'short_answer'">
+                    <template
+                        v-for="n in questions[currentQueType][currentId]
+                        .answersCount"
+                        :key="currentId + '-' + n"
+                    >
+                      ({{ n }})
+<!--                      <input-->
+<!--                          type="text"-->
+<!--                          class="completion"-->
+<!--                          :disabled="isExamOver"-->
+<!--                          v-model="-->
+<!--                          answers[getAnswerType(currentQueType)][currentId][-->
+<!--                            n - 1-->
+<!--                          ]-->
+<!--                        "-->
+<!--                          @change="normalQueChange($event, n - 1)"-->
+<!--                      />-->
+                      <el-input
+                          v-model="answers[getAnswerType(currentQueType)][currentId][
+                            n - 1
+                          ]"
+                          :rows="5"
+                          type="textarea"
+                          placeholder="请输入答案"
+                          @change="normalQueChange($event, n - 1)"
+                          style="margin-top:10px"
                       />
                     </template>
                   </template>
@@ -484,7 +539,9 @@ export default {
 
       isLoading: false,
 
-      markNumber: {}
+      markNumber: {},
+      choiceCheck: -1,
+      // multiChoiceCheck:[]
     };
   },
   methods: {
@@ -510,9 +567,9 @@ export default {
         //初始化问题信息
         this.questions = {
           choice: {},
-          multiChoice: {},
+          "multi_choice": {},
           completion: {},
-          shortAnswer: {},
+          "short_answer": {},
         };
         this.answers = {normal: {}};
         for (let question of data.questions.choice) {
@@ -522,14 +579,14 @@ export default {
           if (question.type === "choice")
             this.questions.choice[question.id] = question;
           else if (question.type === "multi_choice")
-            this.questions.multiChoice[question.id] = question;
+            this.questions["multi_choice"][question.id] = question;
         }
         for (let question of data.questions.normal) {
           this.answers.normal[question.id] = {};
           if (question.type === "completion")
             this.questions.completion[question.id] = question;
           else if (question.type === "short_answer")
-            this.questions.shortAnswer[question.id] = question;
+            this.questions["short_answer"][question.id] = question;
         }
 
         //初始化试卷信息
@@ -552,6 +609,7 @@ export default {
         }
 
         this.setTitleNumber(1);
+        this.updateChoice();
         this.isLoading = false;
       });
     },
@@ -708,17 +766,32 @@ export default {
     normalQueChange(event, n) {
       let ans =
           this.answers[this.getAnswerType(this.currentQueType)][this.currentId];
-      let value = event.target.value;
-      if (value == "") {
-        if (ans[n]) delete ans[n];
-      } else {
-        ans[n] = value;
-      }
+      // let value = event.target.value;
+      // if (value == "") {
+      //   if (ans[n]) delete ans[n];
+      // } else {
+      //   ans[n] = value;
+      // }
+      if (!ans[n]) delete ans[n];
       this.commitAnswer(
           this.currentId,
           this.getAnswerType(this.currentQueType)
       );
     },
+    // shortAnswerQueChange(event, n) {
+    //   let ans =
+    //       this.answers[this.getAnswerType(this.currentQueType)][this.currentId];
+    //   let value = event.target.value;
+    //   if (value == "") {
+    //     if (ans[n]) delete ans[n];
+    //   } else {
+    //     ans[n] = value;
+    //   }
+    //   this.commitAnswer(
+    //       this.currentId,
+    //       this.getAnswerType(this.currentQueType)
+    //   );
+    // },
     getObjProCount(obj) {
       let count = 0;
       for (let p in obj) {
@@ -781,6 +854,19 @@ export default {
         // console.log(this.correctTimeDiff);
       });
     },
+    updateChoice() {
+      const question = this.questions[this.currentQueType][this.currentId];
+      // console.log(question);
+      if (question.type === "choice") {
+        this.choiceCheck = -1;
+        for (let key in this.answers["normal"][question.id]) {
+          if (this.answers["normal"][question.id][key]) {
+            this.choiceCheck = Number.parseInt(key);
+            break;
+          }
+        }
+      }
+    }
   },
   computed: {
     user() {
@@ -805,6 +891,18 @@ export default {
         this.initExam();
       }
     },
+    currentTitleNumber(val) {
+      this.updateChoice();
+    },
+    choiceCheck(val) {
+      if (val === -1)
+        return;
+      // console.log(val);
+      const question = this.questions[this.currentQueType][this.currentId];
+      this.answers["normal"][question.id] = {};
+      this.answers["normal"][question.id][val] = true;
+      this.commitAnswer(this.currentId, this.getAnswerType(this.currentQueType));
+    }
   },
   async mounted() {
     // console.log(this.config);

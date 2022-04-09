@@ -31,38 +31,20 @@
     <div class="line2"></div>
     <div class="anser">
       <div class="detail" style="display: flex">
-        <div>选项:</div>
-        <div style="color: red; margin-left: 30px">
-          在当前页面选中的答案为本题正确答案
-        </div>
+        <div>参考答案:</div>
       </div>
       <table style="margin-top: 20px;width: 100%;border-spacing: 0 10px">
-        <template v-for="(choice, index) in question.choice" :key="index">
+        <template v-for="(answer, index) in question.answerArray" :key="index">
           <tr>
-            <!--          <div-->
-            <!--              class="anser-content"-->
-            <!--              style="display: inline-block; vertical-align: middle"-->
-            <!--          >-->
             <td style="width:50px">
-              <input
-                  type="radio"
-                  name="rd"
-                  :value="String.fromCharCode(65 + index)"
-                  @click="
-                question.answer = {};
-                question.answer[index] = true;
-              "
-                  :checked="question.answer[index]"
-              />{{ String.fromCharCode(65 + index) }}
+              ({{ index + 1 }})
             </td>
             <td>
-              <TextEdit deleteString="删除选项" @deleteClick="question.choice.splice(index, 1)"
-                        :deleteMenu="true" v-model:content="question.choice[index]"></TextEdit>
+              <TextEdit deleteString="删除答案" @deleteClick="question.answerArray.splice(index, 1)" :deleteMenu="true"
+                        v-model:content="question.answerArray[index]"/>
             </td>
-            <!--          </div>-->
-
-            <!--          <button class="BTN" @click="question.choice.splice(index, 1)">-->
-            <!--            删除选项-->
+            <!--          <button class="BTN" @click="question.answerArray.splice(index, 1)">-->
+            <!--            删除答案-->
             <!--          </button>-->
             <br/>
             <div style="height: 10px"></div>
@@ -71,7 +53,7 @@
         <tr>
           <td></td>
           <td style="text-align: right;padding-top:10px">
-            <span class="add" @click="question.choice.push('')">添加选项</span>
+            <span class="add" @click="question.answerArray.push('')">添加参考答案</span>
           </td>
         </tr>
       </table>
@@ -111,27 +93,44 @@ export default {
     };
   },
   created() {
-    // if (this.id) this.question.id = this.id;
-    // if (this.bankId) this.question.bankId = this.bankId;
+    if (this.id) this.question.id = this.id;
+    if (this.bankId) this.question.bankId = this.bankId;
     // console.log(this.id);
   },
   mounted() {
-    if (this.questionBefore != null && this.questionBefore.type == "choice")
+    if (
+        this.questionBefore != null &&
+        this.questionBefore.type == "short_answer"
+    ) {
       this.question = this.questionBefore;
+      this.question.answerArray = [];
+      for (let index in this.question.answer) {
+        this.question.answerArray[index] = this.question.answer[index];
+      }
+    }
   },
   watch: {
     questionBefore: {
       handler(val) {
         if (val == null) {
           this.question = this.getInitQuestion();
-        } else this.question = val;
+        } else {
+          this.question = val;
+          this.question.answerArray = [];
+          for (let index in this.question.answer) {
+            this.question.answerArray[index] = this.question.answer[index];
+          }
+        }
       },
     },
   },
   methods: {
     saveQuestion() {
+      this.question.answer = {};
+      for (let index in this.question.answerArray) {
+        this.question.answer[index]= this.question.answerArray[index];
+      }
       let data = Object.assign({}, this.question);
-      data.choice = JSON.stringify(data.choice);
       data.answer = JSON.stringify(data.answer);
       this.isLoading = true;
       axios({
@@ -153,9 +152,9 @@ export default {
     getInitQuestion() {
       let question = {
         description: "",
-        type: "choice",
-        choice: ["", "", "", ""],
-        answer: {0: true},
+        type: "short_answer",
+        answerArray: [""],
+        answer: {},
       };
       if (this.questionBefore != null) {
         question.id = this.questionBefore.id;

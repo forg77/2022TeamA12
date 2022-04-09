@@ -19,7 +19,7 @@ export default defineComponent({
       editor: null as Editor | null,
     };
   },
-  emits: ['update:content','deleteClick'],
+  emits: ['update:content', 'deleteClick'],
   props: {
     content: String,
     deleteMenu: {
@@ -38,7 +38,6 @@ export default defineComponent({
         if (value != this.editor?.txt.html()) this.editor?.txt.html(value);
       },
     },
-    //value为编辑框输入的内容，这里我监听了一下值，当父组件调用得时候，如果给value赋值了，子组件将会显示父组件赋给的值
   },
   mounted() {
     this.setEditor();
@@ -49,7 +48,7 @@ export default defineComponent({
     setEditor() {
       this.editor = new E(this.$refs.editor as DomElementSelector);
       this.editor.config.height = 150;
-      // 配置 server 上传图片接口地址
+
       this.editor.config.onchange = (html: string) => {
         this.$emit("update:content", html); // 将内容同步到父组件中
       };
@@ -84,6 +83,7 @@ export default defineComponent({
         constructor(editor: Editor) {
           super(editor, self.deleteString);
         }
+
         clickHandler() {
           self.$emit('deleteClick');
         }

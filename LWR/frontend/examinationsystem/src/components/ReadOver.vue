@@ -552,7 +552,12 @@ export default {
               this.remainingNum--;
           }
         }
+        // if (this.remainingNum <= 0) {
+        //   this.remainingNum = 0;
+        //   this.calculateGrade();
+        // }
         this.autoCorrectObjective();
+        this.autoCorrectSubjective();
         this.updateCurrentAnswer(this.currentQuestionNumber);
       }).finally(() => {
         // this.$store.state.config.showLoading = false;
@@ -866,6 +871,46 @@ export default {
         }
       }
       return result;
+    },
+    //自动主观题批阅
+    autoCorrectSubjective() {
+      if (!this.isAutoCorrect)
+        return;
+      const question = this.questions[this.currentQuestionNumber];
+      if (!this.isSubjective(question.type))
+        return;
+      if (this.answers[question.id].score != null)
+        return;
+      const regex = /<\/?.+?\/?>/gm;
+      // console.log(this.answers[question.id]["answer"]);
+      this.$store.state.config.showLoading = true;
+      axios({
+        url: "algorithm/getSimilarity",
+        data: {
+          content: this.answers[question.id]["answer"][0],
+          answer: question.answer[0].replace(regex, "").replace(/&nbsp;/gi, "")
+        }
+      }).then((res) => {
+        // console.log(res.data);
+        if (res.data.errCode !== 0) {
+          throw new Error();
+        }
+        const keyword = res.data.data.keyword;
+        let sim = res.data.data.sim;
+        console.log(sim);
+        if (sim > 1)
+          sim = 1;
+        this.score = this.questionScores[question.id].score * sim;
+      }).catch(() => {
+        ElMessage({message: '自动批改失败', type: 'error'});
+      }).finally(() => {
+        this.$store.state.config.showLoading = false;
+      });
+    },
+    isSubjective(type) {
+      if (type === "short_answer")
+        return true;
+      return false;
     }
   },
   computed: {
@@ -895,9 +940,11 @@ export default {
       // let answer;
       this.updateCurrentAnswer(val);
       this.autoCorrectObjective();
+      this.autoCorrectSubjective();
     },
     isAutoCorrect() {
       this.autoCorrectObjective();
+      this.autoCorrectSubjective();
     },
     loadingNum(val) {
       this.$store.state.config.showLoading = val > 0;
