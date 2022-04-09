@@ -37,8 +37,7 @@ import ExamCreation from "@/views/teacher/AddExam/ExamCreation.vue";
 import ExamSettings from "@/views/teacher/AddExam/ExamSettings.vue";
 import AddExaminee from "@/views/teacher/AddExam/AddExaminee.vue";
 import {ExamForm, ExamType, FormationType, Platform} from "@/views/teacher/AddExam/ExamConfigSetup";
-import {ErrCode, Exam} from "@/models";
-import {Response} from "@/models";
+import {ErrCode, Exam, Response} from "@/models";
 import axios from "axios";
 
 export default defineComponent({
@@ -93,29 +92,40 @@ export default defineComponent({
         } as Exam;
 
         if (this.mode == 'add') {
-          axios({
-            url: "exam/addNewExam"
-          }).then((res) => {
-            if (res.data["errCode"] != 0) {
+          //自动组卷
+          if (this.form.formationType == FormationType.Auto) {
+            //假的，直接跳转到已经设置好的样卷
+            this.$store.state.config.showLoading = true;
+            setTimeout(() => {
+              this.$store.state.config.showLoading = false;
+              this.$store.state.config.showFakeExam = true;
+              this.$router.replace("/teacher/examEdit/37");
+            }, 1000)
+          } else {
+            axios({
+              url: "exam/addNewExam"
+            }).then((res) => {
+              if (res.data["errCode"] != 0) {
+                alert("添加失败");
+              } else {
+                examData.id = res.data.data;
+              }
+              return axios({
+                url: "exam/addExam",
+                data: examData
+              });
+            }).then((res) => {
+              if (res.data["errCode"] != 0) {
+                alert("添加失败");
+              } else {
+                this.$router.replace("/teacher/examEdit/" + examData.id);
+              }
+            }).catch(() => {
               alert("添加失败");
-            } else {
-              examData.id = res.data.data;
-            }
-            return axios({
-              url: "exam/addExam",
-              data: examData
+            }).finally(() => {
+              this.$store.state.config.showLoading = false;
             });
-          }).then((res) => {
-            if (res.data["errCode"] != 0) {
-              alert("添加失败");
-            } else {
-              this.$router.replace("/teacher/examEdit/" + examData.id);
-            }
-          }).catch(() => {
-            alert("添加失败");
-          }).finally(() => {
-            this.$store.state.config.showLoading = false;
-          });
+          }
         } else if (this.mode == 'edit') {
           examData.id = Number.parseInt(this.$route.params['examId'] as string);
           axios({
