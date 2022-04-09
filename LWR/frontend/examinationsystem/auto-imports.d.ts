@@ -27,5 +27,6 @@ declare global {
   const ElSteps: typeof import('element-plus/es')['ElSteps']
   const ElSwitch: typeof import('element-plus/es')['ElSwitch']
   const ElTooltip: typeof import('element-plus/es')['ElTooltip']
+  const ElTransfer: typeof import('element-plus/es')['ElTransfer']
 }
 export {}
