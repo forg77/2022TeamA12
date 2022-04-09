@@ -235,7 +235,7 @@
                           }}
                         </template>
                         <div v-else
-                             v-html="getNormalCorrectAnswer(answers[questions[currentQuestionNumber].id] ? answers[questions[currentQuestionNumber].id].answer : undefined)">
+                             v-html="getNormalCorrectAnswer(answers[questions[currentQuestionNumber].id] ? keyWordHtml : undefined)">
                         </div>
                       </template>
                     </div>
@@ -453,7 +453,8 @@ export default {
 
       score: 0,
       isAutoCorrect: false,
-      loadingNum: 0
+      loadingNum: 0,
+      keyword: null
     };
   },
   methods: {
@@ -895,7 +896,7 @@ export default {
         if (res.data.errCode !== 0) {
           throw new Error();
         }
-        const keyword = res.data.data.keyword;
+        this.keyword = res.data.data.keyword;
         let sim = res.data.data.sim;
         console.log(sim);
         if (sim > 1)
@@ -928,6 +929,32 @@ export default {
     },
     isExamNotStarted() {
       return this.currentTime < this.exam.earliestStartTime;
+    },
+    keyWordHtml() {
+      const question = this.questions[this.currentQuestionNumber];
+      //当前回答
+      const currentAnswer = this.answers[question.id].answer;
+      // console.log(currentAnswer);
+      if (!this.keyword)
+        return currentAnswer;
+      if (!this.isSubjective(question.type))
+        return currentAnswer;
+
+      const result = {};
+      const keywordSet = new Set(this.keyword);
+      let reg = "";
+      for (let word of keywordSet) {
+        if (reg !== "")
+          reg += "|"
+        reg += word;
+      }
+      reg = new RegExp(reg, "g");
+      for (let key in currentAnswer) {
+        let answer = currentAnswer[key];
+        answer = answer.replaceAll(reg, "<i><u>$&</u></i>");
+        result[key] = answer;
+      }
+      return result;
     }
   },
   watch: {
@@ -941,6 +968,7 @@ export default {
       this.updateCurrentAnswer(val);
       this.autoCorrectObjective();
       this.autoCorrectSubjective();
+      this.keyword = null;
     },
     isAutoCorrect() {
       this.autoCorrectObjective();

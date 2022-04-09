@@ -15,6 +15,7 @@ export interface Config {
     user: User | null;
     siteTitle: string;
     showLoading: boolean;
+    showFakeExam: boolean;
 }
 
 //当前登录的用户信息
@@ -30,7 +31,8 @@ const config: Config = {
     user: null,
     urls,
     siteTitle: '考试系统',
-    showLoading: false
+    showLoading: false,
+    showFakeExam: false
 };
 
 //配置axios默认值

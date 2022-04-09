@@ -52,6 +52,7 @@ declare module 'vue' {
     QuestionImport: typeof import('./src/components/QuestionImport.vue')['default']
     ReadOver: typeof import('./src/components/ReadOver.vue')['default']
     SearchBox: typeof import('./src/components/SearchBox.vue')['default']
+    ShortAnswer: typeof import('./src/components/QuestionEdit/ShortAnswer.vue')['default']
     Svgicon: typeof import('./src/components/Svgicon/index.vue')['default']
     Table: typeof import('./src/components/Table.vue')['default']
     TextEdit: typeof import('./src/components/TextEdit/index.vue')['default']
