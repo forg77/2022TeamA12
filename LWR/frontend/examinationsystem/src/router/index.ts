@@ -52,10 +52,10 @@ const routes = [
         ],
       },
       {
-        title: "学生管理",link:'',
+        title: "学生管理",link:'/admin/studentManage',
       },
       {
-        title: "教师管理",link:'',
+        title: "教师管理",link:'/admin/TeacherManage',
       },
       {
         title: "操作日志",link:'',
@@ -133,6 +133,26 @@ const routes = [
       meta: {
         title: "题库录入" + postTitle,
         pageTitle: "题库录入"
+      }
+    },
+    {
+      path:'studentManage',
+      name:'StudentManage',
+      component: ()=>
+        import('../views/admin/StudentManage.vue'),
+      meta: {
+        title:"学生管理" + postTitle,
+        pageTitle: "学生管理"
+      }
+    },
+    {
+      path:'teacherManage',
+      name:'teacherManage',
+      component: ()=>
+        import('../views/admin/TeacherManage.vue'),
+      meta: {
+        title:"教师管理" + postTitle,
+        pageTitle: "教师管理"
       }
     },
     {
