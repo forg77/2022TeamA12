@@ -259,7 +259,7 @@ export default defineComponent({
     text-decoration: none;
 
     font-family: Microsoft YaHei;
-    font-size: 20px;
+    font-size: 16px;
     /* height: calc(100% - 60px); */
 
     transition: background-color 0.5s, color 0.5s;

@@ -1198,9 +1198,11 @@ input[type="radio"]:checked {
 .input {
   width: 237px;
   height: 28px;
-  background: #e6e6e6;
+  background: #ffffff;
   border-radius: 5px;
   font-size: 14px;
+  color:#737373;
+  border:solid rgb(190, 190, 190) 0.5px;
 }
 
 .order {
