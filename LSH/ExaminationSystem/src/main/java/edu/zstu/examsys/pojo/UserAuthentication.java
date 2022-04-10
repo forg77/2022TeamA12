@@ -1,14 +1,16 @@
 package edu.zstu.examsys.pojo;
 
+import org.springframework.security.core.authority.AuthorityUtils;
+
 import java.util.Date;
 
-public class Supervision implements AuthenticationInfo {
+public class UserAuthentication implements AuthenticationInfo {
     private Integer id;
-    private Integer examId;
-    private Integer studentId;
-    private Date time;
-    private String text;
-    private Boolean warn;
+    private String username;
+    private String password;
+    private String nickname;
+    private Date registerTime;
+    private String permission;
 
     private Integer authenticationId;
     private String type;
@@ -21,8 +23,6 @@ public class Supervision implements AuthenticationInfo {
     private String grade;
     private String major;
 
-//    private AuthenticationInfo authentication;
-
     public Integer getId() {
         return id;
     }
@@ -31,44 +31,44 @@ public class Supervision implements AuthenticationInfo {
         this.id = id;
     }
 
-    public Integer getExamId() {
-        return examId;
+    public String getUsername() {
+        return username;
     }
 
-    public void setExamId(Integer examId) {
-        this.examId = examId;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public Integer getStudentId() {
-        return studentId;
+    public String getPassword() {
+        return password;
     }
 
-    public void setStudentId(Integer studentId) {
-        this.studentId = studentId;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public Date getTime() {
-        return time;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setTime(Date time) {
-        this.time = time;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
-    public String getText() {
-        return text;
+    public Date getRegisterTime() {
+        return registerTime;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setRegisterTime(Date registerTime) {
+        this.registerTime = registerTime;
     }
 
-    public Boolean getWarn() {
-        return warn;
+    public String getPermission() {
+        return permission;
     }
 
-    public void setWarn(Boolean warn) {
-        this.warn = warn;
+    public void setPermission(String permission) {
+        this.permission = permission;
     }
 
     @Override
@@ -83,12 +83,12 @@ public class Supervision implements AuthenticationInfo {
 
     @Override
     public Integer getUserId() {
-        return studentId;
+        return id;
     }
 
     @Override
     public void setUserId(Integer userId) {
-        studentId = userId;
+        id = userId;
     }
 
     @Override
@@ -183,13 +183,13 @@ public class Supervision implements AuthenticationInfo {
 
     @Override
     public String toString() {
-        return "Supervision{" +
+        return "UserAuthentication{" +
                 "id=" + id +
-                ", examId=" + examId +
-                ", studentId=" + studentId +
-                ", time=" + time +
-                ", text='" + text + '\'' +
-                ", warn=" + warn +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", registerTime=" + registerTime +
+                ", permission='" + permission + '\'' +
                 ", authenticationId=" + authenticationId +
                 ", type='" + type + '\'' +
                 ", realName='" + realName + '\'' +
@@ -197,6 +197,9 @@ public class Supervision implements AuthenticationInfo {
                 ", school='" + school + '\'' +
                 ", college='" + college + '\'' +
                 ", admissionTime=" + admissionTime +
+                ", clazz='" + clazz + '\'' +
+                ", grade='" + grade + '\'' +
+                ", major='" + major + '\'' +
                 '}';
     }
 }

@@ -3,25 +3,25 @@ package edu.zstu.examsys.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import edu.zstu.examsys.pojo.CommonData;
+import edu.zstu.examsys.pojo.Condition;
 import edu.zstu.examsys.pojo.ErrorCode;
 import edu.zstu.examsys.pojo.Supervision;
 import edu.zstu.examsys.service.SupervisionService;
+import edu.zstu.examsys.util.JSONUtils;
 import org.apache.log4j.Level;
 import org.apache.tomcat.util.buf.Utf8Decoder;
 import org.apache.tomcat.util.buf.Utf8Encoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/supervision")
@@ -102,5 +102,22 @@ public class SupervisionController {
         }
 
         return JSON.toJSONString(new CommonData(ErrorCode.SUCCESS, "上传成功", warn));
+    }
+
+    @PostMapping("/getExceptions")
+    public String getExceptions(@RequestBody String requestBody) {
+        JSONObject body = JSON.parseObject(requestBody);
+        Condition con = JSONUtils.setCondition(body);
+        Integer examId = body.getInteger("examId");
+        Boolean warn = body.getBoolean("warn");
+//        String search = body.getString("search");
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("count", supervisionService.getSupervisionInfosCount(examId, null, warn));
+        data.put("data", supervisionService.getSupervisionInfos(examId, null, warn, con));
+
+        CommonData res = new CommonData(ErrorCode.SUCCESS, "成功", data);
+
+        return JSON.toJSONString(res);
     }
 }

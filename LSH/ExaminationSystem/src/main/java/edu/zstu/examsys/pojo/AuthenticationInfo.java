@@ -13,6 +13,10 @@ public interface AuthenticationInfo {
 
     String getType();
 
+    void setRealName(String realName);
+
+    String getRealName();
+
     void setType(String type);
 
     String getNumber();
@@ -30,4 +34,16 @@ public interface AuthenticationInfo {
     Date getAdmissionTime();
 
     void setAdmissionTime(Date admissionTime);
+
+    String getClazz();
+
+    void setClazz(String clazz);
+
+    String getGrade();
+
+    void setGrade(String grade);
+
+    String getMajor();
+
+    void setMajor(String major);
 }

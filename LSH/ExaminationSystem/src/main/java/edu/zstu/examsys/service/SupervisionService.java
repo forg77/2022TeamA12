@@ -22,6 +22,10 @@ public class SupervisionService {
         return supervisionMapper.getSupervisionInfos(examId, studentId, warn, con);
     }
 
+    public Integer getSupervisionInfosCount(Integer examId, Integer studentId, Boolean warn) {
+        return supervisionMapper.getSupervisionInfosCount(examId, studentId, warn);
+    }
+
     public Integer addSupervisionInfo(Supervision info) {
         return supervisionMapper.addSupervisionInfo(info);
     }

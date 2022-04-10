@@ -1,12 +1,15 @@
 package edu.zstu.examsys.service;
 
 import edu.zstu.examsys.mapper.UserMapper;
+import edu.zstu.examsys.pojo.Condition;
 import edu.zstu.examsys.pojo.User;
+import edu.zstu.examsys.pojo.UserAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -32,5 +35,13 @@ public class UserService {
             user.setRegisterTime(new Date());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userMapper.addUser(user);
+    }
+
+    public List<UserAuthentication> getTeacherStudents(Integer teacherId, String search, Condition con) {
+        return userMapper.getTeacherStudents(teacherId, search, con);
+    }
+
+    public Integer getTeacherStudentsCount(Integer teacherId, String search) {
+        return userMapper.getTeacherStudentsCount(teacherId, search);
     }
 }

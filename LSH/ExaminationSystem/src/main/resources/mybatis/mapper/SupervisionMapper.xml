@@ -56,6 +56,23 @@
         ;
     </select>
 
+    <select id="getSupervisionInfosCount" resultType="int">
+        SELECT COUNT(*)
+        FROM `examsys`.`supervision`
+        <where>
+            <if test="examId != null">
+                AND `exam_id` = #{examId}
+            </if>
+            <if test="studentId != null">
+                AND `student_id` = #{studentId}
+            </if>
+            <if test="warn != null">
+                AND `warn` = #{warn}
+            </if>
+        </where>
+        ;
+    </select>
+
     <insert id="addSupervisionInfo" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO `examsys`.`supervision`(exam_id, student_id, time, text, warn)
         VALUES (#{examId},

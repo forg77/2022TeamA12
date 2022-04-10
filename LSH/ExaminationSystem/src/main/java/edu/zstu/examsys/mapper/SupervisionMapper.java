@@ -14,5 +14,7 @@ import java.util.List;
 public interface SupervisionMapper {
     List<Supervision> getSupervisionInfos(Integer examId, Integer studentId, Boolean warn, Condition con);
 
+    Integer getSupervisionInfosCount(Integer examId, Integer studentId, Boolean warn);
+
     Integer addSupervisionInfo(Supervision info);
 }

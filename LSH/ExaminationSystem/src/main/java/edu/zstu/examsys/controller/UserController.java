@@ -4,9 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import edu.zstu.examsys.mapper.TestMapper;
 import edu.zstu.examsys.pojo.CommonData;
+import edu.zstu.examsys.pojo.Condition;
 import edu.zstu.examsys.pojo.ErrorCode;
 import edu.zstu.examsys.pojo.User;
 import edu.zstu.examsys.service.UserService;
+import edu.zstu.examsys.util.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -64,19 +66,35 @@ public class UserController {
         JSONObject body = JSON.parseObject(requestBody);
         User user = body.toJavaObject(User.class);
 
-        User exist= userService.getUserByUsername(user.getUsername());
-        if(exist!=null){
+        User exist = userService.getUserByUsername(user.getUsername());
+        if (exist != null) {
             return JSON.toJSONString(new CommonData(ErrorCode.USER_ALREADY_EXISTS, "用户已存在", user.getId()));
         }
 
-        Integer suc= userService.addUser(user);
+        Integer suc = userService.addUser(user);
 
         CommonData res;
-        if(suc>0) {
+        if (suc > 0) {
             res = new CommonData(ErrorCode.SUCCESS, "成功", user.getId());
-        }else{
+        } else {
             res = new CommonData(ErrorCode.UNKNOWN_ERROR, "未知错误");
         }
+
+        return JSON.toJSONString(res);
+    }
+
+    @PostMapping("/getTeacherStudents")
+    public String getTeacherStudents(@RequestBody String requestBody) {
+        JSONObject body = JSON.parseObject(requestBody);
+        Condition con = JSONUtils.setCondition(body);
+        Integer teacherId = body.getInteger("teacherId");
+        String search = body.getString("search");
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", userService.getTeacherStudents(teacherId, search, con));
+        data.put("count", userService.getTeacherStudentsCount(teacherId, search));
+
+        CommonData res = new CommonData(ErrorCode.SUCCESS, "成功", data);
 
         return JSON.toJSONString(res);
     }
