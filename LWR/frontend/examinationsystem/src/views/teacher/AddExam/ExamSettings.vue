@@ -162,7 +162,7 @@
               <el-form-item>
                 <el-radio @change="changeChoose(index,formation.choose)" v-model="formation.choose" :label="2"
                           size="large"
-                ><span style="font-size:21px">从题库按照难以度选题</span>
+                ><span style="font-size:21px">从题库按照难易度选题</span>
                 </el-radio
                 >
               </el-form-item>
@@ -241,7 +241,9 @@ export default defineComponent({
       ],
       addDropdown: [
         {key: 'choice', value: '单选题'},
+        {key: 'multi_choice', value: '多选题'},
         {key: 'completion', value: '填空题'},
+        {key: 'short_answer', value: '简答题'},
       ] as Pair[]
     };
   },

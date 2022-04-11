@@ -10,6 +10,9 @@
       </div>
     </div>
   </transition>
+  <BackgroundFull v-model:show="showQuestionImport" :canClose="true">
+    <QuestionImport @okClick="onQuestionImportOkClick" @cancelClick="showQuestionImport=false"></QuestionImport>
+  </BackgroundFull>
   <table
       class="exam"
       cellspacing="0"
@@ -225,6 +228,13 @@
                             <button
                                 class="btn"
                                 style="width: 44px; height: 21px; font-size: 11px"
+                                @click="showQuestionImport=true"
+                            >
+                              导入
+                            </button>
+                            <button
+                                class="btn"
+                                style="margin-left: 10px;;width: 44px; height: 21px; font-size: 11px"
                             >
                               预览
                             </button>
@@ -416,6 +426,8 @@
 
 <script setup>
 import {EditPen} from "@element-plus/icons-vue";
+import BackgroundFull from "@/components/BackgroundFull";
+import QuestionImport from "@/components/QuestionImport";
 </script>
 
 <script>
@@ -425,6 +437,7 @@ import DialogBox from "./DialogBox.vue";
 import Loading from "./Loading.vue";
 import DropDown from "./DropDown.vue";
 import QuestionEdit from "./QuestionEdit";
+import {ElMessage} from "element-plus";
 // import config from "@/config.ts";
 export default {
   components: {
@@ -467,7 +480,9 @@ export default {
       showJoinDialog: false,
 
       isLoading: false,
-      markNumber: {}
+      markNumber: {},
+
+      showQuestionImport: false
     };
   },
   methods: {
@@ -942,6 +957,23 @@ export default {
         name: "EditExamConfig",
         params: {exam: JSON.stringify(this.exam), examId: this.exam.id}
       });
+    },
+    onQuestionImportOkClick(value) {
+      this.showQuestionImport = false;
+      axios({
+        url: "/question/addQuestions",
+        data: {
+          list: value,
+          examId:this.examId,
+          bankId: this.bankId
+        }
+      }).then((res) => {
+        if (res.data.errCode !== 0)
+          throw new Error();
+
+      }).catch(() => {
+        ElMessage({message: "导入失败", type: "error"});
+      });
     }
   },
   computed: {
@@ -1201,8 +1233,8 @@ input[type="radio"]:checked {
   background: #ffffff;
   border-radius: 5px;
   font-size: 14px;
-  color:#737373;
-  border:solid rgb(190, 190, 190) 0.5px;
+  color: #737373;
+  border: solid rgb(190, 190, 190) 0.5px;
 }
 
 .order {

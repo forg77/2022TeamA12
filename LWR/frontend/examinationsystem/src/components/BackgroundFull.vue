@@ -3,10 +3,10 @@
     <div class="back" v-show="show" @click="onBackClick()">
       <div style="width: 100%; height: 100%">
         <table style="width: 100%; height: 100%; vertical-align: middle">
-          <td style="text-align: center">
+          <td style="text-align: center;display: flex;justify-content: center;align-items: center;height: 100%">
             <div
                 @click="$event.stopPropagation()"
-                style="margin:auto"
+                style=""
                 :style="{width: width,height: height}"
             >
               <slot></slot>
