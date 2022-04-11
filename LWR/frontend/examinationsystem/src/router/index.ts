@@ -47,8 +47,8 @@ const routes = [
                 {
                     title: "成绩管理",
                     content: [
-                        {title: "成绩查询", link: ""},
-                        {title: "数据分析", link: ""},
+                        {title: "成绩查询", link: "/admin/gradeSearch"},
+                        {title: "数据分析", link: "/admin/analysis"},
                     ],
                 },
                 {
@@ -155,6 +155,26 @@ const routes = [
                     pageTitle: "教师管理"
                 }
             },
+            {
+              path: 'gradeSearch',
+              name: 'GradeSearch',
+              component: () =>
+                  import('../views/admin/GradeSearch.vue'),
+              meta: {
+                  title: "成绩查询" + postTitle,
+                  pageTitle: "成绩查询"
+              }
+          },
+          {
+            path: 'analysis',
+            name: 'Analysis',
+            component: () =>
+                import('../views/admin/Analysis.vue'),
+            meta: {
+                title: "数据分析" + postTitle,
+                pageTitle: "数据分析"
+            }
+        },
             {
                 path: 'tableTest',
                 name: 'TableTest',
