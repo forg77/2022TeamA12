@@ -1,18 +1,16 @@
 package edu.zstu.examsys.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import edu.zstu.examsys.pojo.*;
+import edu.zstu.examsys.service.ExamService;
 import edu.zstu.examsys.service.QuestionService;
 import edu.zstu.examsys.util.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,9 +19,16 @@ import java.util.Map;
 public class QuestionController {
     private QuestionService questionService;
 
+    private ExamService examService;
+
     @Autowired
     public void setQuestionService(QuestionService questionService) {
         this.questionService = questionService;
+    }
+
+    @Autowired
+    public void setExamService(ExamService examService) {
+        this.examService = examService;
     }
 
     @PostMapping("/getBanks")
@@ -150,6 +155,73 @@ public class QuestionController {
         }
 
         return JSON.toJSONString(new CommonData(ErrorCode.SUCCESS, "成功", id));
+    }
+
+    @PostMapping("/addQuestions")
+    @Transactional
+    public String addQuestions(@RequestBody String requestBody) {
+        JSONObject body = JSON.parseObject(requestBody);
+        JSONArray array = body.getJSONArray("list");
+        Integer bankId = body.getInteger("bankId");
+        Integer examId = body.getInteger("examId");
+
+        for (int i = 0; i < array.size(); i++) {
+            JSONObject obj = array.getJSONObject(i);
+            String type = obj.getString("type");
+            Integer id = obj.getInteger("id");
+            Float score = obj.getFloat("score");
+            String typeBefore = questionService.getQuestionType(id);
+
+            if ("choice".equals(type) || "multi_choice".equals(type)) {
+                ChoiceQuestion choiceQuestion = new ChoiceQuestion();
+                choiceQuestion.setId(id);
+                choiceQuestion.setType(type);
+                choiceQuestion.setDescription(body.getString("description"));
+                choiceQuestion.setBankId(bankId);
+                choiceQuestion.setChoice(body.getString("choice"));
+                choiceQuestion.setAnswer(body.getString("answer"));
+
+                questionService.addQuestion(choiceQuestion);
+                questionService.addChoiceQuestion(choiceQuestion);
+
+                id = choiceQuestion.getId();
+            } else if ("completion".equals(type) || "short_answer".equals(type)) {
+                NormalQuestion normalQuestion = new NormalQuestion();
+                normalQuestion.setId(id);
+                normalQuestion.setType(type);
+                normalQuestion.setDescription(body.getString("description"));
+                normalQuestion.setBankId(bankId);
+                normalQuestion.setAnswer(body.getString("answer"));
+
+                questionService.addQuestion(normalQuestion);
+                questionService.addNormalQuestion(normalQuestion);
+
+                id = normalQuestion.getId();
+            }
+
+            if (typeBefore != null && !typeBefore.equals(type)) {
+                if (typeBefore.equals("choice") || typeBefore.equals("multi_choice")) {
+                    questionService.deleteChoiceQuestion(id);
+                } else if (typeBefore.equals("completion") || typeBefore.equals("short_answer")) {
+                    questionService.deleteNormalQuestion(id);
+                }
+            }
+
+            QuestionScore questionScore = examService.getQuestionScore(examId, id);
+            if (questionScore == null) {
+                questionScore = new QuestionScore();
+                questionScore.setQuestionId(id);
+                questionScore.setExamId(examId);
+                questionScore.setScore(score);
+                questionScore.setAutoCorrect(true);
+                examService.addQuestionScore(questionScore);
+            } else {
+                questionScore.setScore(score);
+                questionScore.setAutoCorrect(true);
+                examService.updateQuestionScore(questionScore);
+            }
+        }
+        return JSON.toJSONString(new CommonData(ErrorCode.SUCCESS, "成功"));
     }
 
     @PostMapping("/deleteQuestion")
