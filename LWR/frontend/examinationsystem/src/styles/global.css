@@ -25,7 +25,7 @@ code::before {
 .btn {
     width: 120px;
     height: 40px;
-    background: #8cbeff;
+    background: #338AFB;
     opacity: 1;
     border-radius: 5px;
     border: none;
@@ -40,7 +40,7 @@ code::before {
 }
 
 .btn:hover {
-    background: #338AFB;
+    background: #8cbeff;
     color: #fff;
     /* border-color: gray; */
 }

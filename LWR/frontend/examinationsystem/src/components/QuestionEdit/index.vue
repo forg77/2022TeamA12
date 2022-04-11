@@ -2,8 +2,8 @@
   <div style="width: 100%; height: 100%">
     <div class="container1">
       <div class="classification">
-        <div class="left">
-          <div>
+        <div class="left" style="width:100%">
+          <div style="width:100%;display:flex">
             <button
               class="BTN"
               @click="tag = 'Choice'"
@@ -12,9 +12,9 @@
               单选题
             </button>
             <button
-                class="BTN"
-                @click="tag = 'MultiChoice'"
-                :class="{ 'BTN-select': tag == 'MultiChoice' }"
+              class="BTN"
+              @click="tag = 'MultiChoice'"
+              :class="{ 'BTN-select': tag == 'MultiChoice' }"
             >
               多选题
             </button>
@@ -27,26 +27,32 @@
               填空题
             </button>
             <button
-                class="BTN"
-                @click="tag = 'ShortAnswer'"
-                :class="{ 'BTN-select': tag == 'ShortAnswer' }"
+              class="BTN"
+              @click="tag = 'ShortAnswer'"
+              :class="{ 'BTN-select': tag == 'ShortAnswer' }"
             >
               简答题
             </button>
-            <button
-                class="BTN"
-                :class="{ 'BTN-select': tag == 'more' }"
-            >
+            <button class="BTN" :class="{ 'BTN-select': tag == 'more' }">
               更多 >
             </button>
-            <!-- <button class="BTN">判断题</button>
-          <button class="BTN">简答题</button> -->
-          </div>
+
+            
         </div>
         <div class="right">
           <div style="text-align: right">
             <!-- <button class="BTN">智能导入</button> -->
             <!-- <button class="BTN">题库选题</button> -->
+            <el-upload
+              class="upload-demo"
+              style="margin-left:auto"
+              :on-success="onUploadSuccess"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :show-file-list="false"
+            >
+              <el-button type="primary">上传图片</el-button></el-upload
+            >
+          </div>
           </div>
         </div>
       </div>
@@ -124,6 +130,7 @@ import MultiChoice from "@/components/QuestionEdit/MultiChoice";
 import ShortAnswer from "@/components/QuestionEdit/ShortAnswer";
 
 import axios from "axios";
+import { ElMessage } from 'element-plus';
 export default {
   components: {
     WangEnduit,
@@ -131,9 +138,9 @@ export default {
     Choice,
     Completion,
     MultiChoice,
-    ShortAnswer
+    ShortAnswer,
   },
-  emits: ["save","saveDone"],
+  emits: ["save", "saveDone"],
   data() {
     return {
       tag: "Choice",
@@ -178,11 +185,11 @@ export default {
         } else if (this.tag == "completion") {
           this.tag = "Completion";
           this.question.answer = JSON.parse(this.question.answer);
-        }else if (this.tag == "multi_choice") {
+        } else if (this.tag == "multi_choice") {
           this.tag = "MultiChoice";
           this.question.choice = JSON.parse(this.question.choice);
           this.question.answer = JSON.parse(this.question.answer);
-        }else if (this.tag == "short_answer") {
+        } else if (this.tag == "short_answer") {
           this.tag = "ShortAnswer";
           this.question.answer = JSON.parse(this.question.answer);
         }
@@ -199,15 +206,24 @@ export default {
       } else if (this.tag == "completion") {
         this.tag = "Completion";
         // this.question.answer = JSON.parse(this.question.answer);
-      }else if (this.tag == "multi_choice") {
+      } else if (this.tag == "multi_choice") {
         this.tag = "MultiChoice";
-      }else if (this.tag == "short_answer") {
+      } else if (this.tag == "short_answer") {
         this.tag = "ShortAnswer";
       }
     },
     onSaveQuestion(question) {
       this.$emit("save", question);
     },
+    onUploadSuccess(){
+      ElMessage({message:"上传成功",type:"success"});
+      this.question={
+        description:"一个社会中，经济制度和政治制度之间是 ()",
+        answer:{0:true},
+        type:"choice",
+        choice:["决定与被决定的关系","相互对抗的关系","相互决定的关系","相互融合的关系"]
+      }
+    }
   },
   mounted() {
     if (this.questionBefore == null && this.id) this.getInfo();
@@ -354,7 +370,7 @@ export default {
   padding-bottom: 40px;
 }
 
-:deep(.add){
+:deep(.add) {
   cursor: pointer;
   color: $primary-color;
 }

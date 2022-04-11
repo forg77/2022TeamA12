@@ -60,15 +60,15 @@ const routes = [
                 {
                     title: "操作日志", link: '',
                 },
-                {
-                    title: "测试",
-                    content: [
-                        {title: "表格测试", link: "/admin/tableTest"},
-                        {title: "对话框测试", link: "/admin/dialogTest"},
-                        {title: "考试测试", link: "/admin/examTest"},
-                        {title: "考试表格测试", link: "/admin/examTableTest"},
-                    ],
-                },
+                // {
+                //     title: "测试",
+                //     content: [
+                //         {title: "表格测试", link: "/admin/tableTest"},
+                //         {title: "对话框测试", link: "/admin/dialogTest"},
+                //         {title: "考试测试", link: "/admin/examTest"},
+                //         {title: "考试表格测试", link: "/admin/examTableTest"},
+                //     ],
+                // },
             ],
         },
         children: [{
@@ -137,7 +137,7 @@ const routes = [
             },
             {
                 path: 'studentManage',
-                name: 'StudentManage',
+                // name: 'StudentManage',
                 component: () =>
                     import('../views/admin/StudentManage.vue'),
                 meta: {

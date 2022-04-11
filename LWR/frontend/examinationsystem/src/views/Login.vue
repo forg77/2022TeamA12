@@ -97,16 +97,17 @@ export default defineComponent({
       });
     },
     redirect() {
-      if (this.config.user) {
-        let permissions = this.config.user.permission.split(",");
-        if (permissions.indexOf("admin") >= 0) {
-          this.$router.push("/admin");
-        } else if (permissions.indexOf("teacher") >= 0) {
-          this.$router.push("/teacher");
-        } else {
-          this.$router.push("/student");
-        }
-      }
+      this.$router.push("/teacher");
+      // if (this.config.user) {
+      //   let permissions = this.config.user.permission.split(",");
+      //   if (permissions.indexOf("admin") >= 0) {
+      //     this.$router.push("/admin");
+      //   } else if (permissions.indexOf("teacher") >= 0) {
+      //     this.$router.push("/teacher");
+      //   } else {
+      //     this.$router.push("/student");
+      //   }
+      // }
     }
   },
   created() {
