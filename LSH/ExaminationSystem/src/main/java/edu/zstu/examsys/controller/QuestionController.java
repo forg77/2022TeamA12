@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -165,6 +167,7 @@ public class QuestionController {
         Integer bankId = body.getInteger("bankId");
         Integer examId = body.getInteger("examId");
 
+        List<Integer> ids = new LinkedList<>();
         for (int i = 0; i < array.size(); i++) {
             JSONObject obj = array.getJSONObject(i);
             String type = obj.getString("type");
@@ -176,10 +179,10 @@ public class QuestionController {
                 ChoiceQuestion choiceQuestion = new ChoiceQuestion();
                 choiceQuestion.setId(id);
                 choiceQuestion.setType(type);
-                choiceQuestion.setDescription(body.getString("description"));
+                choiceQuestion.setDescription(obj.getString("description"));
                 choiceQuestion.setBankId(bankId);
-                choiceQuestion.setChoice(body.getString("choice"));
-                choiceQuestion.setAnswer(body.getString("answer"));
+                choiceQuestion.setChoice(obj.getString("choice"));
+                choiceQuestion.setAnswer(obj.getString("answer"));
 
                 questionService.addQuestion(choiceQuestion);
                 questionService.addChoiceQuestion(choiceQuestion);
@@ -189,9 +192,9 @@ public class QuestionController {
                 NormalQuestion normalQuestion = new NormalQuestion();
                 normalQuestion.setId(id);
                 normalQuestion.setType(type);
-                normalQuestion.setDescription(body.getString("description"));
+                normalQuestion.setDescription(obj.getString("description"));
                 normalQuestion.setBankId(bankId);
-                normalQuestion.setAnswer(body.getString("answer"));
+                normalQuestion.setAnswer(obj.getString("answer"));
 
                 questionService.addQuestion(normalQuestion);
                 questionService.addNormalQuestion(normalQuestion);
@@ -207,21 +210,24 @@ public class QuestionController {
                 }
             }
 
-            QuestionScore questionScore = examService.getQuestionScore(examId, id);
-            if (questionScore == null) {
-                questionScore = new QuestionScore();
-                questionScore.setQuestionId(id);
-                questionScore.setExamId(examId);
-                questionScore.setScore(score);
-                questionScore.setAutoCorrect(true);
-                examService.addQuestionScore(questionScore);
-            } else {
-                questionScore.setScore(score);
-                questionScore.setAutoCorrect(true);
-                examService.updateQuestionScore(questionScore);
+            if (examId != null) {
+                QuestionScore questionScore = examService.getQuestionScore(examId, id);
+                if (questionScore == null) {
+                    questionScore = new QuestionScore();
+                    questionScore.setQuestionId(id);
+                    questionScore.setExamId(examId);
+                    questionScore.setScore(score);
+                    questionScore.setAutoCorrect(true);
+                    examService.addQuestionScore(questionScore);
+                } else {
+                    questionScore.setScore(score);
+                    questionScore.setAutoCorrect(true);
+                    examService.updateQuestionScore(questionScore);
+                }
             }
+            ids.add(id);
         }
-        return JSON.toJSONString(new CommonData(ErrorCode.SUCCESS, "成功"));
+        return JSON.toJSONString(new CommonData(ErrorCode.SUCCESS, "成功", ids));
     }
 
     @PostMapping("/deleteQuestion")

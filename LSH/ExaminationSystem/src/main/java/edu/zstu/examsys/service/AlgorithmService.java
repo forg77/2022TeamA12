@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import edu.zstu.examsys.controller.AlgorithmController;
 import edu.zstu.examsys.pojo.Supervision;
+import edu.zstu.examsys.util.IOUtils;
 import org.apache.tomcat.util.buf.Utf8Decoder;
 import org.apache.tomcat.util.buf.Utf8Encoder;
 import org.slf4j.Logger;
@@ -25,7 +26,8 @@ public class AlgorithmService {
     private String sendCommand(String command, String content) {
         Socket socket = null;
         try {
-            socket = new Socket("localhost", 9001);
+            String ip = IOUtils.readAll(new FileInputStream(IOUtils.runPath + "/ip.txt")).trim();
+            socket = new Socket(ip, 9001);
             OutputStream os = socket.getOutputStream();
             OutputStreamWriter osw = new OutputStreamWriter(os, new Utf8Encoder());
 
@@ -61,7 +63,7 @@ public class AlgorithmService {
         return sendCommand("qery", JSON.toJSONString(list));
     }
 
-    public String addQuestion(Integer id,String content) {
+    public String addQuestion(Integer id, String content) {
         HashMap<String, Object> send = new HashMap<>();
         send.put("id", id);
         send.put("content", content);

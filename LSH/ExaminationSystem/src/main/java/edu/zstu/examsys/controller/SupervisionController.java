@@ -7,6 +7,7 @@ import edu.zstu.examsys.pojo.Condition;
 import edu.zstu.examsys.pojo.ErrorCode;
 import edu.zstu.examsys.pojo.Supervision;
 import edu.zstu.examsys.service.SupervisionService;
+import edu.zstu.examsys.util.IOUtils;
 import edu.zstu.examsys.util.JSONUtils;
 import org.apache.log4j.Level;
 import org.apache.tomcat.util.buf.Utf8Decoder;
@@ -69,7 +70,8 @@ public class SupervisionController {
         //创建Socket，获取监考数据
         Socket socket = null;
         try {
-            socket = new Socket("localhost", 9000);
+            String ip = IOUtils.readAll(new FileInputStream(IOUtils.runPath + "/ip.txt")).trim();
+            socket = new Socket(ip, 9000);
             OutputStream os = socket.getOutputStream();
             OutputStreamWriter osw = new OutputStreamWriter(os, new Utf8Encoder());
             HashMap<String, Object> send = new HashMap<>();
