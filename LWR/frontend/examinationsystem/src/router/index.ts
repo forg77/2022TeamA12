@@ -5,109 +5,6 @@ import Home from '../views/Home.vue'
 const postTitle = " - " + config.siteTitle;
 
 const routes = [
-<<<<<<< HEAD
-  {
-    path: '/login',
-    name: "Login",
-    component: () =>
-      import('../views/Login.vue'),
-    meta: {
-      title: "登录"
-    }
-  },
-  {
-    path: '/register',
-    name: "Register",
-    component: () =>
-      import('../views/Register.vue'),
-    meta: {
-      title: "注册"
-    }
-  },
-  {
-    path: '/admin',
-    name: "Admin",
-    component: () =>
-      import('../views/MainView.vue'),
-    props: {
-      navs: [{
-        title: "考试管理",
-        content: [
-          { title: "考试管理", link: "/admin/examManage" },
-          // {title: "添加考试", link: "/admin/addExam"},
-          { title: "监考管理", link: "/admin/invigilationManage" },
-        ],
-      },
-      {
-        title: "题库管理",
-        content: [
-          { title: "题库查询", link: "/admin/questionsManage" },
-          { title: "题库录入", link: "/admin/questionsInput" },
-        ],
-      },
-      {
-        title: "成绩管理",
-        content: [
-          { title: "成绩查询", link: "/admin/gradeSearch" },
-          { title: "数据分析", link: "/admin/analysis" },
-        ],
-      },
-      {
-        title: "学生管理",link:'/admin/studentManage',
-      },
-      {
-        title: "教师管理",link:'/admin/TeacherManage',
-      },
-      {
-        title: "操作日志",link:'',
-      },
-      {
-        title: "测试",
-        content: [
-          { title: "表格测试", link: "/admin/tableTest" },
-          { title: "对话框测试", link: "/admin/dialogTest" },
-          { title: "考试测试", link: "/admin/examTest" },
-          { title: "考试表格测试", link: "/admin/examTableTest" },
-        ],
-      },
-      ],
-    },
-    children: [{
-      path: 'home',
-      name: 'Home',
-      component: Home
-    },
-    {
-      path: 'about',
-      name: 'About',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () =>
-        import( /* webpackChunkName: "about" */ '../views/About.vue')
-    },
-    {
-      path: 'examManage',
-      name: 'ExamManage',
-      component: () =>
-        import('../views/admin/ExamManage.vue'),
-      meta: {
-        title: "考试管理" + postTitle,
-        pageTitle: "考试管理"
-      }
-    },
-    {
-      path: 'addExam',
-      name: 'AddExam',
-      component: () =>
-        import('../views/admin/AddExam.vue'),
-      meta: {
-        title: "添加考试" + postTitle,
-        pageTitle: "添加考试"
-      }
-    },
-=======
->>>>>>> 7dbe5f0f5d5131086eed8a9c0697152d67d20d07
     {
         path: '/login',
         name: "Login",
@@ -150,8 +47,8 @@ const routes = [
                 {
                     title: "成绩管理",
                     content: [
-                        {title: "成绩查询", link: ""},
-                        {title: "数据分析", link: ""},
+                        {title: "成绩查询", link: "/admin/gradeSearch"},
+                        {title: "数据分析", link: "/admin/analysis"},
                     ],
                 },
                 {
@@ -258,6 +155,26 @@ const routes = [
                     pageTitle: "教师管理"
                 }
             },
+            {
+              path: 'gradeSearch',
+              name: 'GradeSearch',
+              component: () =>
+                  import('../views/admin/GradeSearch.vue'),
+              meta: {
+                  title: "成绩查询" + postTitle,
+                  pageTitle: "成绩查询"
+              }
+          },
+          {
+            path: 'analysis',
+            name: 'Analysis',
+            component: () =>
+                import('../views/admin/Analysis.vue'),
+            meta: {
+                title: "数据分析" + postTitle,
+                pageTitle: "数据分析"
+            }
+        },
             {
                 path: 'tableTest',
                 name: 'TableTest',
@@ -435,111 +352,6 @@ const routes = [
         ]
     },
     {
-<<<<<<< HEAD
-      path:'teacherManage',
-      name:'teacherManage',
-      component: ()=>
-        import('../views/admin/TeacherManage.vue'),
-      meta: {
-        title:"教师管理" + postTitle,
-        pageTitle: "教师管理"
-      }
-    },
-    {
-      path: 'tableTest',
-      name: 'TableTest',
-      component: () =>
-        import('../testViews/TableTest.vue'),
-      meta: {
-        title: "表格测试" + postTitle,
-        pageTitle: "表格测试"
-      }
-    },
-    {
-      path: 'dialogTest',
-      name: 'DialogTest',
-      component: () =>
-        import('../testViews/DialogTest.vue'),
-      meta: {
-        title: "对话框测试" + postTitle,
-        pageTitle: "对话框测试"
-      }
-    },
-    {
-      path: 'examTest',
-      name: 'ExamTest',
-      component: () =>
-        import('../testViews/ExamTest.vue'),
-      meta: {
-        title: "考试测试" + postTitle,
-        pageTitle: "考试测试"
-      }
-    },
-    {
-      path: 'examTableTest',
-      name: 'ExamTableTest',
-      component: () =>
-        import('../testViews/ExamTableTest.vue'),
-      meta: {
-        title: "考试表格测试" + postTitle,
-        pageTitle: "考试表格测试"
-      }
-    },
-    {
-      path: 'gradeSearch',
-      name: 'GradeSearch',
-      component: () =>
-        import('../views/admin/GradeSearch.vue'),
-      meta: {
-        title: "成绩查询" + postTitle,
-        pageTitle: "成绩查询"
-      }
-    },
-    {
-      path: 'analysis',
-      name: 'Analysis',
-      component: () =>
-        import('../views/admin/Analysis.vue'),
-      meta: {
-        title: "数据分析" + postTitle,
-        pageTitle: "数据分析"
-      }
-    },
-    ]
-  },
-  {
-    path: '/teacher',
-    name: "Teacher",
-    component: () =>
-      import('../views/MainView.vue'),
-    props: {
-      navs: [{
-        title: "考试管理",
-        content: [
-          { title: "考试管理", link: "/teacher/examManage" },
-          { title: "考试监考", link: "/teacher/invigilating" },
-        ],
-      }, {
-        title: "题库管理",
-        content: [
-          { title: "题库查询", link: "/teacher/questionsManage" },
-          { title: "题库录入", link: "/teacher/questionsInput" },
-        ],
-      }, {
-        title: "成绩管理",
-        link: "/teacher/gradeManage"
-      }],
-    },
-    children: [{
-      path: 'questionsManage',
-      name: 'TeacherQuestionsManage',
-      component: () =>
-        import('../views/teacher/QuestionsManage/index.vue'),
-      meta: {
-        title: "题库管理" + postTitle,
-        pageTitle: "题库管理"
-      }
-=======
         path: '/student',
         name: "Student",
         component: () =>
@@ -608,7 +420,6 @@ const routes = [
                 },
             },
         ]
->>>>>>> 7dbe5f0f5d5131086eed8a9c0697152d67d20d07
     },
     {
         path: '/config',
