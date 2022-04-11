@@ -103,23 +103,28 @@ export default defineComponent({
         this.value = [];
 
         const regex = /<\/?.+?\/?>/gm;
+        let i = 1;
         for (const question of questions.choice) {
           question.score = 2;
-          this.questions[question.id] = question;
+          this.questions[i] = question;
           this.data.push({
-            key: question.id,
+            key: i++,
             label: question.description.replace(regex, "").replace(/&nbsp;/gi, ""),
             disabled: false
           });
+          delete question.id;
+          delete question.bankId;
         }
         for (const question of questions.normal) {
           question.score = 2;
-          this.questions[question.id] = question;
+          this.questions[i] = question;
           this.data.push({
-            key: question.id,
+            key: i++,
             label: question.description.replace(regex, "").replace(/&nbsp;/gi, ""),
             disabled: false
           });
+          delete question.id;
+          delete question.bankId;
         }
       }).catch(() => {
         ElMessage({message: "获取数据失败", type: "error"});
@@ -130,6 +135,8 @@ export default defineComponent({
       for (const id of this.value) {
         result.push(this.questions[id]);
       }
+      // console.log(result);
+      this.value = [];
       this.$emit('okClick', result);
     }
   },
