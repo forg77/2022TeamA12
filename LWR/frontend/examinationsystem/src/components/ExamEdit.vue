@@ -499,6 +499,7 @@ export default {
 
         //初始化考试信息
         this.exam = data.exam;
+        this.bankId = this.exam.bankId;
         //转换日期格式
         this.exam.earliestStartTime = formatDate(
             new Date(this.exam.earliestStartTime)
@@ -839,7 +840,7 @@ export default {
       data.orderJson = JSON.stringify(this.order);
       data.fullMark = this.fullMark;
 
-      axios({
+      return axios({
         url: "exam/addExam",
         data: data,
       })
@@ -960,17 +961,26 @@ export default {
     },
     onQuestionImportOkClick(value) {
       this.showQuestionImport = false;
+      // console.log(this.bankId);
       axios({
         url: "/question/addQuestions",
         data: {
           list: value,
-          examId:this.examId,
+          examId: this.examId,
           bankId: this.bankId
         }
       }).then((res) => {
         if (res.data.errCode !== 0)
           throw new Error();
+        let i = 0;
+        for (const question of value) {
+          this.order[question.type].push(res.data.data[i++]);
+          if (this.order.part.indexOf(question.type) < 0) this.order.part.push(question.type);
+        }
+        return this.commitExam();
 
+      }).then(()=>{
+        this.getAllExamInfo();
       }).catch(() => {
         ElMessage({message: "导入失败", type: "error"});
       });

@@ -25,6 +25,9 @@
         </div>
       </div>
     </transition>
+    <BackgroundFull v-model:show="showQuestionImport" :canClose="true">
+      <QuestionImport @okClick="onQuestionImportOkClick" @cancelClick="showQuestionImport=false"></QuestionImport>
+    </BackgroundFull>
     <Card>
       <template v-slot:headerLeft>
         <span
@@ -34,6 +37,9 @@
         >试题列表
         <button class="btn" style="margin-left: 20px" @click="onAddClick()">
           添加试题
+        </button>
+        <button class="btn" style="margin-left: 20px" @click="onImportClick()">
+          导入试题
         </button>
       </template>
       <template v-slot:headerRight>
@@ -71,6 +77,10 @@
   </div>
 </template>
 
+<!--<script setup>-->
+
+<!--</script>-->
+
 <script>
 import Card from "@/components/Card.vue";
 import SearchBox from "@/components/SearchBox.vue";
@@ -78,6 +88,10 @@ import Table from "@/components/Table.vue";
 import QuestionEdit from "@/components/QuestionEdit";
 import {formatDate} from "@/common.ts";
 import {getSearchInfo} from "@/composables/search.ts";
+import axios from "axios";
+import {ElMessage} from "element-plus";
+import BackgroundFull from "@/components/BackgroundFull";
+import QuestionImport from "@/components/QuestionImport";
 
 export default {
   data() {
@@ -120,6 +134,7 @@ export default {
         },
         {title: "所属题库", name: "bankName"},
       ],
+      showQuestionImport: false
     };
   },
   watch: {
@@ -142,6 +157,25 @@ export default {
       this.showQuestionEdit = true;
       this.editKey++;
     },
+    onImportClick() {
+      this.showQuestionImport = true;
+    },
+    onQuestionImportOkClick(value) {
+      this.showQuestionImport = false;
+      axios({
+        url: "/question/addQuestions",
+        data: {
+          list: value,
+          bankId: this.extraData.bankId,
+        }
+      }).then((res) => {
+        if (res.data.errCode !== 0)
+          throw new Error();
+        this.$refs.table.getItems()
+      }).catch(() => {
+        ElMessage({message: "导入失败", type: "error"});
+      });
+    }
     // onSearchButtonClickAdvanced() {
     //   if (this.extraData.search == null) {
     //     if (this.searchText !== "") {
@@ -162,9 +196,11 @@ export default {
     SearchBox,
     Table,
     QuestionEdit,
+    BackgroundFull,
+    QuestionImport
   },
   mounted() {
-    this.extraData.bankId = Number(this.$route.params.bankId);
+    this.extraData.bankId = Number.parseInt(this.$route.params.bankId);
     this.$refs.table.getItems();
 
     this.searchCallback = () => {
