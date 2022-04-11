@@ -137,7 +137,7 @@ export default {
       },
       expandMenu: false,
 
-      editMenu: [{key: "delete", value: "删除"}, {key: "correct", value: "批改"}],
+      editMenu: [{key: "delete", value: "删除"}, {key: "correct", value: "批改"}, {key: "supervise", value: "监考"}],
       selectExam: null,
 
       showDeleteDialog: false
@@ -268,6 +268,8 @@ export default {
         this.showDeleteDialog = true;
       } else if (key === 'correct') {
         this.$router.push('/teacher/examCorrect/' + this.selectExam.id);
+      }else if (key === 'supervise') {
+        this.$router.push('/teacher/invigilating/' + this.selectExam.id);
       }
     }
   },
