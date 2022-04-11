@@ -385,7 +385,15 @@
                         <!-- </table> -->
                       </span>
                     </td>
-                    <td style="text-align: center">标记</td>
+                    <td style="text-align: center">
+                      <div @click="markNumber[currentTitleNumber]=!markNumber[currentTitleNumber]" class="mark-circle"
+                           >
+                        <svg-icon iconName="bookmark"
+                                  className="mark-icon"></svg-icon>
+                      </div>
+                      <br/>
+                      <span class="mark-text">标记</span>
+                    </td>
                     <td style="width: 33%">
                       <span
                           class="next"
@@ -951,7 +959,7 @@ export default {
       reg = new RegExp(reg, "g");
       for (let key in currentAnswer) {
         let answer = currentAnswer[key];
-        answer = answer.replaceAll(reg, "<i><u>$&</u></i>");
+        answer = answer.replaceAll(reg, `<i style="background:yellow">$&</i>`);
         result[key] = answer;
       }
       return result;
@@ -1243,5 +1251,40 @@ input[type="checkbox"].switch:checked::after {
 
 .question-selected {
   background-color: #d0e4fc;
+}
+
+.mark-icon {
+  width: 24px;
+  height: 24px;
+  color: $primary-color;
+}
+
+.mark-icon-select {
+  width: 24px;
+  height: 24px;
+  color: white;
+}
+
+.mark-circle {
+  width: 35px;
+  height: 35px;
+  //background: $primary-color;
+  border-style: solid;
+  border-width: 2px;
+  border-color: $primary-color;
+  border-radius: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.mark-circle-select {
+  background: $primary-color;
+}
+
+.mark-text {
+  font-size: 14px;
+  color: $primary-color;
 }
 </style>

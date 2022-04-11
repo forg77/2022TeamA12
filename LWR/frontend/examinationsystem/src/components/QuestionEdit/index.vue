@@ -221,7 +221,8 @@ export default {
         description:"一个社会中，经济制度和政治制度之间是 ()",
         answer:{0:true},
         type:"choice",
-        choice:["决定与被决定的关系","相互对抗的关系","相互决定的关系","相互融合的关系"]
+        choice:["决定与被决定的关系","相互对抗的关系","相互决定的关系","相互融合的关系"],
+        bankId:this.bankId
       }
     }
   },

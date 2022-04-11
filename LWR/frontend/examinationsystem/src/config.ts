@@ -32,7 +32,7 @@ const config: Config = {
     urls,
     siteTitle: '考试系统',
     showLoading: false,
-    showFakeExam: false
+    showFakeExam: true
 };
 
 //配置axios默认值
