@@ -1,5 +1,5 @@
 <template>
-  <div class="inputBox" style="width: 200px; display: inline-block;vertical-align:middle">
+  <div class="inputBox" style="width: 170px; display: inline-block;vertical-align:middle">
     <table style="width: 100%; height: 100%">
       <tr>
         <td>
@@ -10,9 +10,6 @@
         </td>
       </tr>
     </table>
-    <!-- <div style="width: 100%;height:100%">
-      <input class="text" type="text" placeholder="搜索" />
-    </div> -->
   </div>
 </template>
 
@@ -47,17 +44,17 @@ export default {
 
   /* margin-left: 10px; */
 
-  font-size: 18px;
+  font-size: 16px;
   font-family: Microsoft YaHei;
   color: #000000;
   opacity: 0.7;
-
   display: inline-block;
 }
 
 .icon{
-  width:25px;
-  height:25px;
+  width:22px;
+  height:22px;
   margin-right: 10px;
+  color:rgb(154, 154, 154)
 }
 </style>

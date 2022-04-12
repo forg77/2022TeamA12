@@ -86,17 +86,18 @@ export default {
       this.$refs.examTable.getExams();
     },
     addExam() {
-      axios({
-        url: "exam/addNewExam"
-      }).then((res) => {
-        if (res.data["errCode"] === 0) {
-          this.$router.push("/teacher/examEdit/" + res.data["data"]);
-        } else {
-          alert("添加失败");
-        }
-      }).catch(() => {
-        alert("添加失败");
-      });
+      this.$router.push("/teacher/addExam");
+      // axios({
+      //   url: "exam/addNewExam"
+      // }).then((res) => {
+      //   if (res.data["errCode"] === 0) {
+      //     this.$router.push("/teacher/examEdit/" + res.data["data"]);
+      //   } else {
+      //     alert("添加失败");
+      //   }
+      // }).catch(() => {
+      //   alert("添加失败");
+      // });
     },
     onAddClick() {
       this.addExam();

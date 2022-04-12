@@ -4,7 +4,9 @@
     <div class="loading-back" v-show="isLoading">
       <div style="width: 100%; height: 100%">
         <table style="width: 100%; height: 100%; vertical-align: middle">
-          <td style="text-align: center"><Loading></Loading></td>
+          <td style="text-align: center">
+            <Loading></Loading>
+          </td>
         </table>
       </div>
     </div>
@@ -14,11 +16,11 @@
     <template v-slot:header>考试已结束</template>
     <template v-if="examPaper && 'grade' in examPaper">
       您的分数：{{ examPaper.grade }}/{{ exam.fullMark }}
-      <br />
+      <br/>
       剩余考试次数：{{ exam.repeatTime - examPaper.times }}
       <button
-        class="btn"
-        @click="
+          class="btn"
+          @click="
           joinExam();
           showOverDialog = false;
         "
@@ -36,31 +38,31 @@
   <!-- 加入考试对话框 -->
   <DialogBox v-model:show="showJoinDialog">
     <template v-slot:header>加入考试</template>
-    <template v-if="isExamNotStarted"> 考试未开始 </template>
-    <template v-else-if="isExamTimeOut"> 考试已经结束 </template>
+    <template v-if="isExamNotStarted"> 考试未开始</template>
+    <template v-else-if="isExamTimeOut"> 考试已经结束</template>
     <template v-else-if="currentTime >= exam.latestStartTime">
       已错过最晚加入考试的时间
     </template>
     <template v-else>
       考试总分：{{ exam.fullMark }}
-      <br />
+      <br/>
       允许重复次数：{{ exam.repeatTime }}
-      <br />
+      <br/>
       考试时间：{{ Math.floor(exam.duration / 1000 / 60) }}
-      <br />
+      <br/>
       考试类型：{{
         exam.type == "fixed"
-          ? "固定"
-          : exam.type == "random"
-          ? "随机抽题"
-          : "未知"
+            ? "固定"
+            : exam.type == "random"
+                ? "随机抽题"
+                : "未知"
       }}
     </template>
     <template v-slot:bottom>
       <button
-        class="btn"
-        @click="showJoinDialog = false"
-        v-if="
+          class="btn"
+          @click="showJoinDialog = false"
+          v-if="
           isExamTimeOut ||
           currentTime >= exam.latestStartTime ||
           isExamNotStarted
@@ -69,9 +71,9 @@
         确定
       </button>
       <button
-        v-else
-        class="btn"
-        @click="
+          v-else
+          class="btn"
+          @click="
           joinExam();
           showJoinDialog = false;
         "
@@ -81,10 +83,10 @@
     </template>
   </DialogBox>
   <table
-    class="exam"
-    cellspacing="0"
-    cellpadding="0"
-    style="width: calc(100% - 150px); max-width: 1300px"
+      class="exam"
+      cellspacing="0"
+      cellpadding="0"
+      style="width: calc(100% - 150px); max-width: 1300px"
   >
     <tr>
       <td style="width: 262px">
@@ -93,28 +95,28 @@
             <td>
               <div class="card" style="height: 84px; margin-top: 0">
                 <table
-                  class="explain-text"
-                  style="text-align: center; margin: 0 auto; height: 100%"
+                    class="explain-text"
+                    style="text-align: center; margin: 0 auto; height: 100%"
                 >
                   <tr>
                     <td>
                       <div
-                        class="current"
-                        style="margin: 0 13px 4px 13px"
+                          class="current"
+                          style="margin: 0 13px 4px 13px"
                       ></div>
                       当前
                     </td>
                     <td>
                       <div
-                        class="unanswered"
-                        style="margin: 0 13px 4px 13px"
+                          class="unanswered"
+                          style="margin: 0 13px 4px 13px"
                       ></div>
                       未答
                     </td>
                     <td>
                       <div
-                        class="answered"
-                        style="margin: 0 13px 4px 13px"
+                          class="answered"
+                          style="margin: 0 13px 4px 13px"
                       ></div>
                       已答
                     </td>
@@ -138,53 +140,54 @@
                       {{ ((serial = 1), (index = {}), undefined) }}
                       <template v-for="queType in order.part" :key="queType">
                         <span
-                          style="
+                            style="
                             margin-left: 14px;
                             font-weight: bold;
                             color: black;
                           "
-                          >{{ getQuestionTypeName(queType) }}：</span
+                        >{{ getQuestionTypeName(queType) }}：</span
                         >
-                        <br />
+                        <br/>
                         <template v-for="queId in order[queType]" :key="queId">
                           {{
                             ((ans = answers[getAnswerType(queType)][queId]),
-                            (isAnswered =
-                              (Boolean(ans) || ans == 0) &&
-                              getObjProCount(ans) != 0),
-                            (index[queId] = serial),
-                            undefined)
+                                (isAnswered =
+                                    (Boolean(ans) || ans == 0) &&
+                                    getObjProCount(ans) != 0),
+                                (index[queId] = serial),
+                                undefined)
                           }}
                           <div
-                            class="unanswered"
-                            :class="{
+                              class="unanswered"
+                              :class="{
                               current: queId == currentId,
                               answered: isAnswered,
                               'current-answered':
                                 isAnswered && queId == currentId,
                             }"
-                            style="cursor: pointer"
-                            @click="
+                              style="cursor: pointer"
+                              @click="
                               currentQueType = queType;
                               currentId = queId;
                               this.currentTitleNumber = index[queId];
                             "
                           >
+                            <div v-if="markNumber[serial]" class="marked"></div>
                             <table class="inner">
                               <td class="inner-number">{{ serial++ }}</td>
                             </table>
                           </div>
                         </template>
-                        <br />
+                        <br/>
                       </template>
                     </td>
                   </tr>
                   <tr>
                     <td style="height: 38px; text-align: center">
                       <button
-                        class="btn"
-                        style="height: 28px; width: 234px"
-                        @click="
+                          class="btn"
+                          style="height: 28px; width: 234px"
+                          @click="
                           if (!isExamOver) stopExam();
                           else showOverDialog = true;
                         "
@@ -204,27 +207,27 @@
           <tr>
             <td>
               <div
-                class="card"
-                style="width: 100%; height: 84px; margin-top: 0"
+                  class="card"
+                  style="width: 100%; height: 84px; margin-top: 0"
               >
                 <table
-                  cellpadding="0"
-                  cellspacing="0"
-                  style="height: 100%; width: 100%; color: black; padding: 14px"
+                    cellpadding="0"
+                    cellspacing="0"
+                    style="height: 100%; width: 100%; color: black; padding: 14px"
                 >
                   <tr>
                     <td style="vertical-align: top">
                       <table
-                        cellpadding="0"
-                        cellspacing="0"
-                        style="width: 100%"
+                          cellpadding="0"
+                          cellspacing="0"
+                          style="width: 100%"
                       >
                         <tr>
                           <td>
                             <table cellpadding="0" cellspacing="0">
                               <tr>
                                 <td
-                                  style="
+                                    style="
                                     font-weight: bold;
                                     font-size: 21px;
                                     padding-right: 28px;
@@ -233,7 +236,7 @@
                                   {{ exam.title }}
                                 </td>
                                 <td
-                                  style="
+                                    style="
                                     font-size: 14px;
                                     opacity: 0.7;
                                     vertical-align: bottom;
@@ -255,39 +258,39 @@
                   <tr>
                     <td style="vertical-align: bottom">
                       <table
-                        cellpadding="0"
-                        cellspacing="0"
-                        style="width: 100%; font-size: 14px"
+                          cellpadding="0"
+                          cellspacing="0"
+                          style="width: 100%; font-size: 14px"
                       >
                         <tr>
                           <td>
                             题量：<span
                               class="val-text"
                               style="margin-right: 28px"
-                              >{{ exam.questionsCount }}</span
-                            >
+                          >{{ exam.questionsCount }}</span
+                          >
                             满分：<span
                               class="val-text"
                               style="margin-right: 28px"
-                              >{{ exam.fullMark }}</span
-                            >
+                          >{{ exam.fullMark }}</span
+                          >
                             截止时间：<span class="val-text">{{
                               stopTimeString
                             }}</span>
                           </td>
                           <td style="text-align: right">
                             <svg-icon
-                              iconName="sandglass"
-                              className="sandglass"
+                                iconName="sandglass"
+                                className="sandglass"
                             ></svg-icon>
                             <span style="vertical-align: middle">
                               倒计时：<span class="val-text">{{
                                 Math.floor(remainingTime / 1000 / 60)
                               }}</span
-                              >分钟<span class="val-text">{{
+                            >分钟<span class="val-text">{{
                                 Math.floor((remainingTime / 1000) % 60)
                               }}</span
-                              >秒
+                            >秒
                             </span>
                           </td>
                         </tr>
@@ -302,7 +305,7 @@
             <td>
               <div class="exam-content card" style="width: 100%; height: 426px">
                 <template
-                  v-if="
+                    v-if="
                     questions[currentQueType] &&
                     questions[currentQueType][currentId]
                   "
@@ -318,60 +321,115 @@
                     }}
                     <span v-html="questions[currentQueType][currentId].description"></span>
                   </span>
-                  <br />
+                  <br/>
                   <template v-if="currentQueType == 'choice'">
                     <template
-                      v-for="(choice, index) in questions[currentQueType][
+                        v-for="(choice, index) in questions[currentQueType][
                         currentId
                       ].choice"
-                      :key="index"
+                        :key="index"
                     >
-                      <input
-                        :id="'choice' + index"
-                        name="choice"
-                        :value="index"
-                        type="radio"
-                        :disabled="isExamOver"
-                        @click="
-                          answers[getAnswerType(currentQueType)][currentId] =
-                            {};
-                          answers[getAnswerType(currentQueType)][currentId][
-                            index
-                          ] = true;
-                          commitAnswer(
-                            currentId,
-                            getAnswerType(currentQueType)
-                          );
-                        "
-                        :checked="
-                          answers[getAnswerType(currentQueType)][currentId][
-                            index
-                          ] == true
-                        "
-                      />
-                      <label :for="'choice' + index"
-                        ><span class="choice" v-html="choice"></span></label
-                      >
+                      <el-radio
+                          v-model="choiceCheck"
+                          :disabled="isExamOver"
+                          :label="index"
+
+                      >{{ String.fromCharCode(65 + index) }}.<span v-html="choice"></span></el-radio>
+<!--                      <input-->
+<!--                          :id="'choice' + index"-->
+<!--                          name="choice"-->
+<!--                          :value="index"-->
+<!--                          type="radio"-->
+<!--                          :disabled="isExamOver"-->
+<!--                          @click="-->
+<!--                          answers[getAnswerType(currentQueType)][currentId] =-->
+<!--                            {};-->
+<!--                          answers[getAnswerType(currentQueType)][currentId][-->
+<!--                            index-->
+<!--                          ] = true;-->
+<!--                          commitAnswer(-->
+<!--                            currentId,-->
+<!--                            getAnswerType(currentQueType)-->
+<!--                          );-->
+<!--                        "-->
+<!--                          :checked="-->
+<!--                          answers[getAnswerType(currentQueType)][currentId][-->
+<!--                            index-->
+<!--                          ] == true-->
+<!--                        "-->
+<!--                      />-->
+                      <!--                      <label :for="'choice' + index"-->
+                      <!--                      ><span class="choice" v-html="choice"></span></label-->
+                      <!--                      >-->
                       <div style="height: 5px"></div>
                     </template>
                   </template>
                   <template v-else-if="currentQueType == 'completion'">
                     <template
-                      v-for="n in questions[currentQueType][currentId]
+                        v-for="n in questions[currentQueType][currentId]
                         .answersCount"
-                      :key="currentId + '-' + n"
+                        :key="currentId + '-' + n"
                     >
                       ({{ n }})
                       <input
-                        type="text"
-                        class="completion"
-                        :disabled="isExamOver"
-                        v-model="
+                          type="text"
+                          class="completion"
+                          :disabled="isExamOver"
+                          v-model="
                           answers[getAnswerType(currentQueType)][currentId][
                             n - 1
                           ]
                         "
-                        @change="normalQueChange($event, n - 1)"
+                          @change="normalQueChange($event, n - 1)"
+                      />
+                    </template>
+                  </template>
+                  <template v-if="currentQueType == 'multi_choice'">
+                    <template
+                        v-for="(choice, index) in questions[currentQueType][
+                        currentId
+                      ].choice"
+                        :key="index"
+                    >
+                      <el-checkbox
+                          v-model="answers[getAnswerType(currentQueType)][currentId][index]"
+                          :disabled="isExamOver"
+                          :label="index"
+                          @change="commitAnswer(
+                            currentId,
+                            getAnswerType(currentQueType)
+                          );"
+                      >{{ String.fromCharCode(65 + index) }}.<span v-html="choice"></span></el-checkbox>
+                      <div style="height: 5px"></div>
+                    </template>
+                  </template>
+                  <template v-else-if="currentQueType == 'short_answer'">
+                    <template
+                        v-for="n in questions[currentQueType][currentId]
+                        .answersCount"
+                        :key="currentId + '-' + n"
+                    >
+                      ({{ n }})
+<!--                      <input-->
+<!--                          type="text"-->
+<!--                          class="completion"-->
+<!--                          :disabled="isExamOver"-->
+<!--                          v-model="-->
+<!--                          answers[getAnswerType(currentQueType)][currentId][-->
+<!--                            n - 1-->
+<!--                          ]-->
+<!--                        "-->
+<!--                          @change="normalQueChange($event, n - 1)"-->
+<!--                      />-->
+                      <el-input
+                          v-model="answers[getAnswerType(currentQueType)][currentId][
+                            n - 1
+                          ]"
+                          :rows="5"
+                          type="textarea"
+                          placeholder="请输入答案"
+                          @change="normalQueChange($event, n - 1)"
+                          style="margin-top:10px"
                       />
                     </template>
                   </template>
@@ -383,30 +441,38 @@
             <td>
               <div class="card" style="width: 100%; height: 70px">
                 <table
-                  cellpadding="0"
-                  cellspacing="0"
-                  style="width: 100%; height: 100%"
+                    cellpadding="0"
+                    cellspacing="0"
+                    style="width: 100%; height: 100%"
                 >
                   <tr>
                     <td style="width: 33%; text-align: right">
                       <!-- <table border="1" style="vertical-align:middle"> -->
 
                       <span
-                        class="next"
-                        @click="setTitleNumber(currentTitleNumber - 1)"
-                        :class="{ unabled: currentTitleNumber - 1 <= 0 }"
+                          class="next"
+                          @click="setTitleNumber(currentTitleNumber - 1)"
+                          :class="{ unabled: currentTitleNumber - 1 <= 0 }"
                       >
                         <svg-icon className="arrow" iconName="left"></svg-icon>
                         <span style="vertical-align: middle">上一题</span>
                         <!-- </table> -->
                       </span>
                     </td>
-                    <td style="text-align: center">标记</td>
+                    <td style="text-align: center">
+                      <div @click="markNumber[currentTitleNumber]=!markNumber[currentTitleNumber]" class="mark-circle"
+                           :class="{'mark-circle-select':markNumber[currentTitleNumber]}">
+                        <svg-icon iconName="bookmark"
+                                  :className="markNumber[currentTitleNumber]?' mark-icon-select':'mark-icon'"></svg-icon>
+                      </div>
+                      <br/>
+                      <span class="mark-text">标记</span>
+                    </td>
                     <td style="width: 33%">
                       <span
-                        class="next"
-                        @click="setTitleNumber(currentTitleNumber + 1)"
-                        :class="{
+                          class="next"
+                          @click="setTitleNumber(currentTitleNumber + 1)"
+                          :class="{
                           unabled:
                             currentTitleNumber + 1 > titleNumberIndex.length,
                         }"
@@ -429,12 +495,14 @@
 
 <script>
 import axios from "axios";
-import { formatDate } from "@/common.ts";
+import {formatDate} from "@/common.ts";
 import DialogBox from "./DialogBox.vue";
 import Loading from "./Loading.vue";
+import SvgIcon from "@/components/Svgicon";
 // import config from "@/config.ts";
 export default {
   components: {
+    SvgIcon,
     DialogBox,
     Loading,
   },
@@ -448,7 +516,7 @@ export default {
         completion: {},
         shortAnswer: {},
       },
-      answers: { normal: {} },
+      answers: {normal: {}},
       exam: {},
       examPaper: {},
       order: {},
@@ -470,6 +538,10 @@ export default {
       showJoinDialog: false,
 
       isLoading: false,
+
+      markNumber: {},
+      choiceCheck: -1,
+      // multiChoiceCheck:[]
     };
   },
   methods: {
@@ -495,11 +567,11 @@ export default {
         //初始化问题信息
         this.questions = {
           choice: {},
-          multiChoice: {},
+          "multi_choice": {},
           completion: {},
-          shortAnswer: {},
+          "short_answer": {},
         };
-        this.answers = { normal: {} };
+        this.answers = {normal: {}};
         for (let question of data.questions.choice) {
           question.choice = JSON.parse(question.choice);
           // console.log(question.choice);
@@ -507,14 +579,14 @@ export default {
           if (question.type === "choice")
             this.questions.choice[question.id] = question;
           else if (question.type === "multi_choice")
-            this.questions.multiChoice[question.id] = question;
+            this.questions["multi_choice"][question.id] = question;
         }
         for (let question of data.questions.normal) {
           this.answers.normal[question.id] = {};
           if (question.type === "completion")
             this.questions.completion[question.id] = question;
           else if (question.type === "short_answer")
-            this.questions.shortAnswer[question.id] = question;
+            this.questions["short_answer"][question.id] = question;
         }
 
         //初始化试卷信息
@@ -522,7 +594,7 @@ export default {
         if (!this.examPaper) this.showJoinDialog = true;
         else {
           this.stopTime = new Date(
-            this.examPaper.startTime + this.exam.duration
+              this.examPaper.startTime + this.exam.duration
           );
         }
 
@@ -537,6 +609,7 @@ export default {
         }
 
         this.setTitleNumber(1);
+        this.updateChoice();
         this.isLoading = false;
       });
     },
@@ -553,7 +626,7 @@ export default {
           completion: {},
           shortAnswer: {},
         };
-        this.answers = { normal: {} };
+        this.answers = {normal: {}};
         for (let question of res.data.data.choice) {
           question.choice = JSON.parse(question.choice);
           // console.log(question.choice);
@@ -680,7 +753,7 @@ export default {
       this.titleNumberIndex = [];
       for (let type of this.order.part) {
         for (let queId of this.order[type]) {
-          this.titleNumberIndex.push({ id: queId, type: type });
+          this.titleNumberIndex.push({id: queId, type: type});
         }
       }
     },
@@ -692,18 +765,33 @@ export default {
     },
     normalQueChange(event, n) {
       let ans =
-        this.answers[this.getAnswerType(this.currentQueType)][this.currentId];
-      let value = event.target.value;
-      if (value == "") {
-        if (ans[n]) delete ans[n];
-      } else {
-        ans[n] = value;
-      }
+          this.answers[this.getAnswerType(this.currentQueType)][this.currentId];
+      // let value = event.target.value;
+      // if (value == "") {
+      //   if (ans[n]) delete ans[n];
+      // } else {
+      //   ans[n] = value;
+      // }
+      if (!ans[n]) delete ans[n];
       this.commitAnswer(
-        this.currentId,
-        this.getAnswerType(this.currentQueType)
+          this.currentId,
+          this.getAnswerType(this.currentQueType)
       );
     },
+    // shortAnswerQueChange(event, n) {
+    //   let ans =
+    //       this.answers[this.getAnswerType(this.currentQueType)][this.currentId];
+    //   let value = event.target.value;
+    //   if (value == "") {
+    //     if (ans[n]) delete ans[n];
+    //   } else {
+    //     ans[n] = value;
+    //   }
+    //   this.commitAnswer(
+    //       this.currentId,
+    //       this.getAnswerType(this.currentQueType)
+    //   );
+    // },
     getObjProCount(obj) {
       let count = 0;
       for (let p in obj) {
@@ -724,7 +812,8 @@ export default {
           cancelToken: new axios.CancelToken((c) => {
             this.ajaxCancel = c;
           }),
-        }).then((res) => {});
+        }).then((res) => {
+        });
       }
     },
     async initExam() {
@@ -741,10 +830,10 @@ export default {
       this.currentTime = new Date() + this.correctTimeDiff;
       let interval = setInterval(() => {
         this.currentTime = new Date(
-          new Date().valueOf() + this.correctTimeDiff
+            new Date().valueOf() + this.correctTimeDiff
         );
         this.remainingTime =
-          this.stopTime.valueOf() - this.currentTime.valueOf();
+            this.stopTime.valueOf() - this.currentTime.valueOf();
         // console.log(this.currentTime);
         if (this.remainingTime <= 0 || this.isExamOver) {
           this.remainingTime = 0;
@@ -765,6 +854,19 @@ export default {
         // console.log(this.correctTimeDiff);
       });
     },
+    updateChoice() {
+      const question = this.questions[this.currentQueType][this.currentId];
+      // console.log(question);
+      if (question.type === "choice") {
+        this.choiceCheck = -1;
+        for (let key in this.answers["normal"][question.id]) {
+          if (this.answers["normal"][question.id][key]) {
+            this.choiceCheck = Number.parseInt(key);
+            break;
+          }
+        }
+      }
+    }
   },
   computed: {
     user() {
@@ -789,6 +891,18 @@ export default {
         this.initExam();
       }
     },
+    currentTitleNumber(val) {
+      this.updateChoice();
+    },
+    choiceCheck(val) {
+      if (val === -1)
+        return;
+      // console.log(val);
+      const question = this.questions[this.currentQueType][this.currentId];
+      this.answers["normal"][question.id] = {};
+      this.answers["normal"][question.id][val] = true;
+      this.commitAnswer(this.currentId, this.getAnswerType(this.currentQueType));
+    }
   },
   async mounted() {
     // console.log(this.config);
@@ -808,7 +922,9 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "src/styles/variables";
+
 .exam {
   margin-left: auto;
   margin-right: auto;
@@ -818,12 +934,26 @@ export default {
   background: #ffffff;
   border-radius: 10px;
   margin: 5px;
-  overflow-y:auto;
+  overflow-y: auto;
 }
 
 .explain-text {
   font-size: 12px;
   font-family: Microsoft YaHei;
+}
+
+.marked {
+  width: 8px;
+  height: 8px;
+  background: $primary-color;
+  border-radius: 50%;
+  position: absolute;
+  left: 21px;
+  top: 0px;
+  /* margin: 9.5px; */
+  border-style: solid;
+  border-color: white;
+  border-width: 1px;
 }
 
 .unanswered {
@@ -832,48 +962,51 @@ export default {
   border: 1px solid rgba(51, 138, 251, 0.30196078431372547);
   border-radius: 50%;
   display: inline-block;
-  margin: 9.5px;
+  margin: 8px;
   transition: background 0.3s;
+  position: relative;
 }
 
 .current {
   border-radius: 50%;
   width: 31px;
   height: 31px;
-  border: 2px solid #338AFB;
+  border: 2px solid $primary-color;
   display: inline-block;
-  margin: 9.5px;
+  margin: 8px;
+  position: relative;
+
+  .marked {
+    left: 20px;
+    top: -1px;
+  }
 }
 
 .answered {
   width: 31px;
   height: 31px;
-  background: #338AFB;
+  background: $primary-color;
   border: 1px solid rgba(51, 138, 251, 0.30196078431372547);
   border-radius: 50%;
   display: inline-block;
-  margin: 9.5px;
+  margin: 8px;
+  position: relative;
 }
 
 .current-answered {
   width: 31px;
   height: 31px;
-  background: #338AFB;
+  background: $primary-color;
   border: 2px solid #60a2f8;
   border-radius: 50%;
   display: inline-block;
-  margin: 9.5px;
-}
-
-.marked {
-  width: 7px;
-  height: 7px;
-  background: #338AFB;
-  border-radius: 50%;
+  margin: 8px;
   position: relative;
-  left: 21px;
-  top: 0px;
-  /* margin: 9.5px; */
+
+  .marked {
+    left: 20px;
+    top: -1px;
+  }
 }
 
 .next {
@@ -916,7 +1049,7 @@ export default {
 }
 
 .val-text {
-  color: #338AFB;
+  color: $primary-color;
 }
 
 .exam-content {
@@ -943,6 +1076,7 @@ export default {
   border-bottom: 1px solid rgba(153, 153, 153, 0.616);
   outline: none;
 }
+
 input[type="radio"] {
   -webkit-appearance: none;
   appearance: none;
@@ -964,7 +1098,7 @@ input[type="radio"]:checked {
 }
 
 .sandglass {
-  color: #338AFB;
+  color: $primary-color;
   width: 20px;
   height: 20px;
   vertical-align: middle;
@@ -977,6 +1111,41 @@ input[type="radio"]:checked {
   top: 0;
   bottom: 0;
   background-color: #00000033;
-  z-index: 20;
+  z-index: 30;
+}
+
+.mark-icon {
+  width: 24px;
+  height: 24px;
+  color: $primary-color;
+}
+
+.mark-icon-select {
+  width: 24px;
+  height: 24px;
+  color: white;
+}
+
+.mark-circle {
+  width: 35px;
+  height: 35px;
+  //background: $primary-color;
+  border-style: solid;
+  border-width: 2px;
+  border-color: $primary-color;
+  border-radius: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.mark-circle-select {
+  background: $primary-color;
+}
+
+.mark-text {
+  font-size: 14px;
+  color: $primary-color;
 }
 </style>

@@ -2,14 +2,21 @@
   <div style="width: 100%; height: 100%">
     <div class="container1">
       <div class="classification">
-        <div class="left">
-          <div>
+        <div class="left" style="width:100%">
+          <div style="width:100%;display:flex">
             <button
               class="BTN"
               @click="tag = 'Choice'"
               :class="{ 'BTN-select': tag == 'Choice' }"
             >
               单选题
+            </button>
+            <button
+              class="BTN"
+              @click="tag = 'MultiChoice'"
+              :class="{ 'BTN-select': tag == 'MultiChoice' }"
+            >
+              多选题
             </button>
             <!-- <button class="BTN">多选题</button> -->
             <button
@@ -19,14 +26,33 @@
             >
               填空题
             </button>
-            <!-- <button class="BTN">判断题</button>
-          <button class="BTN">简答题</button> -->
-          </div>
+            <button
+              class="BTN"
+              @click="tag = 'ShortAnswer'"
+              :class="{ 'BTN-select': tag == 'ShortAnswer' }"
+            >
+              简答题
+            </button>
+            <button class="BTN" :class="{ 'BTN-select': tag == 'more' }">
+              更多 >
+            </button>
+
+            
         </div>
         <div class="right">
           <div style="text-align: right">
             <!-- <button class="BTN">智能导入</button> -->
             <!-- <button class="BTN">题库选题</button> -->
+            <el-upload
+              class="upload-demo"
+              style="margin-left:auto"
+              :on-success="onUploadSuccess"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :show-file-list="false"
+            >
+              <el-button type="primary">上传图片</el-button></el-upload
+            >
+          </div>
           </div>
         </div>
       </div>
@@ -41,6 +67,7 @@
             :questionBefore="question"
             :is="tag"
             @save="onSaveQuestion"
+            @saveDone="$emit('saveDone')"
           >
           </component>
         </transition>
@@ -94,21 +121,26 @@
 </template>
 
 <script>
-import WangEnduit from "@/components/TextEdit.vue";
+import WangEnduit from "@/components/TextEdit";
 import DropDown from "@/components/DropDown.vue";
 
 import Choice from "./Choice.vue";
 import Completion from "./Completion.vue";
+import MultiChoice from "@/components/QuestionEdit/MultiChoice";
+import ShortAnswer from "@/components/QuestionEdit/ShortAnswer";
 
 import axios from "axios";
+import { ElMessage } from 'element-plus';
 export default {
   components: {
     WangEnduit,
     DropDown,
     Choice,
     Completion,
+    MultiChoice,
+    ShortAnswer,
   },
-  emits: ["save"],
+  emits: ["save", "saveDone"],
   data() {
     return {
       tag: "Choice",
@@ -117,7 +149,7 @@ export default {
         { value: "middle", text: "中等" },
         { value: "easy", text: "易" },
       ],
-      question: {},
+      question: null,
     };
   },
   props: {
@@ -153,6 +185,13 @@ export default {
         } else if (this.tag == "completion") {
           this.tag = "Completion";
           this.question.answer = JSON.parse(this.question.answer);
+        } else if (this.tag == "multi_choice") {
+          this.tag = "MultiChoice";
+          this.question.choice = JSON.parse(this.question.choice);
+          this.question.answer = JSON.parse(this.question.answer);
+        } else if (this.tag == "short_answer") {
+          this.tag = "ShortAnswer";
+          this.question.answer = JSON.parse(this.question.answer);
         }
       });
     },
@@ -167,11 +206,25 @@ export default {
       } else if (this.tag == "completion") {
         this.tag = "Completion";
         // this.question.answer = JSON.parse(this.question.answer);
+      } else if (this.tag == "multi_choice") {
+        this.tag = "MultiChoice";
+      } else if (this.tag == "short_answer") {
+        this.tag = "ShortAnswer";
       }
     },
     onSaveQuestion(question) {
       this.$emit("save", question);
     },
+    onUploadSuccess(){
+      ElMessage({message:"上传成功",type:"success"});
+      this.question={
+        description:"一个社会中，经济制度和政治制度之间是 ()",
+        answer:{0:true},
+        type:"choice",
+        choice:["决定与被决定的关系","相互对抗的关系","相互决定的关系","相互融合的关系"],
+        bankId:this.bankId
+      }
+    }
   },
   mounted() {
     if (this.questionBefore == null && this.id) this.getInfo();
@@ -191,7 +244,8 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "src/styles/variables";
 .container1 {
   /* width: 1000px;
   height: 600px; */
@@ -200,7 +254,7 @@ export default {
   overflow: auto;
   background-color: #fff;
   border: solid 1px rgba(177, 177, 177, 0.466);
-  box-shadow: 1px;
+  //box-shadow: 1px;
   display: inline-block;
 }
 .classification {
@@ -232,7 +286,7 @@ export default {
 .BTN:hover,
 .BTN-select,
 .tag :deep(.BTN:hover) {
-  background-color: #5399f3;
+  background-color: $primary-color;
   color: #fff;
   border: none;
 }
@@ -315,5 +369,10 @@ export default {
   text-align: center;
   padding-top: 40px;
   padding-bottom: 40px;
+}
+
+:deep(.add) {
+  cursor: pointer;
+  color: $primary-color;
 }
 </style>

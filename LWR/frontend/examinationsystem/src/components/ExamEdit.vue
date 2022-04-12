@@ -10,75 +10,9 @@
       </div>
     </div>
   </transition>
-  <!-- <DialogBox v-model:show="showOverDialog">
-    <template v-slot:header>考试已结束</template>
-    <template v-if="examPaper && 'grade' in examPaper">
-      您的分数：{{ examPaper.grade }}/{{ exam.fullMark }}
-      <br />
-      剩余考试次数：{{ exam.repeatTime - examPaper.times }}
-      <button
-        class="btn"
-        @click="
-          joinExam();
-          showOverDialog = false;
-        "
-      >
-        重新考试
-      </button>
-    </template>
-    <template v-else>
-      <button class="btn" @click="getScore()">获取分数</button>
-    </template>
-    <template v-slot:bottom>
-      <button class="btn" @click="showOverDialog = false">确定</button>
-    </template>
-  </DialogBox>
-  <DialogBox v-model:show="showJoinDialog">
-    <template v-slot:header>加入考试</template>
-    <template v-if="isExamNotStarted"> 考试未开始 </template>
-    <template v-else-if="isExamTimeOut"> 考试已经结束 </template>
-    <template v-else-if="currentTime >= exam.latestStartTime">
-      已错过最晚加入考试的时间
-    </template>
-    <template v-else>
-      考试总分：{{ exam.fullMark }}
-      <br />
-      允许重复次数：{{ exam.repeatTime }}
-      <br />
-      考试时间：{{ Math.floor(exam.duration / 1000 / 60) }}
-      <br />
-      考试类型：{{
-        exam.type == "fixed"
-          ? "固定"
-          : exam.type == "random"
-          ? "随机抽题"
-          : "未知"
-      }}
-    </template>
-    <template v-slot:bottom>
-      <button
-        class="btn"
-        @click="showJoinDialog = false"
-        v-if="
-          isExamTimeOut ||
-          currentTime >= exam.latestStartTime ||
-          isExamNotStarted
-        "
-      >
-        确定
-      </button>
-      <button
-        v-else
-        class="btn"
-        @click="
-          joinExam();
-          showJoinDialog = false;
-        "
-      >
-        加入考试
-      </button>
-    </template>
-  </DialogBox> -->
+  <BackgroundFull v-model:show="showQuestionImport" :canClose="true">
+    <QuestionImport @okClick="onQuestionImportOkClick" @cancelClick="showQuestionImport=false"></QuestionImport>
+  </BackgroundFull>
   <table
       class="exam"
       cellspacing="0"
@@ -99,41 +33,46 @@
                   flex-wrap: wrap;
                   align-items: center;
                   padding: 10px;
-                  font-size: 12px;
-                  justify-content: space-between;
+                  font-size: 14px;
+                  justify-content: space-around;
                 "
               >
                 <div>
                   类型：
-                  <DropDown
-                      :width="93"
-                      :height="20"
-                      :values="[
-                      { value: 'fixed', text: '固定题' },
-                      { value: 'random', text: '随机抽题' },
-                    ]"
-                      @change="onTypeChange"
-                  ></DropDown>
+                  <!--                  <DropDown-->
+                  <!--                      :width="93"-->
+                  <!--                      :height="20"-->
+                  <!--                      :values="[-->
+                  <!--                      { value: 'fixed', text: '固定题' },-->
+                  <!--                      { value: 'random', text: '随机抽题' },-->
+                  <!--                    ]"-->
+                  <!--                      @change="onTypeChange"-->
+                  <!--                  ></DropDown>-->
+                  <span class="val-text">
+                  {{ exam.type === 'fixed' ? '固定题' : '随机抽题' }}
+                    </span>
                 </div>
+                <!--                <div>-->
+                <!--                  考试结束后计算分数：-->
+                <!--                  <DropDown-->
+                <!--                      :width="60"-->
+                <!--                      :height="20"-->
+                <!--                      :values="[-->
+                <!--                      { value: 'true', text: '是' },-->
+                <!--                      { value: 'false', text: '否' },-->
+                <!--                    ]"-->
+                <!--                      @change="onCalAtOnceChange"-->
+                <!--                  ></DropDown>-->
+                <!--                </div>-->
                 <div>
-                  考试结束后计算分数：
-                  <DropDown
-                      :width="60"
-                      :height="20"
-                      :values="[
-                      { value: 'true', text: '是' },
-                      { value: 'false', text: '否' },
-                    ]"
-                      @change="onCalAtOnceChange"
-                  ></DropDown>
-                </div>
-                <div>
-                  允许重复次数：<input
-                    type="text"
-                    class="inputBox"
-                    style="width: 50px; height: 20px; text-align: center"
-                    v-model="exam.repeatTime"
-                />
+                  允许重复次数：
+                  <!--                  <input-->
+                  <!--                    type="text"-->
+                  <!--                    class="inputBox"-->
+                  <!--                    style="width: 50px; height: 20px; text-align: center"-->
+                  <!--                    v-model="exam.repeatTime"-->
+                  <!--                />-->
+                  <span class="val-text">{{ exam.repeatTime }}</span>
                 </div>
               </div>
             </td>
@@ -188,6 +127,7 @@
                               this.currentTitleNumber = index[queId];
                             "
                           >
+                            <div v-if="markNumber[serial]" class="marked"></div>
                             <table class="inner">
                               <td class="inner-number">{{ serial++ }}</td>
                             </table>
@@ -208,7 +148,7 @@
                       </button>
                       <button
                           class="btn"
-                          style="height: 28px; width: 234px"
+                          style="height: 28px; width: 234px;margin-bottom: 5px;"
                           @click="
                           commitExam();
                           $router.replace('/teacher/examManage');
@@ -255,13 +195,16 @@
                                     padding-right: 28px;
                                   "
                                 >
-                                  <!-- {{ exam.title }} -->
-                                  <input
-                                      placeholder="标题"
-                                      style="font-size: 21px; font-weight: bold"
-                                      class="input"
-                                      v-model="exam.title"
-                                  />
+                                  <el-icon class="edit-icon" @click="onEdit">
+                                    <edit-pen/>
+                                  </el-icon>
+                                  {{ exam.title }}
+                                  <!--                                  <input-->
+                                  <!--                                      placeholder="标题"-->
+                                  <!--                                      style="font-size: 21px; font-weight: bold"-->
+                                  <!--                                      class="input"-->
+                                  <!--                                      v-model="exam.title"-->
+                                  <!--                                  />-->
                                 </td>
                                 <td
                                     style="
@@ -270,13 +213,13 @@
                                     vertical-align: bottom;
                                   "
                                 >
-                                  <!-- {{ exam.subtitle }} -->
-                                  <input
-                                      placeholder="全名"
-                                      style="font-size: 14px; font-weight: bold"
-                                      class="input"
-                                      v-model="exam.subtitle"
-                                  />
+                                  {{ exam.subtitle }}
+                                  <!--                                  <input-->
+                                  <!--                                      placeholder="全名"-->
+                                  <!--                                      style="font-size: 14px; font-weight: bold"-->
+                                  <!--                                      class="input"-->
+                                  <!--                                      v-model="exam.subtitle"-->
+                                  <!--                                  />-->
                                 </td>
                               </tr>
                             </table>
@@ -285,6 +228,13 @@
                             <button
                                 class="btn"
                                 style="width: 44px; height: 21px; font-size: 11px"
+                                @click="showQuestionImport=true"
+                            >
+                              导入
+                            </button>
+                            <button
+                                class="btn"
+                                style="margin-left: 10px;;width: 44px; height: 21px; font-size: 11px"
                             >
                               预览
                             </button>
@@ -315,25 +265,26 @@
                           >{{ fullMark }}</span
                           >
                             最早开始时间：
-                            <input
-                                style="height: 18px; width: 126px"
-                                placeholder="xxxx-xx-xx xx:xx:xx"
-                                class="input"
-                                v-model="exam.earliestStartTime"
-                            />
-                            <!-- <span class="val-text">{{
-                              stopTimeString
-                            }}</span> -->
+                            <!--                            <input-->
+                            <!--                                style="height: 18px; width: 126px"-->
+                            <!--                                placeholder="xxxx-xx-xx xx:xx:xx"-->
+                            <!--                                class="input"-->
+                            <!--                                v-model="exam.earliestStartTime"-->
+                            <!--                            />-->
+                            <span class="val-text">
+                              {{ exam.earliestStartTime }}
+                              &nbsp;
+                            </span>
                             最晚开始时间：
-                            <input
-                                style="height: 18px; width: 126px"
-                                placeholder="xxxx-xx-xx xx:xx:xx"
-                                class="input"
-                                v-model="exam.latestStartTime"
-                            />
-                            <!-- <span class="val-text">{{
-                              stopTimeString
-                            }}</span> -->
+                            <!--                            <input-->
+                            <!--                                style="height: 18px; width: 126px"-->
+                            <!--                                placeholder="xxxx-xx-xx xx:xx:xx"-->
+                            <!--                                class="input"-->
+                            <!--                                v-model="exam.latestStartTime"-->
+                            <!--                            />-->
+                            <span class="val-text">
+                              {{ exam.latestStartTime }}
+                            </span>
                           </td>
                           <td style="text-align: right">
                             <svg-icon
@@ -342,33 +293,33 @@
                             ></svg-icon>
                             <span style="vertical-align: middle">
                               考试时间：
-                              <!-- <span class="val-text">{{
-                                Math.floor(remainingTime / 1000 / 60)
-                              }}</span> -->
-                              <input
-                                  id="minute"
-                                  style="
-                                  height: 18px;
-                                  width: 35px;
-                                  text-align: center;
-                                "
-                                  class="input"
-                                  @change="calDuration()"
-                              />
+                              <span class="val-text">
+                                {{ Math.floor(exam.duration / 1000 / 60) }}
+                              </span>
+                              <!--                              <input-->
+                              <!--                                  id="minute"-->
+                              <!--                                  style="-->
+                              <!--                                  height: 18px;-->
+                              <!--                                  width: 35px;-->
+                              <!--                                  text-align: center;-->
+                              <!--                                "-->
+                              <!--                                  class="input"-->
+                              <!--                                  @change="calDuration()"-->
+                              <!--                              />-->
                               分钟
-                              <!-- <span class="val-text">{{
-                                Math.floor((remainingTime / 1000) % 60)
-                              }}</span> -->
-                              <input
-                                  id="second"
-                                  style="
-                                  height: 18px;
-                                  width: 35px;
-                                  text-align: center;
-                                "
-                                  class="input"
-                                  @change="calDuration()"
-                              />
+                              <span class="val-text">
+                                {{ Math.floor((exam.duration / 1000) % 60) }}
+                              </span>
+                              <!--                              <input-->
+                              <!--                                  id="second"-->
+                              <!--                                  style="-->
+                              <!--                                  height: 18px;-->
+                              <!--                                  width: 35px;-->
+                              <!--                                  text-align: center;-->
+                              <!--                                "-->
+                              <!--                                  class="input"-->
+                              <!--                                  @change="calDuration()"-->
+                              <!--                              />-->
                               秒
                             </span>
                           </td>
@@ -384,7 +335,7 @@
             <td>
               <div class="exam-content card" style="width: 100%; height: 426px">
                 <div v-if="this.order.part && this.order.part.length > 0">
-                  <div style="width: 100%; height: 40px">
+                  <div style="width: 100%; height: 40px;display: flex;align-items: center">
                     第{{ currentTitleNumber }}题 分数：<input
                       style="height: 25px; width: 40px; text-align: center"
                       class="input"
@@ -403,6 +354,7 @@
                         @click="deleteQuestion()"
                     >删除题目</span
                     >
+                    <el-checkbox style="margin-left: auto" v-model="autoCorrect">自动批改</el-checkbox>
                   </div>
                   <div style="width: 100%">
                     <QuestionEdit
@@ -439,7 +391,15 @@
                         <!-- </table> -->
                       </span>
                     </td>
-                    <td style="text-align: center">标记</td>
+                    <td style="text-align: center">
+                      <div @click="markNumber[currentTitleNumber]=!markNumber[currentTitleNumber]" class="mark-circle"
+                           :class="{'mark-circle-select':markNumber[currentTitleNumber]}">
+                        <svg-icon iconName="bookmark"
+                                  :className="markNumber[currentTitleNumber]?' mark-icon-select':'mark-icon'"></svg-icon>
+                      </div>
+                      <br/>
+                      <span class="mark-text">标记</span>
+                    </td>
                     <td style="width: 33%">
                       <span
                           class="next"
@@ -464,6 +424,11 @@
   </table>
 </template>
 
+<script setup>
+import {EditPen} from "@element-plus/icons-vue";
+import BackgroundFull from "@/components/BackgroundFull";
+import QuestionImport from "@/components/QuestionImport";
+</script>
 
 <script>
 import axios from "axios";
@@ -472,6 +437,7 @@ import DialogBox from "./DialogBox.vue";
 import Loading from "./Loading.vue";
 import DropDown from "./DropDown.vue";
 import QuestionEdit from "./QuestionEdit";
+import {ElMessage} from "element-plus";
 // import config from "@/config.ts";
 export default {
   components: {
@@ -486,15 +452,16 @@ export default {
       bankId: 1,
       questions: {
         choice: {},
-        multiChoice: {},
+        "multi_choice": {},
         completion: {},
-        shortAnswer: {},
+        "short_answer": {},
       },
       answers: {normal: {}},
       exam: {},
       examPaper: {},
       order: {},
       score: 0,
+      autoCorrect: true,
       questionScores: {},
       currentId: 1,
       currentQueType: "choice",
@@ -513,6 +480,9 @@ export default {
       showJoinDialog: false,
 
       isLoading: false,
+      markNumber: {},
+
+      showQuestionImport: false
     };
   },
   methods: {
@@ -529,6 +499,7 @@ export default {
 
         //初始化考试信息
         this.exam = data.exam;
+        this.bankId = this.exam.bankId;
         //转换日期格式
         this.exam.earliestStartTime = formatDate(
             new Date(this.exam.earliestStartTime)
@@ -536,11 +507,11 @@ export default {
         this.exam.latestStartTime = formatDate(
             new Date(this.exam.latestStartTime)
         );
-        //转换duration
-        let minute = document.getElementById("minute");
-        let second = document.getElementById("second");
-        minute.value = Math.floor(this.exam.duration / 1000 / 60);
-        second.value = Math.floor((this.exam.duration / 1000) % 60);
+        // //转换duration
+        // let minute = document.getElementById("minute");
+        // let second = document.getElementById("second");
+        // minute.value = Math.floor(this.exam.duration / 1000 / 60);
+        // second.value = Math.floor((this.exam.duration / 1000) % 60);
         //初始化题目顺序
         // if (this.exam.type == "fixed")
         this.order = JSON.parse(this.exam.orderJson);
@@ -556,9 +527,9 @@ export default {
         //初始化问题信息
         this.questions = {
           choice: {},
-          multiChoice: {},
+          "multi_choice": {},
           completion: {},
-          shortAnswer: {},
+          "short_answer": {},
         };
         this.answers = {normal: {}};
         for (let question of data.questions.choice) {
@@ -569,7 +540,7 @@ export default {
           if (question.type == "choice")
             this.questions.choice[question.id] = question;
           else if (question.type == "multi_choice")
-            this.questions.multiChoice[question.id] = question;
+            this.questions["multi_choice"][question.id] = question;
         }
         for (let question of data.questions.normal) {
           question.answer = JSON.parse(question.answer);
@@ -577,7 +548,7 @@ export default {
           if (question.type == "completion")
             this.questions.completion[question.id] = question;
           else if (question.type == "short_answer")
-            this.questions.shortAnswer[question.id] = question;
+            this.questions["short_answer"][question.id] = question;
         }
 
         //初始化试卷信息
@@ -609,6 +580,7 @@ export default {
     },
     saveQuestionScore(question) {
       let score = this.score;
+      let autoCorrect = this.autoCorrect;
 
       let before = this.questions[this.currentQueType][this.currentId];
 
@@ -631,6 +603,8 @@ export default {
       }
 
       this.questions[this.currentQueType][this.currentId] = question;
+      console.log(question);
+      console.log(this.questions[this.currentQueType][this.currentId]);
 
       axios({
         url: "exam/addQuestionScore",
@@ -638,6 +612,7 @@ export default {
           questionId: question.id,
           examId: this.examId,
           score: this.score,
+          autoCorrect: this.autoCorrect
         },
       })
           .then((res) => {
@@ -645,6 +620,7 @@ export default {
               alert("修改失败");
             } else {
               this.questionScores[question.id].score = score;
+              this.questionScores[question.id].autoCorrect = autoCorrect;
               if (before.type != question.type) this.commitExam();
             }
           })
@@ -864,9 +840,7 @@ export default {
       data.orderJson = JSON.stringify(this.order);
       data.fullMark = this.fullMark;
 
-      // console.log(data);
-
-      axios({
+      return axios({
         url: "exam/addExam",
         data: data,
       })
@@ -907,6 +881,7 @@ export default {
 
               this.questionScores[question.id] = {};
               this.questionScores[question.id].score = 2;
+              this.questionScores[question.id].autoCorrect = true;
               this.getTitleNumberIndex();
               this.commitExam();
               this.currentTitleNumber =
@@ -921,6 +896,7 @@ export default {
                   questionId: question.id,
                   examId: this.examId,
                   score: this.questionScores[question.id].score,
+                  autoCorrect: this.questionScores[question.id].autoCorrect
                 },
               })
                   .then((res) => {
@@ -977,6 +953,38 @@ export default {
             alert("删除失败");
           });
     },
+    onEdit() {
+      this.$router.push({
+        name: "EditExamConfig",
+        params: {exam: JSON.stringify(this.exam), examId: this.exam.id}
+      });
+    },
+    onQuestionImportOkClick(value) {
+      this.showQuestionImport = false;
+      // console.log(this.bankId);
+      axios({
+        url: "/question/addQuestions",
+        data: {
+          list: value,
+          examId: this.examId,
+          bankId: this.bankId
+        }
+      }).then((res) => {
+        if (res.data.errCode !== 0)
+          throw new Error();
+        let i = 0;
+        for (const question of value) {
+          this.order[question.type].push(res.data.data[i++]);
+          if (this.order.part.indexOf(question.type) < 0) this.order.part.push(question.type);
+        }
+        return this.commitExam();
+
+      }).then(()=>{
+        this.getAllExamInfo();
+      }).catch(() => {
+        ElMessage({message: "导入失败", type: "error"});
+      });
+    }
   },
   computed: {
     user() {
@@ -1009,9 +1017,10 @@ export default {
       }
     },
     currentTitleNumber(val) {
-      this.score =
-          this.questionScores[this.currentId] &&
-          this.questionScores[this.currentId].score;
+      if (this.questionScores[this.currentId]) {
+        this.score = this.questionScores[this.currentId].score;
+        this.autoCorrect = this.questionScores[this.currentId].autoCorrect;
+      }
     },
   },
   async mounted() {
@@ -1032,7 +1041,9 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "src/styles/variables";
+
 .exam {
   margin-left: auto;
   margin-right: auto;
@@ -1050,54 +1061,71 @@ export default {
   font-family: Microsoft YaHei;
 }
 
+.marked {
+  width: 8px;
+  height: 8px;
+  background: $primary-color;
+  border-radius: 50%;
+  position: absolute;
+  left: 21px;
+  top: 0px;
+  /* margin: 9.5px; */
+  border-style: solid;
+  border-color: white;
+  border-width: 1px;
+}
+
 .unanswered {
   width: 31px;
   height: 31px;
   border: 1px solid rgba(51, 138, 251, 0.30196078431372547);
   border-radius: 50%;
   display: inline-block;
-  margin: 9.5px;
+  margin: 8px;
   transition: background 0.3s;
+  position: relative;
 }
 
 .current {
   border-radius: 50%;
   width: 31px;
   height: 31px;
-  border: 2px solid #338afb;
+  border: 2px solid $primary-color;
   display: inline-block;
-  margin: 9.5px;
+  margin: 8px;
+  position: relative;
+
+  .marked {
+    left: 20px;
+    top: -1px;
+  }
 }
 
 .answered {
   width: 31px;
   height: 31px;
-  background: #338afb;
+  background: $primary-color;
   border: 1px solid rgba(51, 138, 251, 0.30196078431372547);
   border-radius: 50%;
   display: inline-block;
-  margin: 9.5px;
+  margin: 8px;
+  position: relative;
 }
 
 .current-answered {
   width: 31px;
   height: 31px;
-  background: #338afb;
+  background: $primary-color;
   border: 2px solid #60a2f8;
   border-radius: 50%;
   display: inline-block;
-  margin: 9.5px;
-}
-
-.marked {
-  width: 7px;
-  height: 7px;
-  background: #338afb;
-  border-radius: 50%;
+  margin: 8px;
   position: relative;
-  left: 21px;
-  top: 0px;
-  /* margin: 9.5px; */
+
+  .marked {
+    left: 20px;
+    top: -1px;
+  }
 }
 
 .next {
@@ -1140,11 +1168,11 @@ export default {
 }
 
 .val-text {
-  color: #338afb;
+  color: $primary-color;
 }
 
 .exam-content {
-  padding: 20px;
+  padding: 10px 20px 20px 20px;
 }
 
 .description {
@@ -1189,7 +1217,7 @@ input[type="radio"]:checked {
 }
 
 .sandglass {
-  color: #338afb;
+  color: $primary-color;
   width: 20px;
   height: 20px;
   vertical-align: middle;
@@ -1212,14 +1240,64 @@ input[type="radio"]:checked {
 .input {
   width: 237px;
   height: 28px;
-  background: #e6e6e6;
+  background: #ffffff;
   border-radius: 5px;
   font-size: 14px;
+  color: #737373;
+  border: solid rgb(190, 190, 190) 0.5px;
 }
 
 .order {
-  color: #338afb;
+  color: $primary-color;
   margin: 0 10px;
   cursor: pointer;
+}
+
+.mark-icon {
+  width: 24px;
+  height: 24px;
+  color: $primary-color;
+  transition: color 0.5s;
+}
+
+.mark-icon-select {
+  width: 24px;
+  height: 24px;
+  color: white;
+}
+
+.mark-circle {
+  width: 35px;
+  height: 35px;
+  //background: $primary-color;
+  border-style: solid;
+  border-width: 2px;
+  border-color: $primary-color;
+  border-radius: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.5s;
+}
+
+.mark-circle-select {
+  background: $primary-color;
+}
+
+.mark-text {
+  font-size: 14px;
+  color: $primary-color;
+}
+
+.edit-icon {
+  color: black;
+  cursor: pointer;
+  transition: color 0.5s;
+  margin-right: 10px;
+
+  &:hover {
+    color: $primary-color;
+  }
 }
 </style>

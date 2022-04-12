@@ -1,8 +1,15 @@
 <template>
   <!-- <button class="btn" @click="login('admin1', '123')">点击登录</button> -->
   <div class="container">
+    <DialogBox v-model:show="showFailedDialog">
+      <template v-slot:header>登录失败</template>
+      {{ failString }}
+      <template v-slot:bottom>
+        <button class="btn" @click="showFailedDialog = false">确定</button>
+      </template>
+    </DialogBox>
     <div class="left">
-      <button class="register-btn">去注册</button>
+      <button class="register-btn" @click="$router.push('/register')">去注册</button>
     </div>
     <div class="right">
       <div class="title">欢迎登录</div>
@@ -21,25 +28,38 @@
   </div>
 </template>
 
-<script>
-import axios from "axios";
+<script lang="ts">
+import axios, {Canceler} from "axios";
+import DialogBox from "../components/DialogBox.vue";
+import {defineComponent} from "vue";
+import {Response, ErrCode} from "../models";
 
-export default {
+export default defineComponent({
+  components: {DialogBox},
   data() {
     return {
-      ajaxCancel: null,
-      jumpPath: null,
+      ajaxCancel: null as Canceler | null,
+      jumpPath: null as string | null,
 
-      username:"admin1",
-      password:"123"
+      username: "admin1",
+      password: "123",
+
+      showFailedDialog: false,
+      failString: '',
+
+      config: this.getConfig()
     };
   },
   methods: {
-    login(username, password) {
+    getConfig() {
+      return this.$store.state.config;
+    },
+    login(username: string, password: string) {
       if (this.ajaxCancel != null) {
         this.ajaxCancel();
         this.ajaxCancel = null;
       }
+      this.config.showLoading = true;
       axios({
         url: this.config.urls.login,
         cancelToken: new axios.CancelToken((c) => {
@@ -49,36 +69,66 @@ export default {
           username: username,
           password: password,
         },
-      }).then((response) => {
-        if (response.data.errCode == 0) {
-          this.config.user = response.data.data;
+      }).then((res) => {
+        let response: Response = res.data;
+        if (response.errCode == ErrCode.SUCCESS) {
+          this.config.user = response.data;
 
           if (this.jumpPath) {
             this.$router.push(this.jumpPath);
           } else {
-            let permissions = this.config.user.permission.split(",");
-            if (permissions.indexOf("admin") >= 0) {
-              this.$router.push("/admin");
-            } else if (permissions.indexOf("teacher")) {
-              this.$router.push("/teacher");
-            } else {
-              this.$router.push("/student");
-            }
+            this.redirect();
           }
+        } else {
+          if (response.errCode == ErrCode.LOGIN_FAILED) {
+            this.failString = response.errMsg;
+          } else {
+            this.failString = '登录失败，未知错误';
+          }
+          this.showFailedDialog = true;
         }
+      }).catch((err) => {
+        if (err.response || err.request) {
+          this.failString = '连接失败';
+          this.showFailedDialog = true;
+        }
+      }).finally(() => {
+        this.config.showLoading = false;
       });
     },
+    redirect() {
+      this.$router.push("/teacher");
+      // if (this.config.user) {
+      //   let permissions = this.config.user.permission.split(",");
+      //   if (permissions.indexOf("admin") >= 0) {
+      //     this.$router.push("/admin");
+      //   } else if (permissions.indexOf("teacher") >= 0) {
+      //     this.$router.push("/teacher");
+      //   } else {
+      //     this.$router.push("/student");
+      //   }
+      // }
+    }
   },
   created() {
-    this.jumpPath = this.$route.query.path;
-    // console.log(this.jumpPath);
+    this.jumpPath = this.$route.query.path as string;
+    axios({
+      url: "/user/userInfo",
+    })
+        .then((res) => {
+          if (res.data.errCode != 101) {
+            this.$store.commit("setUser", res.data.data);
+            this.redirect();
+          }
+        });
+
   },
-  computed: {
-    config() {
-      return this.$store.state.config;
-    },
-  },
-};
+  // computed: {
+  //   config() {
+  //     return this.$store.state.config;
+  //   },
+  // },
+});
 </script>
 <style scoped>
 .container {
@@ -97,6 +147,7 @@ export default {
   display: flex;
   overflow: hidden;
 }
+
 .left {
   height: 100%;
   width: 40%;
@@ -106,6 +157,7 @@ export default {
   background-position: 0px 0px;
   background-size: 270% 100%;
 }
+
 .right {
   height: 100%;
   width: 60%;
@@ -113,6 +165,7 @@ export default {
   background-position: -550px 0px;
   background-size: 180% 100%;
 }
+
 .register-btn {
   width: 226px;
   height: 66px;
@@ -127,10 +180,12 @@ export default {
   font-size: 22px;
   cursor: pointer;
 }
+
 .register-btn:hover {
   color: #5399f3;
   background-color: #fff;
 }
+
 .login-btn {
   display: block;
   height: 45px;
@@ -146,12 +201,14 @@ export default {
   transition: background 0.5s, color 0.5s;
   cursor: pointer;
 }
+
 .login-btn:hover {
   background-color: #fff;
   color: #5399f3;
   box-shadow: none;
   border: 1px #5399f3 solid;
 }
+
 .title {
   width: 120px;
   font-size: 30px;
@@ -163,6 +220,7 @@ export default {
   margin: auto;
   margin-top: 100px;
 }
+
 .notice {
   color: #9289a6;
   font-size: 18px;
@@ -171,6 +229,7 @@ export default {
   margin-top: 10px;
   margin-bottom: 50px;
 }
+
 .input {
   /* border: solid; */
   outline: none;
@@ -194,6 +253,7 @@ export default {
   outline-color: transparent;
   box-shadow: none;
 }
+
 .forget {
   color: #5399f3;
   font-size: 13px;

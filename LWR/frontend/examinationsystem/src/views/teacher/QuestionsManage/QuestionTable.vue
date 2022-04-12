@@ -11,12 +11,12 @@
             <td>
               <div
                   @click="$event.stopPropagation()"
-                  style="width: fit-content; height:600px;margin:auto"
+                  style=" height:600px;margin:auto;width:1000px"
               >
                 <QuestionEdit
                     :id="selectId"
                     :bankId="extraData.bankId"
-                    @save="$refs.table.getItems()"
+                    @saveDone="$refs.table.getItems()"
                     :key="editKey"
                 ></QuestionEdit>
               </div>
@@ -25,6 +25,9 @@
         </div>
       </div>
     </transition>
+    <BackgroundFull v-model:show="showQuestionImport" :canClose="true">
+      <QuestionImport @okClick="onQuestionImportOkClick" @cancelClick="showQuestionImport=false"></QuestionImport>
+    </BackgroundFull>
     <Card>
       <template v-slot:headerLeft>
         <span
@@ -35,12 +38,16 @@
         <button class="btn" style="margin-left: 20px" @click="onAddClick()">
           添加试题
         </button>
+        <button class="btn" style="margin-left: 20px" @click="onImportClick()">
+          导入试题
+        </button>
       </template>
       <template v-slot:headerRight>
         <table>
           <tr>
             <td style="font-size: 0">
-              <SearchBox v-model:text="searchText" placeholder="按标题搜索"></SearchBox>
+              <el-checkbox v-model="advancedSearch" style="vertical-align: middle;margin-right: 20px;" label="高级搜索"/>
+              <SearchBox v-model:text="searchText" :placeholder="advancedSearch?'输入问题':'按标题搜索'"></SearchBox>
             </td>
             <td>
               <button class="btn" style="margin-left: 30px" @click="onSearchButtonClick()">{{
@@ -53,6 +60,9 @@
       </template>
       <template v-slot:content>
         <div class="content">
+          <span style="margin-left:10px" v-show="extraData.search != null"
+          >“{{ extraData.search }}”的搜索结果</span
+          >
           <Table
               ref="table"
               @clickItem="clickItem"
@@ -67,6 +77,10 @@
   </div>
 </template>
 
+<!--<script setup>-->
+
+<!--</script>-->
+
 <script>
 import Card from "@/components/Card.vue";
 import SearchBox from "@/components/SearchBox.vue";
@@ -74,6 +88,10 @@ import Table from "@/components/Table.vue";
 import QuestionEdit from "@/components/QuestionEdit";
 import {formatDate} from "@/common.ts";
 import {getSearchInfo} from "@/composables/search.ts";
+import axios from "axios";
+import {ElMessage} from "element-plus";
+import BackgroundFull from "@/components/BackgroundFull";
+import QuestionImport from "@/components/QuestionImport";
 
 export default {
   data() {
@@ -85,6 +103,7 @@ export default {
       // extraData: {
       //   bankId: null,
       // },
+      advancedSearch: false,
       urls: {
         queryUrl: "question/getQuestions",
       },
@@ -115,7 +134,17 @@ export default {
         },
         {title: "所属题库", name: "bankName"},
       ],
+      showQuestionImport: false
     };
+  },
+  watch: {
+    advancedSearch(val) {
+      if (val === true) {
+        this.urls.queryUrl = "algorithm/search";
+      } else {
+        this.urls.queryUrl = "question/getQuestions";
+      }
+    }
   },
   methods: {
     clickItem(item) {
@@ -128,15 +157,50 @@ export default {
       this.showQuestionEdit = true;
       this.editKey++;
     },
+    onImportClick() {
+      this.showQuestionImport = true;
+    },
+    onQuestionImportOkClick(value) {
+      this.showQuestionImport = false;
+      axios({
+        url: "/question/addQuestions",
+        data: {
+          list: value,
+          bankId: this.extraData.bankId,
+        }
+      }).then((res) => {
+        if (res.data.errCode !== 0)
+          throw new Error();
+        this.$refs.table.getItems()
+      }).catch(() => {
+        ElMessage({message: "导入失败", type: "error"});
+      });
+    }
+    // onSearchButtonClickAdvanced() {
+    //   if (this.extraData.search == null) {
+    //     if (this.searchText !== "") {
+    //       this.extraData.search = this.searchText;
+    //       this.searchButtonString = this.cancelString;
+    //       // this.$refs.examTable.getExams(); l
+    //       this.searchCallback();
+    //     }
+    //   } else {
+    //     this.extraData.search = null;
+    //     this.searchButtonString = this.searchString;
+    //     this.searchCallback();
+    //   }
+    // }
   },
   components: {
     Card,
     SearchBox,
     Table,
     QuestionEdit,
+    BackgroundFull,
+    QuestionImport
   },
   mounted() {
-    this.extraData.bankId = Number(this.$route.params.bankId);
+    this.extraData.bankId = Number.parseInt(this.$route.params.bankId);
     this.$refs.table.getItems();
 
     this.searchCallback = () => {

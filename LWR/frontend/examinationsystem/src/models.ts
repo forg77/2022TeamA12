@@ -23,7 +23,7 @@ export interface Urls {
 }
 
 //后台错误代码
-const enum ErrCode {
+export const enum ErrCode {
     SUCCESS = 0,
 
     NO_LOGIN = 101,
@@ -38,4 +38,46 @@ const enum ErrCode {
     EXAM_TIME_OUT = 303,
     EXAM_MISSING_LATEST_TIME = 304,
     EXAM_NOT_STARTED = 305
+}
+
+//导航栏子结构
+export interface NavSubItem {
+    title: string;
+    link?: string;
+}
+
+//导航栏结构
+export interface NavItem {
+    title: string;
+    link?: string;
+    content?: Array<NavSubItem>;
+}
+
+//位置
+export interface Pos {
+    x: number;
+    y: number;
+}
+
+//键值对
+export interface Pair {
+    key: string;
+    value: string;
+}
+
+//考试数据
+export interface Exam {
+    id?: number;
+    title: string;
+    subtitle: string;
+    earliestStartTime: number;
+    latestStartTime: number;
+    duration: number;
+    bankId?: number;
+    type: string;
+    selectCountJson?: string;
+    orderJson: string;
+    repeatTime: number;
+    calGradeAtOnce: boolean;
+    fullMark: number;
 }

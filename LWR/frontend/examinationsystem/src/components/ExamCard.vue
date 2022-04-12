@@ -73,7 +73,7 @@ export default {
   height: 220px;
   background: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.10196078431372549);
-  box-shadow: 2px -3px 6px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 2px -3px 6px rgba(0, 0, 0, 0.1); */
   opacity: 1;
   border-radius: 10px;
   padding: 40px 39px 0 20px;
@@ -89,8 +89,8 @@ export default {
 }
 
 .card-container:hover {
-  transform: scale(1.03);
-  box-shadow: 0px 0px 10px rgba(51, 138, 251, 0.72);
+  /* transform: scale(1.001); */
+  box-shadow: 0px 0px 10px rgba(51, 138, 251, 0.6);
 }
 
 .exam-name {

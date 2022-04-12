@@ -26,20 +26,22 @@
     <ClickDropDown id="menu" :expand="expandMenu" :position="menuPos" :items="editMenu"
                    @itemClick="onMenuItemClick"></ClickDropDown>
     <template v-for="exam in exams" :key="exam.id">
-      <ExamCard :tag="getExamTag(exam)" @click="this.$emit('cardClick', exam)" :canManage="canManage"
-                @manageClick="selectExam=exam;onManageClick($event,exam);">
-        <template v-slot:title>{{ exam.title }}</template>
-        <template v-slot:subtitle>{{ exam.subtitle }}</template>
-        <template v-slot:time>{{
-            formatDate(new Date(exam.earliestStartTime))
-          }}
-        </template>
-        <template v-slot:limitTime
-        >限时{{ Math.floor(exam.duration / 1000 / 60) }}分钟
-        </template
-        >
-        <template v-slot:score>满分{{ exam.fullMark }}</template>
-      </ExamCard>
+      <template v-if="exam.id!==37||(exam.id===37&&$store.state.config.showFakeExam)">
+        <ExamCard :tag="getExamTag(exam)" @click="this.$emit('cardClick', exam)" :canManage="canManage"
+                  @manageClick="selectExam=exam;onManageClick($event,exam);">
+          <template v-slot:title>{{ exam.title }}</template>
+          <template v-slot:subtitle>{{ exam.subtitle }}</template>
+          <template v-slot:time>{{
+              formatDate(new Date(exam.earliestStartTime))
+            }}
+          </template>
+          <template v-slot:limitTime
+          >限时{{ Math.floor(exam.duration / 1000 / 60) }}分钟
+          </template
+          >
+          <template v-slot:score>满分{{ exam.fullMark }}</template>
+        </ExamCard>
+      </template>
     </template>
     <ExamCardAdd v-show="canAdd && !isLoading" @click="$emit('addClick')">
 
@@ -135,7 +137,7 @@ export default {
       },
       expandMenu: false,
 
-      editMenu: ["删除", "批改"],
+      editMenu: [{key: "delete", value: "删除"}, {key: "correct", value: "批改"}, {key: "supervise", value: "监考"}],
       selectExam: null,
 
       showDeleteDialog: false
@@ -259,11 +261,15 @@ export default {
       });
 
     },
-    onMenuItemClick(index) {
+    onMenuItemClick(key) {
       // console.log(1);
-      if (index === 0) {
+      if (key === 'delete') {
         // this.deleteExam(this.selectExam["id"]);
         this.showDeleteDialog = true;
+      } else if (key === 'correct') {
+        this.$router.push('/teacher/examCorrect/' + this.selectExam.id);
+      }else if (key === 'supervise') {
+        this.$router.push('/teacher/invigilating/' + this.selectExam.id);
       }
     }
   },

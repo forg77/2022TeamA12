@@ -1,13 +1,16 @@
 <template>
-  <div class="dropdown" :class="{expand:expand}" :style="{top:position.y+'px',left:position.x+'px'}">
-    <div class="dropdown-content" v-for="(item,index) in items" :key="item" @click="$emit('itemClick',index)">
-      {{ item }}
+  <div class="dropdown-click" :class="{expand:expand}" :style="{top:position.y+'px',left:position.x+'px'}">
+    <div class="dropdown-content" v-for="item in items" :key="item.key" @click="$emit('itemClick',item.key)">
+      {{ item.value }}
     </div>
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import {defineComponent, PropType} from "vue";
+import {Pair, Pos} from "@/models";
+
+export default defineComponent({
   name: "ClickDropDown",
   props: {
     expand: {
@@ -15,8 +18,8 @@ export default {
       default: true
     },
     position: {
-      type: Object,
-      default() {
+      type: Object as PropType<Pos>,
+      default(): Pos {
         return {
           x: 0,
           y: 0
@@ -24,20 +27,20 @@ export default {
       }
     },
     items: {
-      type: Array,
-      default() {
+      type: Array as PropType<Array<Pair>>,
+      default(): Array<Pair> {
         return [];
       }
     }
   },
   emits: ["itemClick"]
-}
+});
 </script>
 
 <style lang="scss" scoped>
 @import "src/styles/_variables";
 
-.dropdown {
+.dropdown-click {
   display: block;
   position: absolute;
   background-color: white;
@@ -49,7 +52,7 @@ export default {
   border-bottom-style: solid;
   border-bottom-width: 4px;
   border-bottom-color: $primary-color;
-  z-index: 5;
+  z-index: 15;
 
   transform: scaleY(0);
   transform-origin: 0 0;
