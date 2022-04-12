@@ -10,11 +10,15 @@ import java.util.Map;
 @Repository
 @Mapper
 public interface QuestionMapper {
-    List<QuestionBank> getBanks(Integer author, String search, Condition con);
+    List<QuestionBank> getBanks(Integer id,Integer author, String search, Condition con);
 
     Integer getBanksCount(Integer author, String search);
 
     List<Question> getQuestions(Integer bankId, String search, Condition con);
+
+    List<Question> getQuestionsByIds(Integer bankId, List<Integer> ids,Condition con);
+
+    Integer getQuestionsByIdsCount(Integer bankId, List<Integer> ids);
 
     Integer getQuestionsCount(Integer bankId, String search);
 

@@ -4,16 +4,94 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="edu.zstu.examsys.mapper.UserMapper">
     <select id="getUserByUsername" resultType="User">
+        SELECT `id`,
+               `username`,
+               `password`,
+               `nickname`,
+               `register_time`,
+               `permission`
+        FROM `user`
+        WHERE `username` = #{username};
+    </select>
+
+    <insert id="addUser" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `user` (`username`,
+                            `password`,
+                            `nickname`,
+                            `register_time`,
+                            `permission`)
+        VALUES (#{username},
+                #{password},
+                #{nickname},
+                #{registerTime},
+                #{permission});
+    </insert>
+
+    <select id="getTeacherStudents" resultType="UserAuthentication">
         SELECT
-            `id`,
-            `username`,
-            `password`,
-            `nickname`,
-            `register_time`,
-            `permission`
+        `user`.*,
+        authentication.*,
+        authentication.id as authenticationId
         FROM
-            `user`
-        WHERE
-            `username` = #{username};
+        examsys.teacher_student
+        INNER JOIN examsys.`user` ON teacher_student.student_id = `user`.id
+        INNER JOIN examsys.authentication ON `user`.id = authentication.user_id
+        <where>
+            <if test="teacherId != null">
+                AND `teacher_id` = #{teacherId}
+            </if>
+            <if test="search != null">
+                AND `real_name` LIKE CONCAT('%',#{search},'%')
+            </if>
+        </where>
+        ORDER BY
+        <choose>
+            <when test="con.order == 'username'">
+                `username`
+            </when>
+            <when test='con.order == "type"'>
+                `type`
+            </when>
+            <when test='con.order == "number"'>
+                `number`
+            </when>
+            <when test='con.order == "school"'>
+                `school`
+            </when>
+            <when test='con.order == "college"'>
+                `college`
+            </when>
+            <when test='con.order == "admissionTime"'>
+                `admission_time`
+            </when>
+            <otherwise>
+                `user`.`id`
+            </otherwise>
+        </choose>
+        <if test="con.desc">
+            DESC
+        </if>
+        <if test="con.offset != null and con.max != null">
+            LIMIT #{con.offset}, #{con.max}
+        </if>
+        ;
+    </select>
+
+    <select id="getTeacherStudentsCount" resultType="int">
+        SELECT
+        COUNT(*)
+        FROM
+        examsys.teacher_student
+        INNER JOIN examsys.`user` ON teacher_student.student_id = `user`.id
+        INNER JOIN examsys.authentication ON `user`.id = authentication.user_id
+        <where>
+            <if test="teacherId != null">
+                AND `teacher_id` = #{teacherId}
+            </if>
+            <if test="search != null">
+                AND `real_name` LIKE CONCAT('%',#{search},'%')
+            </if>
+        </where>
+        ;
     </select>
 </mapper>

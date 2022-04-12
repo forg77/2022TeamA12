@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.zstu.examsys.mapper.SupervisionMapper">
+    <select id="getSupervisionInfos" resultType="Supervision">
+        SELECT *,
+        `authentication`.id AS `authentication_id`
+        FROM `examsys`.`supervision`
+        INNER JOIN `examsys`.`authentication`
+        ON `user_id` = `student_id`
+        <where>
+            <if test="examId != null">
+                AND `exam_id` = #{examId}
+            </if>
+            <if test="studentId != null">
+                AND `student_id` = #{studentId}
+            </if>
+            <if test="warn != null">
+                AND `warn` = #{warn}
+            </if>
+        </where>
+        ORDER BY
+        <choose>
+            <when test="con.order == 'id'">
+                `supervision`.`id`
+            </when>
+            <when test='con.order == "time"'>
+                `time`
+            </when>
+            <when test='con.order == "text"'>
+                `text`
+            </when>
+            <when test='con.order == "warn"'>
+                `warn`
+            </when>
+            <when test='con.order == "number"'>
+                `number`
+            </when>
+            <when test='con.order == "school"'>
+                `school`
+            </when>
+            <when test='con.order == "college"'>
+                `college`
+            </when>
+            <otherwise>
+                `supervision`.`id`
+            </otherwise>
+        </choose>
+        <if test="con.desc">
+            DESC
+        </if>
+        <if test="con.offset != null and con.max != null">
+            LIMIT #{con.offset}, #{con.max}
+        </if>
+        ;
+    </select>
+
+    <select id="getSupervisionInfosCount" resultType="int">
+        SELECT COUNT(*)
+        FROM `examsys`.`supervision`
+        <where>
+            <if test="examId != null">
+                AND `exam_id` = #{examId}
+            </if>
+            <if test="studentId != null">
+                AND `student_id` = #{studentId}
+            </if>
+            <if test="warn != null">
+                AND `warn` = #{warn}
+            </if>
+        </where>
+        ;
+    </select>
+
+    <insert id="addSupervisionInfo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `examsys`.`supervision`(exam_id, student_id, time, text, warn)
+        VALUES (#{examId},
+                #{studentId},
+                #{time},
+                #{text},
+                #{warn})
+    </insert>
+</mapper>

@@ -10,10 +10,14 @@
         `nickname` AS `author_name`,
         `creation_time`,
         `private` AS `is_private`,
-        (SELECT COUNT(*) FROM `question` WHERE `bank_id` = `question_bank`.`id`) AS `count`
+        (SELECT COUNT(*) FROM `question` WHERE `bank_id` = `question_bank`.`id`) AS `count`,
+        (SELECT `id` FROM `exam` WHERE `exam`.bank_id = `question_bank`.`id`) AS `exam_id`
         FROM `question_bank`
         INNER JOIN `user` ON `user`.`id` = `author`
         <where>
+            <if test="id != null">
+                AND `question_bank`.`id` = #{id}
+            </if>
             <if test="author != null">
                 AND `author` = #{author}
             </if>
@@ -112,6 +116,73 @@
             LIMIT #{con.offset}, #{con.max}
         </if>
         ;
+    </select>
+
+    <select id="getQuestionsByIds" resultType="Question">
+        SELECT `examsys`.`question`.`id`,
+        `type`,
+        `description`,
+        `bank_id`,
+        `question_bank`.`name` AS `bank_name`
+        FROM `examsys`.`question`
+        INNER JOIN `examsys`.`question_bank` ON `bank_id` = `question_bank`.`id`
+        <where>
+            <if test="bankId != null">
+                AND `bank_id` = #{bankId}
+            </if>
+            <if test="ids != null">
+                AND `question`.`id` IN
+                <foreach collection="ids" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY
+        <choose>
+            <when test="con.order == 'id'">
+                `question`.`id`
+            </when>
+            <when test='con.order == "type"'>
+                `type`
+            </when>
+            <when test='con.order == "description"'>
+                `description`
+            </when>
+            <when test='con.order == "bank_id"'>
+                `bank_id`
+            </when>
+            <when test='con.order == "bank_name"'>
+                `bank_name`
+            </when>
+            <otherwise>
+                `question`.`id`
+            </otherwise>
+        </choose>
+        <if test="con.desc">
+            DESC
+        </if>
+        <if test="con.offset != null and con.max != null">
+            LIMIT #{con.offset}, #{con.max}
+        </if>
+        ;
+    </select>
+
+    <select id="getQuestionsByIdsCount" resultType="int">
+        SELECT
+        COUNT(*) AS `count`
+        FROM
+        `question`
+        <where>
+            <if test="bankId != null">
+                AND `bank_id` = #{bankId}
+            </if>
+            <if test="ids != null">
+                AND `question`.`id` IN
+                <foreach collection="ids" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
     </select>
 
     <select id="getQuestionsCount" resultType="int">
@@ -266,8 +337,7 @@
     <update id="updateBankName">
         UPDATE
             `question_bank`
-        SET
-            `name` = #{name}
+        SET `name` = #{name}
         WHERE `id` = #{id};
     </update>
 </mapper>

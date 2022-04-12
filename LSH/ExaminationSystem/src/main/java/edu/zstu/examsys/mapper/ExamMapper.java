@@ -21,6 +21,8 @@ public interface ExamMapper {
 
     ExamAnswer getExamAnswer(ExamAnswer answer);
 
+    List<ExamAnswer> getExamAnswers(Integer examinee, Integer examId);
+
     Integer addExamAnswer(ExamAnswer answer);
 
     List<NormalAnswer> getNormalAnswers(Integer examinee, Integer examId);

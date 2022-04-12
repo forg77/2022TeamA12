@@ -4,6 +4,9 @@ public class ErrorCode {
     private ErrorCode() {
     }
 
+    //未知错误
+    public static final int UNKNOWN_ERROR = -1;
+
     //成功
     public static final int SUCCESS = 0;
     //1--，用户错误
@@ -11,6 +14,8 @@ public class ErrorCode {
     public static final int NO_LOGIN = 101;
     //登录失败
     public static final int LOGIN_FAILED = 102;
+    //用户已存在
+    public static final int USER_ALREADY_EXISTS = 103;
 
     //2--，数据库错误
     //插入失败
@@ -31,4 +36,10 @@ public class ErrorCode {
     public static final int EXAM_MISSING_LATEST_TIME = 304;
     //考试未开始
     public static final int EXAM_NOT_STARTED = 305;
+
+    //4--，IO错误
+    //文件为空
+    public static final int EMPTY_FILE = 401;
+    //服务器文件错误
+    public static final int SERVER_FILE_ERROR = 402;
 }
