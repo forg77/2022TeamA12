@@ -57,10 +57,10 @@ class ExaminationSystemApplicationTests {
     void supervisionTest() {
         Socket socket = null;
         try {
-            socket = new Socket("localhost", 9000);
+            socket = new Socket("localhost", 9501);
             OutputStream os = socket.getOutputStream();
             OutputStreamWriter osw = new OutputStreamWriter(os, new Utf8Encoder());
-            HashMap<String, Object> send = new HashMap<>();
+//            HashMap<String, Object> send = new HashMap<>();
 //            List<String> paths = new LinkedList<>();
 //            paths.add("D:\\python1\\GazeTracking-master\\GazeTracking-master\\imgs\\1.jpeg");
 //            paths.add("D:\\python1\\GazeTracking-master\\GazeTracking-master\\imgs\\2.jpeg");
@@ -70,8 +70,8 @@ class ExaminationSystemApplicationTests {
 //            paths.add("D:\\python1\\GazeTracking-master\\GazeTracking-master\\imgs\\6.jpg");
 //            paths.add("D:\\python1\\GazeTracking-master\\GazeTracking-master\\imgs\\7.jpg");
 
-            send.put("path", "D:\\python1\\GazeTracking-master\\GazeTracking-master\\imgs\\11.jpg");
-            osw.append(JSON.toJSONString(send));
+//            send.put("path", "D:\\python1\\GazeTracking-master\\GazeTracking-master\\imgs\\11.jpg");
+            osw.append("hello!");
             osw.flush();
 
             InputStream inputStream = socket.getInputStream();
