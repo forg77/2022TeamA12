@@ -15,7 +15,7 @@
         <div class="content">
           <button class="btn" @click="showDialog=true">打开对话框</button>
         </div>
-        <el-upload :with-credentials="true" :on-success="uploadSuccess" action="http://139.9.58.231:8080/supervision/uploadImg?examId=1&userId=1">
+        <el-upload :with-credentials="true" :on-success="uploadSuccess" action="http://139.9.58.231:8080/supervision/uploadImg?examId=37&userId=1">
           <el-button type="primary">Click to upload</el-button>
         </el-upload>
       </template>
