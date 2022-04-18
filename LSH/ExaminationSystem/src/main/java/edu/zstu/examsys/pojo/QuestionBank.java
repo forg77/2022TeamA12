@@ -12,6 +12,7 @@ public class QuestionBank {
     private Date creationTime;
     private Boolean isPrivate;
     private Integer count;
+    private Integer examId;
 
     public Integer getId() {
         return id;
@@ -69,6 +70,14 @@ public class QuestionBank {
         this.count = count;
     }
 
+    public Integer getExamId() {
+        return examId;
+    }
+
+    public void setExamId(Integer examId) {
+        this.examId = examId;
+    }
+
     @Override
     public String toString() {
         return "QuestionBank{" +
@@ -79,6 +88,7 @@ public class QuestionBank {
                 ", creationTime=" + creationTime +
                 ", isPrivate=" + isPrivate +
                 ", count=" + count +
+                ", examId=" + examId +
                 '}';
     }
 }

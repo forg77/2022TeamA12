@@ -3,11 +3,13 @@ package edu.zstu.examsys.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import edu.zstu.examsys.pojo.*;
+import edu.zstu.examsys.service.ExamCorrectService;
 import edu.zstu.examsys.service.ExamService;
 import edu.zstu.examsys.service.QuestionService;
 import edu.zstu.examsys.util.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +24,8 @@ public class ExamController {
 
     private QuestionService questionService;
 
+    private ExamCorrectService examCorrectService;
+
     @Autowired
     public void setExamService(ExamService examService) {
         this.examService = examService;
@@ -30,6 +34,11 @@ public class ExamController {
     @Autowired
     public void setQuestionService(QuestionService questionService) {
         this.questionService = questionService;
+    }
+
+    @Autowired
+    public void setExamCorrectService(ExamCorrectService examCorrectService) {
+        this.examCorrectService = examCorrectService;
     }
 
     @PostMapping("/getExams")
@@ -99,6 +108,7 @@ public class ExamController {
 
         Map<String, Object> data = new HashMap<>();
         data.put("normal", examService.getNormalAnswers(examinee, examId));
+        data.put("answers",examService.getExamAnswers(examinee, examId));
 
         CommonData res = new CommonData(ErrorCode.SUCCESS, "成功", data);
 
@@ -116,6 +126,7 @@ public class ExamController {
     }
 
     @PostMapping("/joinExam")
+    @Transactional
     public String joinExam(@RequestBody String requestBody) {
         JSONObject body = JSON.parseObject(requestBody);
         Integer examId = body.getInteger("examId");
@@ -156,6 +167,17 @@ public class ExamController {
                 examService.addExamPaper(examPaper);
             }
             examService.deleteExamAnswers(examPaper.getExamId(), examPaper.getExaminee());
+
+            //添加考试批阅信息
+            List<CorrectInfo> info = new LinkedList<>();
+            CorrectInfo item = new CorrectInfo();
+            QuestionBank bank = questionService.getBanks(exam.getBankId(), null, null, new Condition()).get(0);
+            item.setCorrectorId(bank.getAuthor());
+            item.setPaperId(examPaper.getId());
+            item.setTime(null);
+            item.setObjectiveAutoCorrected(false);
+            info.add(item);
+            examCorrectService.addCorrectInfo(info);
 
             res = new CommonData(ErrorCode.SUCCESS, "成功");
         } else {
@@ -300,6 +322,7 @@ public class ExamController {
         Integer questionId = body.getInteger("questionId");
         Integer examId = body.getInteger("examId");
         Float score = body.getFloat("score");
+        Boolean autoCorrect = body.getBoolean("autoCorrect");
 
         QuestionScore questionScore = examService.getQuestionScore(examId, questionId);
         if (questionScore == null) {
@@ -307,9 +330,11 @@ public class ExamController {
             questionScore.setQuestionId(questionId);
             questionScore.setExamId(examId);
             questionScore.setScore(score);
+            questionScore.setAutoCorrect(autoCorrect);
             examService.addQuestionScore(questionScore);
         } else {
             questionScore.setScore(score);
+            questionScore.setAutoCorrect(autoCorrect);
             examService.updateQuestionScore(questionScore);
         }
 
@@ -320,9 +345,11 @@ public class ExamController {
     }
 
     @PostMapping("/addExam")
+    @Transactional
     public String addExam(@RequestBody String requestBody) {
         JSONObject body = JSON.parseObject(requestBody);
         Exam exam = body.toJavaObject(Exam.class);
+
         Integer suc = examService.addExam(exam);
         questionService.updateBankName(exam.getBankId(), "考试题库 - " + exam.getTitle());
 
@@ -337,6 +364,7 @@ public class ExamController {
     }
 
     @PostMapping("/addNewExam")
+    @Transactional
     public String addNewExam(Authentication authentication) {
 //        JSONObject body = JSON.parseObject(requestBody);
         QuestionBank bank = new QuestionBank();

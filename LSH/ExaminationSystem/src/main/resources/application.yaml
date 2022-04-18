@@ -12,8 +12,8 @@ management:
 spring:
   datasource:
     username: root
-    password: bx20010208LSH!
-    url: jdbc:mysql://139.9.58.231:3306/examsys?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8
+    password: 123456
+    url: jdbc:mysql://localhost:3306/examsys?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
 

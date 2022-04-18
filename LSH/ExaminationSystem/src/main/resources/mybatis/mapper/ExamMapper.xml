@@ -312,16 +312,19 @@
     <insert id="addQuestionScore" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO `question_score` (`exam_id`,
                                       `question_id`,
-                                      `score`)
+                                      `score`,
+                                      `auto_correct`)
         VALUES (#{examId},
                 #{questionId},
-                #{score});
+                #{score},
+                #{autoCorrect});
     </insert>
 
     <update id="updateQuestionScore">
         UPDATE
             `question_score`
-        SET `score` = #{score}
+        SET `score`       = #{score},
+            `auto_correct`=#{autoCorrect}
         WHERE `exam_id` = #{examId}
           AND `question_id` = #{questionId}
     </update>
@@ -335,49 +338,56 @@
 
     <insert id="addExam" keyProperty="id" useGeneratedKeys="true">
         INSERT INTO `exam` (`id`,
-                            `title`,
-                            `subtitle`,
-                            `earliest_start_time`,
-                            `latest_start_time`,
-                            `duration`,
-                            `bank_id`,
-                            `type`,
-                            `select_count_json`,
-                            `order_json`,
-                            `repeat_time`,
-                            `cal_grade_at_once`,
-                            `full_mark`)
+        `title`,
+        `subtitle`,
+        `earliest_start_time`,
+        `latest_start_time`,
+        `duration`,
+        `bank_id`,
+        `type`,
+        `select_count_json`,
+        `order_json`,
+        `repeat_time`,
+        `cal_grade_at_once`,
+        `full_mark`)
         VALUES (#{id},
-                   #{title},
-                   #{subtitle},
-                   #{earliestStartTime},
-                   #{latestStartTime},
-                   #{duration},
-                   #{bankId},
-                   #{type},
-                   #{selectCountJson},
-                   #{orderJson},
-                   #{repeatTime},
-                   #{calGradeAtOnce},
-                   #{fullMark})
-        ON DUPLICATE KEY UPDATE `title`               = #{title},
-                                `subtitle`            = #{subtitle},
-                                `earliest_start_time` = #{earliestStartTime},
-                                `latest_start_time`   = #{latestStartTime},
-                                `duration`            = #{duration},
-                                `bank_id`             = #{bankId},
-                                `type`                = #{type},
-                                `select_count_json`   = #{selectCountJson},
-                                `order_json`          = #{orderJson},
-                                `repeat_time`         = #{repeatTime},
-                                `cal_grade_at_once`   = #{calGradeAtOnce},
-                                `full_mark`           = #{fullMark}
+        #{title},
+        #{subtitle},
+        #{earliestStartTime},
+        #{latestStartTime},
+        #{duration},
+        #{bankId},
+        #{type},
+        #{selectCountJson},
+        #{orderJson},
+        #{repeatTime},
+        #{calGradeAtOnce},
+        #{fullMark})
+        ON DUPLICATE KEY UPDATE `title` = #{title},
+        `subtitle` = #{subtitle},
+        `earliest_start_time` = #{earliestStartTime},
+        `latest_start_time` = #{latestStartTime},
+        `duration` = #{duration},
+        <if test="bankId">
+            `bank_id` = #{bankId},
+        </if>
+        `type` = #{type},
+        `select_count_json` = #{selectCountJson},
+        `order_json` = #{orderJson},
+        `repeat_time` = #{repeatTime},
+        `cal_grade_at_once` = #{calGradeAtOnce},
+        `full_mark` = #{fullMark}
     </insert>
 
     <delete id="deleteExam">
         DELETE
-        FROM
-            `question_bank`
+        FROM `question_bank`
         WHERE `id` = (SELECT `bank_id` FROM `exam` WHERE `id` = #{id});
     </delete>
+
+    <select id="getExamAnswers" resultType="ExamAnswer">
+        SELECT * FROM exam_answer
+        WHERE `examinee` = #{examinee}
+          AND `exam_id` = #{examId};
+    </select>
 </mapper>
